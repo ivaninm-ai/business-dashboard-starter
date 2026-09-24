@@ -123,10 +123,10 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
       <a href="#s0" data-step="0"><span class="n">0</span>准备账号</a>
       <a href="#s1" data-step="1"><span class="n">1</span>复制模板</a>
       <a href="#s2" data-step="2"><span class="n">2</span>打开 Pages</a>
-      <a href="#s3" data-step="3"><span class="n">3</span>发布网站</a>
-      <a href="#s4" data-step="4"><span class="n">4</span>试用你的网站</a>
-      <a href="#s5" data-step="5"><span class="n">5</span>打开你的 Excel</a>
-      <a href="#s6" data-step="6"><span class="n">6</span>设定店名和首页</a>
+      <a href="#s3" data-step="3"><span class="n">3</span>设定店名和首页</a>
+      <a href="#s4" data-step="4"><span class="n">4</span>发布网站</a>
+      <a href="#s5" data-step="5"><span class="n">5</span>试用你的网站</a>
+      <a href="#s6" data-step="6"><span class="n">6</span>打开你的 Excel</a>
       <a href="#s7" data-step="7"><span class="n">7</span>让 AI 帮你扩展</a>
       <a href="#rules"><span class="n">!</span>规则与限制</a>
       <div class="progress" id="progress" aria-live="polite">已完成 0 / 8 步</div>
@@ -187,7 +187,30 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
       </section>
 
       <section class="step" id="s3" aria-labelledby="h3">
-        <div class="step-head"><span class="num">第 3 步</span><h2 id="h3">发布你的网站</h2><span class="where">你的仓库 › Actions</span></div>
+        <div class="step-head"><span class="num">第 3 步</span><h2 id="h3">设定你的店名和首页</h2><span class="where">你的仓库 › Settings › Secrets and variables › Actions</span></div>
+        <p>不用改任何文件：在仓库的设定里加两个<b>变量</b>。下一步发布网站时就会用上：你的网站会显示你的店名，一打开就是你自己的 Excel。</p>
+        <p><a class="btn primary" data-link="variables" href="#details" target="_blank" rel="noopener">⚙️ 打开我的变量设定 ↗</a></p>
+        <ol>
+          <li>按上面的按钮（或在你的仓库里点 <b>Settings</b> → 左边 <b>Secrets and variables</b> → <b>Actions</b> → 上方的 <b>Variables</b> 分页）。</li>
+          <li>按 <b>New repository variable</b>，照下表填 <b>Name</b> 和 <b>Value</b>，再按 <b>Add variable</b>。第二个变量用同样方法再加一次。
+            <div class="table-wrap"><table>
+              <thead><tr><th>Name（照抄）</th><th>Value（你填）</th><th>作用</th></tr></thead>
+              <tbody>
+                <tr><td><code>BUSINESS_NAME</code></td><td>你的店名，例如 <code>小明家具店</code></td><td>「我的 Excel」改叫你的店名：左上角和业务选单都会显示。最多 40 个字。</td></tr>
+                <tr><td><code>START_WITH</code></td><td><code>my-excel</code></td><td>网站一打开就是你自己的 Excel。想先看范例，就填 <code>b2c</code> 或 <code>b2b</code>。</td></tr>
+              </tbody>
+            </table></div></li>
+          <li>加好之后，Variables 分页会列出这两个变量。接着做第 4 步，发布你的网站。</li>
+        </ol>
+        <div class="metaphor">比喻：变量就像店门口的招牌。换招牌不用拆店：代码一行都不动，只换设定。</div>
+        <div class="note">⚠️ 要加在 <b>Variables</b> 分页，不是 Secrets。变量会写进网站，任何人都看得到：只放店名这类公开资料，不要放密码或钥匙。</div>
+        <p>以后想改：回到同一页，按变量旁边的铅笔改 Value，再发布一次（第 4 步）。<b>改了变量一定要重新发布</b>，网站才会更新。不想要了就删掉变量，再发布一次。每个访客第一次打开时会照 <code>START_WITH</code>；之后他们自己选的业务会记在他们的浏览器里。</p>
+        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="3"><span>Variables 分页里有 <code>BUSINESS_NAME</code> 和 <code>START_WITH</code> 两个变量，Name 全是大写英文。</span></label></div>
+        <p class="stuck"><b>卡住了？</b>看不到 Settings：你打开的多半是老师的模板，不是你自己的仓库。不小心加到 Secrets 分页：删掉它，改加在 Variables 分页。暂时不想设：可以跳过这一步，网站会用 BetterSpace 范例开场，「我的 Excel」保持原名；以后再回来加，重新发布就好。</p>
+      </section>
+
+      <section class="step" id="s4" aria-labelledby="h4">
+        <div class="step-head"><span class="num">第 4 步</span><h2 id="h4">发布你的网站</h2><span class="where">你的仓库 › Actions</span></div>
         <p><a class="btn primary" data-link="publish" href="#details" target="_blank" rel="noopener">🚀 打开 Publish site ↗</a></p>
         <ol>
           <li>点顶部的 <b>Actions</b> → 左边选 <b>Publish site</b>。</li>
@@ -195,18 +218,19 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
           <li>刷新一下页面，会出现一条黄色圆点的运行记录。等 1–3 分钟，变成<b>绿色勾</b>就完成了。它会先自动检查（打包 + 所有测试），全部通过才会发布。</li>
           <li>打开你的网址：<span class="chip"><code id="v-site2">https://用户名.github.io/仓库名/</code><button type="button" data-copy="v-site2">复制</button></span>（第一次可能要再等 1 分钟）。</li>
         </ol>
-        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="3"><span>我的网址打开了：最上面有深红色横条「教学演示 · 所有记录都是虚构的练习数据」，下面是 BetterSpace 家居生活馆的概览和数字（例如期间订单额 RM 25,650）。</span></label></div>
+        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="4"><span>我的网址打开了：左上角是我的店名，页面写着「打开你的 Excel」，上方的业务选单还有 <b>B2C 家居零售</b>、<b>B2B 办公家具</b> 两个练习范例。（跳过了第 3 步的话：打开的是 BetterSpace 家居生活馆的概览，例如期间订单额 RM 25,650。）</span></label></div>
         <p class="stuck"><b>卡住了？</b>
-          <br>· Actions 页面叫你启用 workflows：按 <b>I understand my workflows, go ahead and enable them</b>，再回到第 3 步。
+          <br>· Actions 页面叫你启用 workflows：按 <b>I understand my workflows, go ahead and enable them</b>，再回到这一步。
           <br>· 红色叉叉，失败在 <b>Configure Pages</b> 或 <b>deploy</b>：回第 2 步，确认 Source 是 <b>GitHub Actions</b>，然后再 Run workflow 一次。
-          <br>· 红色叉叉，失败在 <b>Run npm run check</b>：自动检查没通过，网站不会被改坏。刚复制的模板不应该出现这种情况；把截图发到学员群。
+          <br>· 红色叉叉，失败在 <b>Run npm run check</b>：多半是第 3 步的变量填错了。点开看红字，它会写明哪个变量不对，例如 <code>START_WITH 只能是 my-excel、b2c、b2b</code>。回到 Variables 改好，再 Run workflow 一次。红字说的不是变量：把截图发到学员群。网站不会被改坏。
+          <br>· 店名或首页没变：确认第 3 步的 Name 全是大写、没有空格；变量要在按 Run workflow <b>之前</b>加好。加晚了就再 Run workflow 一次，然后按 <b>Ctrl + F5</b>。
           <br>· 网址显示 404：等 1–2 分钟再重新载入；检查网址里的用户名和仓库名；仓库要是 Public。</p>
       </section>
 
-      <section class="step" id="s4" aria-labelledby="h4">
-        <div class="step-head"><span class="num">第 4 步</span><h2 id="h4">试用你的网站</h2><span class="where">你的仪表盘网址</span></div>
+      <section class="step" id="s5" aria-labelledby="h5">
+        <div class="step-head"><span class="num">第 5 步</span><h2 id="h5">试用你的网站</h2><span class="where">你的仪表盘网址</span></div>
         <ol>
-          <li>上方场景栏选业务：<b>B2C 家居零售</b> 或 <b>B2B 办公家具</b>。右上角可以切换 <b>中文 / English</b>。</li>
+          <li>先用练习范例试试：在上方的业务选单选 <b>B2C 家居零售</b> 或 <b>B2B 办公家具</b>。右上角可以切换 <b>中文 / English</b>。</li>
           <li>打开 <b>待办（Tasks）</b>，按一条建议的 <b>接受（Accept）</b>，再按 <b>编辑（Edit）</b> 改行动日期 → <b>保存</b>。</li>
           <li>打开 <b>日历（Calendar）</b>：这条待办出现在你选的日期上。</li>
           <li>按 <b>前进到第 2 天（Advance to Day 2）</b>：数字换成 8 月 31 日的数据，你的决定会保留。</li>
@@ -214,14 +238,14 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
           <li>最后按 <b>重置演示（Reset demo）</b> 回到起点。</li>
         </ol>
         <div class="note">⚠️ 你的操作只保存在<b>这台电脑的这个浏览器</b>里。这不是备份：换电脑、换浏览器或清除浏览器数据，就会从头开始；别人打开你的网址，也看不到你的操作。</div>
-        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="4"><span>接受的待办出现在日历上；重新载入网页后还在；按重置后回到第 1 天。</span></label></div>
+        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="5"><span>接受的待办出现在日历上；重新载入网页后还在；按重置后回到第 1 天。</span></label></div>
       </section>
 
-      <section class="step" id="s5" aria-labelledby="h5">
-        <div class="step-head"><span class="num">第 5 步</span><h2 id="h5">打开你自己的 Excel</h2><span class="where">你的网站 › 我的 Excel</span></div>
+      <section class="step" id="s6" aria-labelledby="h6">
+        <div class="step-head"><span class="num">第 6 步</span><h2 id="h6">打开你自己的 Excel</h2><span class="where">你的网站 › 你的店名（我的 Excel）</span></div>
         <p>想用自己的数字试试？你的网站可以直接读取你电脑上的 Excel。文件只在你的浏览器里读取和计算，<b>不会上传</b>到 GitHub 或任何地方，也不会出现在别人打开的网站上。</p>
         <ol>
-          <li>在你的网站上方的业务里选 <b>我的 Excel</b>。</li>
+          <li>在上方的业务选单选<b>你的店名</b>（没设店名的话叫 <b>我的 Excel</b>）。</li>
           <li>准备 Excel：<b>老师给了练习用的 Excel，就直接用它</b>，跳到下一步。想用自己的数字：按 <b>下载 BetterSpace_B2C.xlsx</b>（或 B2B），用 Excel 打开，保留四个工作表（Customers、Sales、Payments、Stock）的名称和第一行的列名，把下面的行换成你的记录，另存为 <b>.xlsx</b>。</li>
           <li>回到网站，按 <b>选择 Excel 文件</b>，选你的文件。数字、待办和日历马上按你的数据计算；报告日期是文件里最新的日期。</li>
           <li>Excel 改过之后：保存，再按 <b>重新读取 Excel</b>。不用了就按 <b>忘记这个文件</b>。</li>
@@ -238,32 +262,8 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
         <p>其他列（状态、付款期限、负责人等）最好照范例保留；缺少时，用到它们的数字会留空或为零，网页会告诉你缺了哪些。</p>
         <div class="note">⚠️ 状态只能写 <code>Confirmed</code>、<code>In Progress</code>、<code>Completed</code> 或 <code>Cancelled</code>；日期用 Excel 日期或写成 <code>2026-08-30</code>；金额用数字。</div>
         <div class="danger">⚠️ 文件会记在这个浏览器里，但这<b>不是备份</b>。不要在共用电脑上打开机密的真实数据。</div>
-        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="5"><span>选了「我的 Excel」并打开文件后，左上角显示我的文件名（第 6 步设了店名后改显示店名），数字来自我的记录；重新载入网页后还在。</span></label></div>
+        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="6"><span>打开文件后，左上角是我的店名（没设店名就是文件名），旁边的文件标签是我的文件名，数字来自我的记录；重新载入网页后还在。</span></label></div>
         <p class="stuck"><b>卡住了？</b>出现「这个 Excel 文件暂时不能使用」：看它列出的第一个问题，会写明是哪个工作表、哪一行、哪一列。最常见的是工作表名称或列名被改了、状态的写法不同，或文件是 .xls / .csv（要在 Excel 里另存为 .xlsx）。</p>
-      </section>
-
-      <section class="step" id="s6" aria-labelledby="h6">
-        <div class="step-head"><span class="num">第 6 步</span><h2 id="h6">设定你的店名和首页</h2><span class="where">你的仓库 › Settings › Secrets and variables › Actions</span></div>
-        <p>不用改任何文件：在仓库的设定里加两个<b>变量</b>，再发布一次，你的网站就会显示你的店名，一打开就是你自己的 Excel。</p>
-        <p><a class="btn primary" data-link="variables" href="#details" target="_blank" rel="noopener">⚙️ 打开我的变量设定 ↗</a></p>
-        <ol>
-          <li>按上面的按钮（或在你的仓库里点 <b>Settings</b> → 左边 <b>Secrets and variables</b> → <b>Actions</b> → 上方的 <b>Variables</b> 分页）。</li>
-          <li>按 <b>New repository variable</b>，照下表填 <b>Name</b> 和 <b>Value</b>，再按 <b>Add variable</b>。第二个变量用同样方法再加一次。
-            <div class="table-wrap"><table>
-              <thead><tr><th>Name（照抄）</th><th>Value（你填）</th><th>作用</th></tr></thead>
-              <tbody>
-                <tr><td><code>BUSINESS_NAME</code></td><td>你的店名，例如 <code>小明家具店</code></td><td>「我的 Excel」改叫你的店名：左上角和业务选单都会显示。最多 40 个字。</td></tr>
-                <tr><td><code>START_WITH</code></td><td><code>my-excel</code></td><td>网站一打开就是你自己的 Excel。想先看范例，就填 <code>b2c</code> 或 <code>b2b</code>。</td></tr>
-              </tbody>
-            </table></div></li>
-          <li>回到 <b>Actions → Publish site → Run workflow</b>，重新发布。<b>改了变量也要重新发布一次</b>，网站才会更新。</li>
-          <li>等绿色勾，再打开你的网址，按 <b>Ctrl + F5</b> 强制重新载入。</li>
-        </ol>
-        <div class="metaphor">比喻：变量就像店门口的招牌。换招牌不用拆店：代码一行都不动，只换设定。</div>
-        <div class="note">⚠️ 要加在 <b>Variables</b> 分页，不是 Secrets。变量会写进网站，任何人都看得到：只放店名这类公开资料，不要放密码或钥匙。</div>
-        <p>以后想改：回到同一页，按变量旁边的铅笔改 Value，再发布一次。不想要了就删掉变量，再发布一次。每个访客第一次打开时会照 <code>START_WITH</code>；之后他们自己选的业务会记在他们的浏览器里。</p>
-        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="6"><span>重新发布后打开我的网址：一打开就是我的 Excel，左上角和业务选单显示我的店名。</span></label></div>
-        <p class="stuck"><b>卡住了？</b>发布出现红叉，失败在 <b>Run npm run check</b>：点开看红字，它会写明哪个变量不对，例如 <code>START_WITH 只能是 my-excel、b2c、b2b</code>。回到 Variables 改好，再发布一次；在那之前，网站仍是上一个正常版本。店名没变：确认 Name 全是大写英文、没有空格，而且是加了变量<b>之后</b>才按 Run workflow。</p>
       </section>
 
       <section class="step" id="s7" aria-labelledby="h7">
@@ -275,7 +275,7 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
             <div class="example">请先读 AGENTS.md。在 B2B 概览加一个「本期服务类订单额」KPI，
 加上中文翻译和测试，运行全部检查，
 告诉我结果，以及你没能验证的地方。</div></li>
-          <li>让助手把修改推送到你的仓库，然后照第 3 步 <b>Publish site</b>，在你的网址上看看新功能（中文和英文都看一下）。</li>
+          <li>让助手把修改推送到你的仓库，然后照第 4 步 <b>Publish site</b>，在你的网址上看看新功能（中文和英文都看一下）。</li>
         </ol>
         <div class="two">
           <div><h3>新增指标</h3><p>例如「本期服务类订单额」。B2B 第 1 天 8 月应为 RM 3,400（5 笔）——用这个数字检查助手做得对不对。</p></div>
@@ -301,7 +301,7 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
             <tr><td><b>只放虚构或匿名数据</b></td><td>仓库和网站都是公开的，网站文件里包含全部记录。这是学习项目，不适合机密的真实业务数据。</td></tr>
             <tr><td><b>每次修改都要重新发布</b></td><td>改了变量、Commit 或 Push 之后，都要运行 <b>Publish site</b>，网站才会更新。检查没通过就不会发布。</td></tr>
             <tr><td><b>报告日期是固定的</b></td><td>第 1 天是 2026 年 8 月 30 日，第 2 天是 8 月 31 日，不会随今天的日期改变。</td></tr>
-            <tr><td><b>用自己的数据，就用「我的 Excel」</b></td><td>照第 5 步选你的 Excel 就好，不用改仓库里的文件。想把数据固定放进网站、让每个访客都看到，属于进阶修改：交给 AI 助手或程序员（<code>docs/STUDENT_SOP.md</code> 第 5 节），而且只能放虚构数据。</td></tr>
+            <tr><td><b>用自己的数据，就用「我的 Excel」</b></td><td>照第 6 步选你的 Excel 就好，不用改仓库里的文件。想把数据固定放进网站、让每个访客都看到，属于进阶修改：交给 AI 助手或程序员（<code>docs/STUDENT_SOP.md</code> 第 5 节），而且只能放虚构数据。</td></tr>
           </tbody>
         </table></div>
       </section>
