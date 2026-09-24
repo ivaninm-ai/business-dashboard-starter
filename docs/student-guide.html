@@ -116,7 +116,7 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
 <div class="wrap">
   <div class="eyebrow">InfiniteSales AI · 起步项目 0.1.0 · 约 20 分钟 · 全程在浏览器里 · 不用安装任何软件</div>
   <h1>业务仪表盘 · 起步项目 SOP</h1>
-  <p class="lede">做完之后，你会有一个属于自己的仪表盘网页：代码在你自己的 GitHub 仓库里，网站由 GitHub Pages 免费发布在你自己的网址上。不需要 Google Cloud、钥匙、服务器或付费。里面是虚构的 BetterSpace 练习数据，你在网页上的操作只保存在你自己的浏览器里。下面每一步都是网页操作；绿色框告诉你“怎么知道这一步做对了”。</p>
+  <p class="lede">做完之后，你会有一个属于自己的仪表盘网页：代码在你自己的 GitHub 仓库里，网站由 GitHub Pages 免费发布在你自己的网址上。不需要 Google Cloud、钥匙、服务器或付费。里面是虚构的 BetterSpace 练习数据，也可以直接打开你自己的 Excel 看自己的数字。你在网页上的操作只保存在你自己的浏览器里。下面每一步都是网页操作；绿色框告诉你“怎么知道这一步做对了”。</p>
 
   <div class="layout">
     <nav class="rail" aria-label="步骤" id="rail">
@@ -125,10 +125,11 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
       <a href="#s2" data-step="2"><span class="n">2</span>打开 Pages</a>
       <a href="#s3" data-step="3"><span class="n">3</span>发布网站</a>
       <a href="#s4" data-step="4"><span class="n">4</span>试用你的网站</a>
-      <a href="#s5" data-step="5"><span class="n">5</span>第一次修改</a>
-      <a href="#s6" data-step="6"><span class="n">6</span>让 AI 帮你扩展</a>
+      <a href="#s5" data-step="5"><span class="n">5</span>打开你的 Excel</a>
+      <a href="#s6" data-step="6"><span class="n">6</span>第一次修改</a>
+      <a href="#s7" data-step="7"><span class="n">7</span>让 AI 帮你扩展</a>
       <a href="#rules"><span class="n">!</span>规则与限制</a>
-      <div class="progress" id="progress" aria-live="polite">已完成 0 / 7 步</div>
+      <div class="progress" id="progress" aria-live="polite">已完成 0 / 8 步</div>
     </nav>
 
     <div class="main">
@@ -217,7 +218,32 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
       </section>
 
       <section class="step" id="s5" aria-labelledby="h5">
-        <div class="step-head"><span class="num">第 5 步</span><h2 id="h5">第一次修改：换成你自己的店名</h2><span class="where">你的仓库 › data › business.json</span></div>
+        <div class="step-head"><span class="num">第 5 步</span><h2 id="h5">打开你自己的 Excel</h2><span class="where">你的网站 › 我的 Excel</span></div>
+        <p>想用自己的数字试试？你的网站可以直接读取你电脑上的 Excel。文件只在你的浏览器里读取和计算，<b>不会上传</b>到 GitHub 或任何地方，也不会出现在别人打开的网站上。</p>
+        <ol>
+          <li>在你的网站上方的业务里选 <b>我的 Excel</b>。</li>
+          <li>按 <b>下载 BetterSpace_B2C.xlsx</b>（或 B2B），用 Excel 打开。保留四个工作表（Customers、Sales、Payments、Stock）的名称和第一行的列名，把下面的行换成你的记录，另存为 <b>.xlsx</b>。</li>
+          <li>回到网站，按 <b>选择 Excel 文件</b>，选你的文件。数字、待办和日历马上按你的数据计算；报告日期是文件里最新的日期。</li>
+          <li>Excel 改过之后：保存，再按 <b>重新读取 Excel</b>。不用了就按 <b>忘记这个文件</b>。</li>
+        </ol>
+        <div class="table-wrap"><table>
+          <thead><tr><th>工作表</th><th>一定要有的列</th></tr></thead>
+          <tbody>
+            <tr><td><b>Customers</b></td><td><code>customer_id</code>, <code>customer_name</code></td></tr>
+            <tr><td><b>Sales</b></td><td><code>sale_id</code>, <code>sale_date</code>, <code>total_amount</code></td></tr>
+            <tr><td><b>Payments</b></td><td><code>payment_id</code>, <code>sale_id</code>, <code>payment_date</code>, <code>amount</code></td></tr>
+            <tr><td><b>Stock</b></td><td><code>item_id</code>, <code>on_hand_quantity</code></td></tr>
+          </tbody>
+        </table></div>
+        <p>其他列（状态、付款期限、负责人等）最好照范例保留；缺少时，用到它们的数字会留空或为零，网页会告诉你缺了哪些。</p>
+        <div class="note">⚠️ 状态只能写 <code>Confirmed</code>、<code>In Progress</code>、<code>Completed</code> 或 <code>Cancelled</code>；日期用 Excel 日期或写成 <code>2026-08-30</code>；金额用数字。</div>
+        <div class="danger">⚠️ 文件会记在这个浏览器里，但这<b>不是备份</b>。不要在共用电脑上打开机密的真实数据。</div>
+        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="5"><span>选了「我的 Excel」并打开文件后，左上角显示我的文件名，数字来自我的记录；重新载入网页后还在。</span></label></div>
+        <p class="stuck"><b>卡住了？</b>出现「这个 Excel 文件暂时不能使用」：看它列出的第一个问题，会写明是哪个工作表、哪一行、哪一列。最常见的是工作表名称或列名被改了、状态的写法不同，或文件是 .xls / .csv（要在 Excel 里另存为 .xlsx）。</p>
+      </section>
+
+      <section class="step" id="s6" aria-labelledby="h6">
+        <div class="step-head"><span class="num">第 6 步</span><h2 id="h6">第一次修改：换成你自己的店名</h2><span class="where">你的仓库 › data › business.json</span></div>
         <p><a class="btn primary" data-link="edit" href="#details" target="_blank" rel="noopener">✏️ 打开要修改的文件 ↗</a></p>
         <ol>
           <li>按上面的按钮（或在你的仓库里点 <code>data</code> → <code>betterspace-b2c</code> → <code>business.json</code> → 右上角铅笔 <b>Edit this file</b>）。</li>
@@ -230,12 +256,12 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
           <li>等绿色勾，再打开你的网址，按 <b>Ctrl + F5</b> 强制重新载入。</li>
         </ol>
         <div class="metaphor">比喻：Commit 就像游戏存档。每次存档都有记录；改坏了可以回到上一个存档（文件页面右上角的 <b>History</b>）。</div>
-        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="5"><span>在中文界面、B2C 业务下，左上角显示我的新店名。</span></label></div>
+        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="6"><span>在中文界面、B2C 业务下，左上角显示我的新店名。</span></label></div>
         <p class="stuck"><b>卡住了？</b>发布出现红叉，失败在 <b>Run npm run check</b>：多半是文件格式被改坏了（少了引号或逗号）。自动检查会拦住它，网站仍是上一个正常版本。打开文件，对照上面的例子改回来，再 Commit 和发布一次。</p>
       </section>
 
-      <section class="step" id="s6" aria-labelledby="h6">
-        <div class="step-head"><span class="num">第 6 步</span><h2 id="h6">让 AI 编程助手帮你扩展</h2><span class="where">AI 编程助手</span></div>
+      <section class="step" id="s7" aria-labelledby="h7">
+        <div class="step-head"><span class="num">第 7 步</span><h2 id="h7">让 AI 编程助手帮你扩展</h2><span class="where">AI 编程助手</span></div>
         <p>想加新功能（新指标、图表、页面），交给 AI 编程助手（例如 Claude Code）来做：把你的仓库地址给它，安装、运行和检查都让它负责，你只要看结果。</p>
         <ol>
           <li>把你的仓库地址 <span class="chip"><code id="v-repo3">https://github.com/用户名/仓库名</code><button type="button" data-copy="v-repo3">复制</button></span> 给助手，请它<b>先读 <code>AGENTS.md</code></b>。这个文件写着不能改坏的规则：数字必须从记录算出来、报告日期固定、不联网、不放钥匙、所有文字要有中文翻译、示例分析要诚实标明。</li>
@@ -253,7 +279,7 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
         </div>
         <p>给助手看的完整技术说明在仓库的 <code>docs/STUDENT_SOP.md</code>。</p>
         <div class="danger">⚠️ 不要让助手把任何 API 钥匙写进网页代码——网站是公开的，任何人都能看到。以后想接入实时 AI，钥匙必须放在你自己管理的服务器上（见 <code>docs/STUDENT_SOP.md</code> 第 6 节）。</div>
-        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="6"><span>助手说全部检查通过；GitHub 上 <b>Tests</b> 是绿色勾；Publish site 之后，新功能出现在我的网址上。</span></label></div>
+        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="7"><span>助手说全部检查通过；GitHub 上 <b>Tests</b> 是绿色勾；Publish site 之后，新功能出现在我的网址上。</span></label></div>
         <p class="stuck"><b>卡住了？</b>发布出现红叉：把 Actions 里失败那一步的截图给助手，请它修好再推送；网站在修好之前仍是上一个正常版本。</p>
       </section>
 
@@ -262,6 +288,7 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
         <div class="table-wrap"><table>
           <thead><tr><th>要记住</th><th>为什么</th></tr></thead>
           <tbody>
+            <tr><td><b>你的 Excel 只在你的浏览器里</b></td><td>它在你的电脑上读取，不会上传，也不会发布到你的网站上。按「忘记这个文件」就会从浏览器删除。</td></tr>
             <tr><td><b>本地保存不是云端备份</b></td><td>网页上的操作只存在那台电脑的那个浏览器里；没有登录、没有同步、没有共享。</td></tr>
             <tr><td><b>示例分析不是实时分析</b></td><td>它是预先写好的，描述原始数据；你接受或修改待办，它不会重新分析。</td></tr>
             <tr><td><b>只放虚构或匿名数据</b></td><td>仓库和网站都是公开的，网站文件里包含全部记录。这是学习项目，不适合机密的真实业务数据。</td></tr>
@@ -280,7 +307,7 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
 <script>
 (function () {
   var KEY = 'bd-starter-sop-v1';
-  var TOTAL = 7;
+  var TOTAL = 8;
   var state = { user: '', repo: 'my-business-dashboard', checks: {} };
   try { var saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && typeof saved === 'object') { state.user = String(saved.user || ''); state.repo = String(saved.repo || state.repo); state.checks = saved.checks && typeof saved.checks === 'object' ? saved.checks : {}; } } catch (e) {}
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }

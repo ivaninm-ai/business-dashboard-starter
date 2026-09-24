@@ -73,6 +73,18 @@ Only accepted tasks appear on the calendar. Recorded deadlines from the data (go
 
 Reset returns to Day 1 with no decisions or notes; the language choice is kept. The bundled records never change.
 
+## 7. 用你自己的 Excel（可选）· Your own Excel (optional)
+
+1. 在业务里选 **我的 Excel**。页面会说明需要的格式，并提供两个范例下载（BetterSpace_B2C.xlsx / BetterSpace_B2B.xlsx）。
+2. 按 **选择 Excel 文件（Choose an Excel file）**，选一个和范例格式相同的 `.xlsx`：四个工作表 Customers、Sales、Payments、Stock，第一行是列名。
+3. 文件**只在这台电脑上读取，不会上传**。所有数字、待办和日历都按同样的规则计算；报告日期是文件里最新的日期。
+4. Excel 改过之后，保存，再按 **重新读取 Excel**。不用时按 **忘记这个文件**（连同它的待办决定和备注一起删除；你的 Excel 文件本身不会被改动）。
+5. 文件有问题时（缺工作表、列名不对、状态写法不对），页面会列出是哪个工作表、哪一行、哪一列。
+
+Choose **我的 Excel**, then **Choose an Excel file** laid out like the template. It is read on this computer only and remembered in this browser until you choose **Forget this file**. There is no prepared example analysis for your own data.
+
+> 课堂上请用虚构数据示范。不要在共用电脑上打开机密的真实数据。
+
 ## 保存说明 · About saving
 
 - 你的操作只保存在**这台电脑的这个浏览器**里。这**不是备份**，不会同步到别的设备，也不会给别人看到。

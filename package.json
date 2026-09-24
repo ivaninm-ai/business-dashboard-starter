@@ -6,13 +6,15 @@
   "description": "Setup-free classroom demo and starter for a small-business dashboard. Runs in the browser on bundled synthetic training data; no accounts, keys or server.",
   "scripts": {
     "data": "node scripts/pack-data.js",
+    "vendor": "node scripts/vendor.js",
     "dev": "node scripts/pack-data.js && node scripts/serve.js",
     "test": "node --test \"test/*.test.js\"",
     "build": "node scripts/pack-data.js && node scripts/build.js",
     "check": "npm run build && npm test"
   },
   "devDependencies": {
-    "esbuild": "0.28.2"
+    "esbuild": "0.28.2",
+    "read-excel-file": "9.3.10"
   },
   "engines": {
     "node": ">=22"

@@ -11,6 +11,7 @@ All records are invented BetterSpace training data. No real customers, addresses
 | `betterspace-b2b/day1/` | same, as_of_date 2026-08-30 | `02_B2B_Furniture/csv/`, `02_B2B_Furniture/metadata.json` |
 | `betterspace-b2b/day2/` | same, as_of_date 2026-08-31 | `02_B2B_Furniture/refresh_day2/` |
 | `*/business.json` | 业务资料、列名对应、状态含义、待办规则 · profile, column mapping, status meanings, task rules | adapted from the template's `config/examples/betterspace-*.setup-package.json` |
+| `templates/BetterSpace_B2C.xlsx`, `templates/BetterSpace_B2B.xlsx` | Excel 范例：「我的 Excel」的格式，可在页面上下载 · the layout for My Excel, downloadable in the app | `01_B2C_Retail/BetterSpace_B2C.xlsx`, `02_B2B_Furniture/BetterSpace_B2B.xlsx` (Day 1) |
 | `DATA_DICTIONARY.md`, `METRIC_RULES.md` | 字段定义和计算规则 · field definitions and metric rules | the training pack |
 
 ## 规则 · Rules

@@ -1,7 +1,7 @@
 // Reusable pieces shared by the pages (from the original template's app.js).
 
 import { h, t, add } from './dom.js';
-import { view, scenario, reportingDate, periodRange, records, label, money, defaultFilters } from './view-state.js';
+import { view, scenario, reportingDate, periodRange, records, label, money, defaultFilters, isExcel } from './view-state.js';
 import { rerender } from './router.js';
 import { formatDate } from '../core/dates.js';
 import { sourceCoverage } from '../core/mapping.js';
@@ -20,7 +20,7 @@ export function scopeBar({ period = true } = {}) {
   const cov = sourceCoverage(records());
   return h('div', { class: 'card small scope-card' },
     h('div', { class: 'row' },
-      h('span', {}, h('b', {}, tr('Reporting date: ')), formatDate(rd), ' ', t('span', tr('(fixed for Day {0} of the training data)', dayNumber(scenario().day)), 'muted')),
+      h('span', {}, h('b', {}, tr('Reporting date: ')), formatDate(rd), ' ', t('span', isExcel() ? tr('(the latest date in your Excel)') : tr('(fixed for Day {0} of the training data)', dayNumber(scenario().day)), 'muted')),
       h('span', {}, h('b', {}, tr('Records up to: ')), cov.latest_event_date ? formatDate(cov.latest_event_date) : '—'),
       period ? h('span', {}, h('b', {}, tr('Period: ')), `${formatDate(start)} – ${formatDate(end)}`) : null),
     period ? t('div', tr('Period filters apply to order value, order count and cash collected. Balances, deadlines, follow-ups and stock are as-of measures and ignore the period.'), 'muted') : null);

@@ -2,9 +2,10 @@
 // language choice, the scenario bar (business, day, advance, reset) and the menu.
 
 import { $, h, t, add, modal, toast } from './dom.js';
-import { view, scenario, openTasks, labelTl, businessName, defaultFilters, isZh } from './view-state.js';
+import { view, scenario, openTasks, labelTl, businessName, defaultFilters, isZh, isExcel } from './view-state.js';
 import { navigate, rerender } from './router.js';
-import { businessIds, businessProfile, dayMetadata, DAYS, dayNumber, nextDay } from '../data/scenarios.js';
+import { allBusinessIds, businessProfile, dayMetadata, DAYS, dayNumber, nextDay } from '../data/scenarios.js';
+import { pickExcel, forgetExcel, restoreWorkbook } from './pages/excel.js';
 import { formatDate } from '../core/dates.js';
 import { setLocale, getLocale, tr, tl } from '../i18n/i18n.js';
 import { PREFIX } from '../storage/local-state.js';
@@ -37,7 +38,12 @@ export function initShell() {
   const lang = $('#lang-select');
   lang.addEventListener('change', () => { setLocale(lang.value); view.store.setPrefs({ locale: getLocale() }); rerender(); });
   // Another tab of this demo changed the saved state: show the same thing here.
-  window.addEventListener('storage', e => { if (e.key === null || e.key.startsWith(PREFIX)) { view.day = view.store.day(view.businessId); rerender(); } });
+  window.addEventListener('storage', e => {
+    if (e.key !== null && !e.key.startsWith(PREFIX)) return;
+    if (e.key === null || e.key === `${PREFIX}.workbook`) restoreWorkbook();
+    view.day = view.store.day(view.businessId);
+    rerender();
+  });
 }
 
 // Runs before every page render so the frame always matches the state.
@@ -55,14 +61,20 @@ export function refreshShell() {
     a.classList.toggle('active', a.dataset.page === view.page);
     if (a.dataset.page === view.page) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
   }
-  const open = scenario().ok ? openTasks().length : 0;
+  const open = scenario()?.ok ? openTasks().length : 0;
   $('#nav-tasks-count').textContent = open ? String(open) : '';
-  $('#nav-foot').textContent = tr('Synthetic training data · no sign-in · nothing leaves this browser');
+  $('#nav-foot').textContent = isExcel() ? tr('Your own Excel · no sign-in · nothing leaves this browser') : tr('Synthetic training data · no sign-in · nothing leaves this browser');
   renderBanner();
 }
 
 function renderRibbon() {
   const r = $('#ribbon'); r.textContent = '';
+  if (isExcel()) {
+    add(r, h('strong', {}, tr('Your own Excel')), ' · ', tr('Read on this computer only; nothing is uploaded.'), ' ',
+      view.persistent ? tr('Your changes are saved only in this browser.') : tr('Your changes are not saved in this browser.'), ' ',
+      h('a', { href: '#about' }, tr('About this demo')));
+    return;
+  }
   add(r, h('strong', {}, tr('Training demo')), ' · ', tr('All records are invented (synthetic training data).'), ' ',
     view.persistent ? tr('Your changes are saved only in this browser.') : tr('Your changes are not saved in this browser.'), ' ',
     h('a', { href: '#about' }, tr('About this demo')));
@@ -76,18 +88,28 @@ function segmented(label, items) {
 function renderScenarioBar() {
   const bar = $('#scenario-bar'); bar.textContent = '';
   const zh = isZh();
-  add(bar, segmented(tr('Business'), businessIds().map(id => {
+  add(bar, segmented(tr('Business'), allBusinessIds().map(id => {
     const b = businessProfile(id).business;
     return { text: (zh ? b.short_zh : b.short) || b.name, title: (zh ? b.name_zh : b.name) || b.name, active: id === view.businessId, onclick: () => switchBusiness(id) };
   })));
-  add(bar, segmented(tr('Scenario'), DAYS.map(day => ({
-    text: tr('Day {0} · {1}', dayNumber(day), formatDate(dayMetadata(view.businessId, day).as_of_date)),
-    active: day === view.day,
-    onclick: () => switchDay(day),
-  }))));
-  const next = nextDay(view.day);
-  if (next) add(bar, h('button', { class: 'btn primary small', onclick: () => switchDay(next, { announce: true }) }, tl('Advance to Day {0}', dayNumber(next))));
-  add(bar, h('span', { class: 'scn-note' }, tr('Reporting date fixed at {0}', formatDate(scenario().reportingDate))));
+  if (isExcel()) {
+    const s = scenario();
+    if (s) {
+      add(bar, h('span', { class: 'scn-file', title: tr('Read {0}', new Date(s.source.loadedAt).toLocaleString()) }, h('span', { 'aria-hidden': 'true' }, '📄 '), s.source.fileName),
+        h('button', { class: 'btn small', onclick: pickExcel }, tl('Read the Excel again…')),
+        h('button', { class: 'btn ghost small', onclick: forgetExcel }, tl('Forget this file')),
+        s.reportingDate ? h('span', { class: 'scn-note' }, tr('Reporting date {0} (latest date in the file)', formatDate(s.reportingDate))) : null);
+    } else add(bar, h('button', { class: 'btn primary small', onclick: pickExcel }, tl('Choose an Excel file…')));
+  } else {
+    add(bar, segmented(tr('Scenario'), DAYS.map(day => ({
+      text: tr('Day {0} · {1}', dayNumber(day), formatDate(dayMetadata(view.businessId, day).as_of_date)),
+      active: day === view.day,
+      onclick: () => switchDay(day),
+    }))));
+    const next = nextDay(view.day);
+    if (next) add(bar, h('button', { class: 'btn primary small', onclick: () => switchDay(next, { announce: true }) }, tl('Advance to Day {0}', dayNumber(next))));
+    add(bar, h('span', { class: 'scn-note' }, tr('Reporting date fixed at {0}', formatDate(scenario().reportingDate))));
+  }
   add(bar, h('button', { class: 'btn ghost small scn-reset', onclick: openResetDialog }, tl('Reset demo…')));
 }
 
@@ -96,6 +118,13 @@ function renderBanner() {
   if (!view.persistent) {
     b.hidden = false; b.classList.add('warning');
     add(b, tr('This browser does not allow the page to save anything ({0}). The demo still works, but changes are lost when you close or reload the page.', view.storageReason || tr('blocked')));
+    return;
+  }
+  // Your own Excel: say what the file lacks or where records do not line up.
+  const warnings = isExcel() && scenario()?.ok ? scenario().issues.filter(i => i.level === 'warning') : [];
+  if (warnings.length) {
+    b.hidden = false; b.classList.add('info');
+    add(b, h('b', {}, tr('Notes about your file: ')), warnings.slice(0, 3).map(w => w.message).join(' '), warnings.length > 3 ? tr(' (+{0} more)', warnings.length - 3) : '');
   }
 }
 

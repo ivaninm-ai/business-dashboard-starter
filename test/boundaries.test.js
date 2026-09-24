@@ -18,7 +18,10 @@ function files(dir, ext) {
   }
   return out;
 }
-const appSource = files(path.join(root, 'src'), ['.js', '.html', '.css']).filter(f => !f.endsWith('.generated.js'));
+// Our own code. The vendored Excel reader (src/vendor/) is library code, checked separately below.
+const appSource = files(path.join(root, 'src'), ['.js', '.html', '.css']).filter(f => !f.endsWith('.generated.js') && !f.includes(`${path.sep}vendor${path.sep}`));
+// XML namespace names inside SVG and Excel files look like web addresses but are never requested.
+const NAMESPACES = /^http:\/\/(www\.w3\.org|schemas\.openxmlformats\.org|purl\.oclc\.org|schemas\.microsoft\.com)\//;
 
 test('the packed data module is up to date with data/', () => {
   assert.equal(readFileSync(OUTPUT, 'utf8'), renderModule(collectDatasets()), 'run `npm run data`');
@@ -42,6 +45,14 @@ test('the app source makes no network requests and holds no keys', () => {
   }
 });
 
+test('the vendored Excel reader makes no network requests and starts no workers', () => {
+  const text = readFileSync(path.join(root, 'src/vendor/read-excel-file.js'), 'utf8');
+  for (const re of [/fetch\s*\(/, /XMLHttpRequest/, /WebSocket/, /sendBeacon/, /new Worker/, /importScripts/, /eval\s*\(/, /new Function\s*\(/]) assert.doesNotMatch(text, re);
+  const urls = (text.match(/https?:\/\/[^\s'"`)<]+/g) || []).filter(u => !NAMESPACES.test(u));
+  assert.deepEqual(urls, [], 'only XML namespace names');
+  assert.match(text, /^\/\*! read-excel-file 9\.3\.10 \(MIT\)/, 'licence notice kept');
+});
+
 test('the development page forbids network access with a Content-Security-Policy', () => {
   const html = readFileSync(path.join(root, 'src/index.html'), 'utf8');
   assert.match(html, /Content-Security-Policy" content="default-src 'none';[^"]*connect-src 'none'/);
@@ -59,8 +70,9 @@ test('the single-file build is self-contained, offline and labelled as synthetic
   const body = html.slice(html.indexOf('<script>') + '<script>'.length, html.lastIndexOf('</script>'));
   const hash = createHash('sha256').update(body, 'utf8').digest('base64');
   assert.ok(html.includes(`script-src 'sha256-${hash}'`), 'CSP hash matches the inline script');
-  const urls = (html.match(/https?:\/\/[^\s'"`)<]+/g) || []).filter(u => u !== 'http://www.w3.org/2000/svg');
-  assert.deepEqual(urls, [], 'no web addresses in the build');
+  const urls = (html.match(/https?:\/\/[^\s'"`)<]+/g) || []).filter(u => !NAMESPACES.test(u));
+  assert.deepEqual(urls, [], 'no web addresses in the build (XML namespace names aside)');
+  assert.doesNotMatch(html, /new Worker|importScripts/, 'no Web Workers (the CSP would block them)');
   assert.match(html, /BS-001,BC-001,2026-08-20/, 'B2B records are inside the file');
   assert.match(html, /RS-321/, 'B2C Day 2 records are inside the file');
   assert.match(html, /synthetic training data only/);

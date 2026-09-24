@@ -7,9 +7,14 @@
 // Keys (all start with PREFIX so other pages on the same origin are left alone):
 //   bd-starter.v1.prefs                 { locale, business }
 //   bd-starter.v1.business.<businessId> { version, day, decisions: {task_key: row}, notes: {entry_id: row} }
+//   bd-starter.v1.workbook              { version, fileName, loadedAt, sheets: {Customers: rows, …} }
+//     — the viewer's own Excel ("My Excel"): the four sheets' cell values, kept so a
+//       reload still shows it. Stored unencrypted in this browser; "Forget" removes it.
 
 export const PREFIX = 'bd-starter.v1';
 export const STATE_VERSION = 1;
+// Browsers allow about 5 MB per site; leave room for the rest of the state.
+export const WORKBOOK_STORE_LIMIT = 3_500_000;
 const DAYS = ['day1', 'day2'];
 
 // Returns { storage, persistent, reason }. `persistent` is false when localStorage is
@@ -69,6 +74,17 @@ function cleanNote(id, n) {
 
 function blankBusiness() { return { version: STATE_VERSION, day: 'day1', decisions: {}, notes: {} }; }
 
+const isCell = v => v === '' || typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean';
+function cleanWorkbook(w) {
+  if (!w || typeof w !== 'object' || w.version !== 1 || typeof w.fileName !== 'string' || !w.sheets || typeof w.sheets !== 'object') return null;
+  const sheets = {};
+  for (const [name, rows] of Object.entries(w.sheets)) {
+    if (!Array.isArray(rows) || !rows.every(r => Array.isArray(r) && r.every(isCell))) return null;
+    sheets[name] = rows;
+  }
+  return { version: 1, fileName: w.fileName.slice(0, 200), loadedAt: text(w.loadedAt, 40), sheets };
+}
+
 export function createStateStore(storage) {
   const businessKey = id => `${PREFIX}.business.${id}`;
   const prefsKey = `${PREFIX}.prefs`;
@@ -97,6 +113,15 @@ export function createStateStore(storage) {
     notes(id) { return Object.values(business(id).notes); },
     saveNote(id, note) { const c = cleanNote(note.entry_id, note); if (!c) return false; return update(id, s => { s.notes[c.entry_id] = c; }); },
     deleteNote(id, entryId) { return update(id, s => { delete s.notes[entryId]; }); },
+    // "My Excel". saveWorkbook returns 'saved', 'too_large' (kept for this visit only) or 'failed'.
+    workbook() { return cleanWorkbook(read(`${PREFIX}.workbook`)); },
+    saveWorkbook({ fileName, loadedAt, sheets }) {
+      const json = JSON.stringify({ version: 1, fileName, loadedAt, sheets });
+      if (json.length > WORKBOOK_STORE_LIMIT) { try { storage.removeItem(`${PREFIX}.workbook`); } catch { /* ignore */ } return 'too_large'; }
+      try { storage.setItem(`${PREFIX}.workbook`, json); return 'saved'; } catch { return 'failed'; }
+    },
+    // Forgetting the file also clears its task decisions and notes (they belong to its records).
+    forgetWorkbook(id) { try { storage.removeItem(`${PREFIX}.workbook`); storage.removeItem(businessKey(id)); return true; } catch { return false; } },
     // Reset = back to the baseline: Day 1, no decisions, no notes. The language choice is kept.
     resetBusiness(id) { try { storage.removeItem(businessKey(id)); return true; } catch { return false; } },
     resetAll() {

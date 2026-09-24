@@ -90,7 +90,7 @@ export function applyTableMapping(table, rows, pkg) {
   }
   const headerRowIndex = Math.max(1, table.header_row || 1) - 1;
   if (!Array.isArray(rows) || rows.length <= headerRowIndex) {
-    issues.push(issue('error', 'empty_table', tr('"{0}" has no header row at row {1}. Check the worksheet name and header row in the mapping.', table.sheet_name || table.table_id, headerRowIndex + 1), { table: table.table_id }));
+    issues.push(issue('error', 'empty_table', tr('"{0}" has no header row at row {1}. The first row of each sheet must hold the column names.', table.sheet_name || table.table_id, headerRowIndex + 1), { table: table.table_id }));
     return { records, issues };
   }
   const headers = rows[headerRowIndex].map(parseText);
@@ -106,7 +106,7 @@ export function applyTableMapping(table, rows, pkg) {
     const found = headers.filter(Boolean).map(h => `"${h}"`).join(', ') || tr('(none)');
     for (const f of missing) {
       issues.push(issue('error', 'missing_header',
-        tr('Column "{0}" (used for {1}.{2}) was not found in "{3}". Headers found: {4}. If the column was renamed, review this source in Settings > Business setup.', f.header, table.entity, f.canonical, table.sheet_name || table.table_id, found),
+        tr('Column "{0}" (used for {1}.{2}) was not found in "{3}". Headers found: {4}. Use the column names from the template workbook.', f.header, table.entity, f.canonical, table.sheet_name || table.table_id, found),
         { table: table.table_id, field: f.canonical, header: f.header, headers_found: headers }));
     }
     return { records, issues };
@@ -156,7 +156,7 @@ export function applyTableMapping(table, rows, pkg) {
         case 'enum': {
           value = matchEnum(raw, spec, f);
           if (value === undefined) {
-            issues.push(issue('error', 'unknown_value', tr('Row {0} of "{1}": value "{2}" in column "{3}" is not one of the confirmed meanings for {4}.{5}. Add it to the mapping before importing.', r + 1, table.sheet_name, parseText(raw), f.header, table.entity, f.canonical), { table: table.table_id, row: r + 1, field: f.canonical, value: parseText(raw) }));
+            issues.push(issue('error', 'unknown_value', tr('Row {0} of "{1}": value "{2}" in column "{3}" is not an accepted value for {4}.{5}. Use the values from the template workbook.', r + 1, table.sheet_name, parseText(raw), f.header, table.entity, f.canonical), { table: table.table_id, row: r + 1, field: f.canonical, value: parseText(raw) }));
             rowFailed = true;
           }
           break;
@@ -165,7 +165,7 @@ export function applyTableMapping(table, rows, pkg) {
           value = statusBucket(raw, statusMap);
           rec.status_text = parseText(raw);
           if (value === undefined) {
-            issues.push(issue('error', 'unknown_status', tr('Row {0} of "{1}": status "{2}" is not listed in status_map (pending/done/excluded). Confirm what it means before importing.', r + 1, table.sheet_name, parseText(raw)), { table: table.table_id, row: r + 1, value: parseText(raw) }));
+            issues.push(issue('error', 'unknown_status', tr('Row {0} of "{1}": status "{2}" is not one of the accepted statuses ({3}).', r + 1, table.sheet_name, parseText(raw), STATUS_BUCKETS.flatMap(b => statusMap?.[b] || []).join(', ')), { table: table.table_id, row: r + 1, value: parseText(raw) }));
             rowFailed = true;
           }
           break;

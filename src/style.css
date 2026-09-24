@@ -77,6 +77,8 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fo
 .segmented button.active { background: var(--brand); color: var(--surface); font-weight: 600; }
 .scn-note { font-size: 12px; color: var(--muted); }
 .scn-reset { margin-left: auto; }
+.scn-file { font-size: 13px; color: var(--ink); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 4px 10px; max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.excel-open .btn.primary { font-size: 16px; padding: 10px 18px; margin: 6px 0 10px; }
 .layout { display: grid; grid-template-columns: var(--nav-w) 1fr; min-height: calc(100vh - 120px); }
 .sidenav { background: var(--surface); border-right: 1px solid var(--border); padding: 12px 8px; display: flex; flex-direction: column; gap: 2px; }
 .sidenav a { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-radius: 8px; color: var(--ink-2); text-decoration: none; }

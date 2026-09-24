@@ -47,7 +47,8 @@ npm run dev
 | `npm test` | 核对所有数字、规则、翻译、示例分析和数据边界 · checks figures, rules, translations, briefs, boundaries |
 | `npm run build` | 生成 `dist/business-dashboard-demo.html`（可双击打开的单一文件）和 `dist/site/index.html` |
 | `npm run check` | 先 build 再 test：分享前运行这个 · build + test; run before sharing |
-| `npm run data` | 只重新打包 `data/` · repack `data/` only |
+| `npm run data` | 只重新打包 `data/`（练习数据和 Excel 范例）· repack `data/` only |
+| `npm run vendor` | 重新生成 Excel 读取器 `src/vendor/read-excel-file.js`（升级 read-excel-file 之后）· rebuild the vendored Excel reader |
 
 > 用 npm 11 安装时可能看到 esbuild「install-scripts」的提示。这是正常的，打包仍然可以使用。
 > npm 11 may warn that esbuild's install script was skipped; the build still works.
@@ -131,6 +132,10 @@ src/briefs/           examples.js 预先准备的分析；brief-input.js 事实�
 4. 翻译新文字，`npm test`，然后在浏览器打开 `#products`。
 
 ## 5. 换成你自己的数据 · Replace the sample data deliberately
+
+**不用改代码的方法：我的 Excel。** 在网页上选「我的 Excel」，打开一个和 `data/templates/` 范例格式相同的 `.xlsx`。它只在浏览器里读取和计算（`src/data/workbook.js`，读取器是 `src/vendor/read-excel-file.js`），记在这个浏览器里，不会进入仓库，也不会发布到网站上。适合看自己的数字。
+
+**要把数据放进项目本身**（例如换掉内置的练习业务），才需要下面的步骤。
 
 目前只支持这种数据结构：**客户、销售（一行一个订单）、收款（对应到订单）、库存快照**。其他业务模式需要改 `src/core/model.js` 和计算规则。
 

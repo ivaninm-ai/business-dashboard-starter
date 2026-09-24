@@ -4,7 +4,7 @@
 
 import { h, t, add } from '../dom.js';
 import { pageHead, scopeBar, statusChip } from '../components.js';
-import { view, allTasks, businessName } from '../view-state.js';
+import { view, allTasks, businessName, isExcel } from '../view-state.js';
 import { exampleBrief, PROVENANCE } from '../../briefs/examples.js';
 import { baselineBriefInput } from '../../briefs/brief-facts.js';
 import { dayNumber } from '../../data/scenarios.js';
@@ -12,6 +12,7 @@ import { formatDate } from '../../core/dates.js';
 import { tr, tl, getLocale } from '../../i18n/i18n.js';
 
 export function renderBrief() {
+  if (isExcel()) return renderOwnDataBrief(h('div', {}, pageHead(tl('Example analysis')), scopeBar({ period: false })));
   const root = h('div', {}, pageHead(tl('Example analysis'), h('span', { class: 'badge info' }, tr('Prepared in advance · not live AI'))), scopeBar({ period: false }));
   const brief = exampleBrief(view.businessId, view.day, getLocale());
   const n = dayNumber(view.day);
@@ -41,7 +42,23 @@ export function renderBrief() {
     h('details', {}, h('summary', {}, tr('Show the facts it was written from (English, as an AI model would receive them)')),
       h('pre', { class: 'facts' }, baselineBriefInput(view.businessId, view.day, 'en').text))));
 
-  add(root, h('div', { class: 'card' }, t('h3', tr('Adding live AI later')),
-    t('p', tr('A live version would send facts like these, plus prompts/daily_brief.md, to an AI service from a small server you control, and check the answer the same way before showing it. The API key must stay on that server — never put it in this page. See docs/STUDENT_SOP.md.'), 'small ink2')));
+  add(root, liveAiCard());
+  return root;
+}
+
+function liveAiCard() {
+  return h('div', { class: 'card' }, t('h3', tr('Adding live AI later')),
+    t('p', tr('A live version would send facts like these, plus prompts/daily_brief.md, to an AI service from a small server you control, and check the answer the same way before showing it. The API key must stay on that server — never put it in this page. See docs/STUDENT_SOP.md.'), 'small ink2'));
+}
+
+// Your own Excel: no analysis was prepared for it, and nothing is sent to an AI service.
+// Show the facts an analysis would be based on, calculated here from the file.
+function renderOwnDataBrief(root) {
+  add(root, h('div', { class: 'banner info' },
+    t('p', tr('No example analysis was prepared for your own data, and this page never sends your data to an AI service.')),
+    t('p', tr('Below are the facts an analysis would be written from, calculated on this computer from your file. You can read them yourself, or copy them into an AI assistant you choose — only if you are allowed to share this data.'), 'small')));
+  add(root, h('div', { class: 'card' }, t('h3', tr('The facts from your file (English, as an AI model would receive them)')),
+    h('pre', { class: 'facts' }, baselineBriefInput(view.businessId, view.day, 'en').text)));
+  add(root, liveAiCard());
   return root;
 }

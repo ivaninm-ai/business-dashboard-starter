@@ -37,10 +37,11 @@ Then open http://localhost:5173. Also: `npm test` (checks figures and rules), `n
 - 接受、完成、忽略待办，修改行动日期；在日历上加备注；这些操作保存在**这个浏览器**里，B2C 和 B2B 分开保存。
 - 从第 1 天前进到第 2 天时，按稳定的待办编号保留你的决定，并标出新增和已由数据解决的建议。
 - 显示为每个场景**预先准备**的示例分析，并清楚标明它不是实时 AI。
+- **我的 Excel**：打开你自己的 Excel（和练习工作簿格式相同），在这台电脑上读取、计算；不上传，记在这个浏览器里，可随时「忘记这个文件」。
 
 **不会做 · Does not**
 - 不登录、不联网、不需要 API 密钥、不需要服务器；页面的安全策略禁止任何网络请求。
-- 不读取任意文件，不做云端备份或多设备同步，没有团队权限。
+- 不读取任意格式的文件（Excel 必须和范例格式相同），不做云端备份或多设备同步，没有团队权限。
 - 示例分析不会因为你在页面上的操作而重新分析。
 
 ## 文件夹 · Folders
@@ -48,12 +49,13 @@ Then open http://localhost:5173. Also: `npm test` (checks figures and rules), `n
 ```
 src/            网页本身（未打包，可直接阅读）· the app, unbundled
   core/         计算、待办规则、日历（纯函数，浏览器和测试共用）· figures, task rules, calendar
-  data/         读取内置场景；datasets.generated.js 由 npm run data 生成 · scenario loading
+  data/         读取内置场景和「我的 Excel」（workbook.js）；*.generated.js 由 npm run data 生成
+  vendor/       打包好的 Excel 读取器（read-excel-file，MIT），由 npm run vendor 生成
   storage/      浏览器本地保存（localStorage）· browser-local state
   briefs/       预先准备的示例分析和数字核对工具 · prepared briefs and fact check
   i18n/         中文/英文 · translations
   ui/           页面、组件、外框 · pages, components, shell
-data/           练习数据：每个业务的 business.json 和第 1、2 天的 CSV · training data
+data/           练习数据：每个业务的 business.json 和第 1、2 天的 CSV；templates/ 是 Excel 范例 · training data
 test/           自动测试；test/expected/ 是答案（应用从不读取）· tests and answer keys
 scripts/        pack-data（打包数据）、serve（开发服务器）、build（单一文件）
 prompts/        以后接入实时 AI 时使用的简报规则 · brief rules for a future live AI

@@ -2,7 +2,7 @@
 // here; nothing in this file touches the DOM. Figures are always recalculated from
 // the scenario's records — no total is stored or typed in by hand.
 
-import { loadScenario, previousDay, businessProfile } from '../data/scenarios.js';
+import { loadScenario, previousDay, businessProfile, MY_EXCEL } from '../data/scenarios.js';
 import { computeMetrics, formatMoney } from '../core/metrics.js';
 import { suggestionRows, scenarioTasks, baseMetrics, isOpen } from '../core/scenario-tasks.js';
 import { buildCalendarItems } from '../core/calendar.js';
@@ -23,8 +23,14 @@ export const view = {
 
 export function defaultFilters() { return { preset: 'mtd', start: '', end: '', channel: '', owner: '' }; }
 
+// null while "My Excel" has no file open (pages are guarded in main.js).
 export const scenario = () => loadScenario(view.businessId, view.day);
-export function previousScenario() { const p = previousDay(view.day); return p ? loadScenario(view.businessId, p) : null; }
+export const isExcel = () => view.businessId === MY_EXCEL;
+export function previousScenario() {
+  if (isExcel()) return null; // one snapshot only
+  const p = previousDay(view.day);
+  return p ? loadScenario(view.businessId, p) : null;
+}
 export const profile = () => businessProfile(view.businessId);
 export const records = () => scenario().records;
 export const reportingDate = () => scenario().reportingDate;
@@ -47,12 +53,15 @@ export function metrics() {
   return computeMetrics(records(), reportingDate(), { periodStart: start, periodEnd: end, historyStart: scenario().historyStart, filters: { channel: view.filters.channel || undefined, owner: view.filters.owner || undefined } });
 }
 
-// Suggestions depend on the scenario and the language only, so they are cached.
-const rowsCache = new Map();
+// Suggestions depend on the scenario and the language only, so they are cached per
+// scenario object (re-reading an Excel file makes a new object).
+const rowsCache = new WeakMap();
 function rows() {
-  const key = `${scenario().key}|${getLocale()}`;
-  if (!rowsCache.has(key)) rowsCache.set(key, suggestionRows(scenario(), previousScenario()));
-  return rowsCache.get(key);
+  const s = scenario();
+  if (!rowsCache.has(s)) rowsCache.set(s, new Map());
+  const byLocale = rowsCache.get(s);
+  if (!byLocale.has(getLocale())) byLocale.set(getLocale(), suggestionRows(s, previousScenario()));
+  return byLocale.get(getLocale());
 }
 
 export function allTasks() { return scenarioTasks(scenario(), previousScenario(), view.store.decisions(view.businessId), rows()); }

@@ -25,7 +25,7 @@ export async function buildHtml() {
     format: 'iife',
     write: false,
     charset: 'utf8',
-    legalComments: 'none',
+    legalComments: 'eof', // keeps the MIT notice of the bundled Excel reader
     target: 'es2022', // any current Chrome, Edge, Firefox or Safari
     logLevel: 'silent',
   });
