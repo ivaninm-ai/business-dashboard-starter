@@ -114,7 +114,7 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
 </head>
 <body>
 <div class="wrap">
-  <div class="eyebrow">InfiniteSales AI · 起步项目 0.1.0 · 约 20 分钟 · 全程在浏览器里 · 不用安装软件（第 6 步可选）</div>
+  <div class="eyebrow">InfiniteSales AI · 起步项目 0.1.0 · 约 20 分钟 · 全程在浏览器里 · 不用安装任何软件</div>
   <h1>业务仪表盘 · 起步项目 SOP</h1>
   <p class="lede">做完之后，你会有一个属于自己的仪表盘网页：代码在你自己的 GitHub 仓库里，网站由 GitHub Pages 免费发布在你自己的网址上。不需要 Google Cloud、钥匙、服务器或付费。里面是虚构的 BetterSpace 练习数据，你在网页上的操作只保存在你自己的浏览器里。下面每一步都是网页操作；绿色框告诉你“怎么知道这一步做对了”。</p>
 
@@ -126,10 +126,9 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
       <a href="#s3" data-step="3"><span class="n">3</span>发布网站</a>
       <a href="#s4" data-step="4"><span class="n">4</span>试用你的网站</a>
       <a href="#s5" data-step="5"><span class="n">5</span>第一次修改</a>
-      <a href="#s6" data-step="6"><span class="n">6</span><span>在电脑上开发<span class="opt">可选</span></span></a>
-      <a href="#s7" data-step="7"><span class="n">7</span>让 AI 帮你扩展</a>
+      <a href="#s6" data-step="6"><span class="n">6</span>让 AI 帮你扩展</a>
       <a href="#rules"><span class="n">!</span>规则与限制</a>
-      <div class="progress" id="progress" aria-live="polite">已完成 0 / 8 步</div>
+      <div class="progress" id="progress" aria-live="polite">已完成 0 / 7 步</div>
     </nav>
 
     <div class="main">
@@ -153,7 +152,7 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
         <ul>
           <li><b>一个 GitHub 账号</b>（免费）。还没有：到 <a href="https://github.com/signup" target="_blank" rel="noopener">github.com/signup</a> 注册，并到邮箱点确认信。</li>
           <li><b>Chrome 或 Edge 浏览器。</b>手机也能看网站，但第 1–5 步请用电脑做。</li>
-          <li><b>不需要</b>：Google Cloud、信用卡、API 钥匙、服务器。第 6 步之前也不用安装任何软件。</li>
+          <li><b>不需要</b>：Google Cloud、信用卡、API 钥匙、服务器，也不用安装任何软件。</li>
         </ul>
         <div class="metaphor">比喻：老师的模板像一份食谱原稿。你按 <b>Use this template</b> 复印一份到自己名下；之后你怎么改，都不会影响老师的原稿，也不会影响同学的那一份。</div>
         <div class="danger">⚠️ 你的仓库和网站都是<b>公开的</b>：任何人都能看到里面的代码和全部记录。只放虚构的练习数据——不要放真实客户资料、密码或任何钥匙。</div>
@@ -236,40 +235,26 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
       </section>
 
       <section class="step" id="s6" aria-labelledby="h6">
-        <div class="step-head"><span class="num">第 6 步</span><h2 id="h6">在自己电脑上开发（可选）</h2><span class="where">你的电脑</span></div>
-        <p>在浏览器里改文件适合小修改。想认真扩展（新增指标、图表、页面），就在自己电脑上开发：改完马上能看到效果，也能先跑检查再上传。</p>
+        <div class="step-head"><span class="num">第 6 步</span><h2 id="h6">让 AI 编程助手帮你扩展</h2><span class="where">AI 编程助手</span></div>
+        <p>想加新功能（新指标、图表、页面），交给 AI 编程助手（例如 Claude Code）来做：把你的仓库地址给它，安装、运行和检查都让它负责，你只要看结果。</p>
         <ol>
-          <li>安装 <b>Node.js 22 LTS</b>（<a href="https://nodejs.org" target="_blank" rel="noopener">nodejs.org</a>）和 <b>GitHub Desktop</b>（<a href="https://desktop.github.com" target="_blank" rel="noopener">desktop.github.com</a>），都用默认选项。</li>
-          <li>GitHub Desktop 登录同一个 GitHub 账号 → <b>File → Clone repository</b> → 选 <span class="pill" id="v-repo-short2">用户名/仓库名</span> → <b>Clone</b>。</li>
-          <li><b>Repository → Open in Command Prompt</b>（或 PowerShell），依次输入：
-            <div class="kv" style="margin:8px 0">
-              <span class="k">第一次</span><span class="chip"><code id="c-install">npm install</code><button type="button" data-copy="c-install">复制</button></span>
-              <span class="k">打开开发网页</span><span class="chip"><code id="c-dev">npm run dev</code><button type="button" data-copy="c-dev">复制</button></span>
-            </div>
-            然后在浏览器打开 <b>http://localhost:5173</b>。修改 <code>src/</code> 里的文件后，重新载入网页就能看到变化。按 <b>Ctrl + C</b> 停止。</li>
-          <li>上传之前先跑完整检查：<span class="chip"><code id="c-check">npm run check</code><button type="button" data-copy="c-check">复制</button></span> 最后应该显示 <code>fail 0</code>。</li>
-          <li>回到 GitHub Desktop：左下角写一句说明 → <b>Commit to main</b> → <b>Push origin</b>。然后照第 3 步 <b>Publish site</b>。</li>
+          <li>把你的仓库地址 <span class="chip"><code id="v-repo3">https://github.com/用户名/仓库名</code><button type="button" data-copy="v-repo3">复制</button></span> 给助手，请它<b>先读 <code>AGENTS.md</code></b>。这个文件写着不能改坏的规则：数字必须从记录算出来、报告日期固定、不联网、不放钥匙、所有文字要有中文翻译、示例分析要诚实标明。</li>
+          <li>用一句话说清楚你要什么，并要求它做完后<b>运行全部检查</b>、告诉你结果和没能验证的地方。例如：
+            <div class="example">请先读 AGENTS.md。在 B2B 概览加一个「本期服务类订单额」KPI，
+加上中文翻译和测试，运行全部检查，
+告诉我结果，以及你没能验证的地方。</div></li>
+          <li>让助手把修改推送到你的仓库，然后照第 3 步 <b>Publish site</b>，在你的网址上看看新功能（中文和英文都看一下）。</li>
         </ol>
-        <div class="note">⚠️ 安装时可能看到 esbuild 的「install-scripts」提示，这是正常的，不影响使用。</div>
-        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="6"><span>http://localhost:5173 显示仪表盘；<code>npm run check</code> 显示 <code>fail 0</code>；Push 之后，GitHub 上的 <b>Tests</b> 是绿色勾。</span></label></div>
-        <p class="stuck"><b>卡住了？</b>「'npm' 不是内部或外部命令」：Node.js 没装好，或装完没重开命令窗口。双击 <code>src/index.html</code> 打不开是正常的——开发时一定要用 <code>npm run dev</code>。</p>
-      </section>
-
-      <section class="step" id="s7" aria-labelledby="h7">
-        <div class="step-head"><span class="num">第 7 步</span><h2 id="h7">让 AI 编程助手帮你扩展</h2><span class="where">你的电脑 · AI 编程助手</span></div>
-        <p>在第 6 步的文件夹里打开 AI 编程助手（例如 Claude Code）。项目里的 <code>AGENTS.md</code> 写着不能改坏的规则：数字必须从记录算出来、报告日期固定、不联网、不放钥匙、所有文字要有中文翻译、示例分析要诚实标明。每次都先让它读这个文件。</p>
-        <div class="example">请先读 AGENTS.md。在 B2B 概览加一个「本期服务类订单额」KPI，
-加上中文翻译和测试，然后运行 npm run check，
-告诉我结果，以及你没能验证的地方。</div>
         <div class="two">
-          <div><h3>新增指标</h3><p>例如「本期服务类订单额」。B2B 第 1 天 8 月应为 RM 3,400（5 笔）——答案要自己从数据算，不能从应用里抄。</p></div>
-          <div><h3>新增图表</h3><p>例如「按产品的订单额」。用现成的横条图，颜色只用样式表里已有的颜色。</p></div>
+          <div><h3>新增指标</h3><p>例如「本期服务类订单额」。B2B 第 1 天 8 月应为 RM 3,400（5 笔）——用这个数字检查助手做得对不对。</p></div>
+          <div><h3>新增图表</h3><p>例如「按产品的订单额」。用现成的横条图，颜色只用已有的颜色。</p></div>
           <div><h3>新增待办规则</h3><p>例如「感谢回头客」。每条建议的编号要稳定，第 1 天和第 2 天才对得上。</p></div>
           <div><h3>新增页面</h3><p>例如「产品」页。复制一个现有页面，再加到菜单里。</p></div>
         </div>
-        <p>完整做法和代码位置在仓库的 <code>docs/STUDENT_SOP.md</code>。</p>
-        <div class="danger">⚠️ 不要把任何 API 钥匙写进网页代码——网站是公开的，任何人都能看到。以后想接入实时 AI，钥匙必须放在你自己管理的服务器上（见 <code>docs/STUDENT_SOP.md</code> 第 6 节）。</div>
-        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="7"><span>助手做完后，<code>npm run check</code> 通过；我在网页上看过中文和英文；Push 并 Publish site 后，新功能出现在我的网址上。</span></label></div>
+        <p>给助手看的完整技术说明在仓库的 <code>docs/STUDENT_SOP.md</code>。</p>
+        <div class="danger">⚠️ 不要让助手把任何 API 钥匙写进网页代码——网站是公开的，任何人都能看到。以后想接入实时 AI，钥匙必须放在你自己管理的服务器上（见 <code>docs/STUDENT_SOP.md</code> 第 6 节）。</div>
+        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="6"><span>助手说全部检查通过；GitHub 上 <b>Tests</b> 是绿色勾；Publish site 之后，新功能出现在我的网址上。</span></label></div>
+        <p class="stuck"><b>卡住了？</b>发布出现红叉：把 Actions 里失败那一步的截图给助手，请它修好再推送；网站在修好之前仍是上一个正常版本。</p>
       </section>
 
       <section class="panel" id="rules" aria-labelledby="hr">
@@ -295,7 +280,7 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
 <script>
 (function () {
   var KEY = 'bd-starter-sop-v1';
-  var TOTAL = 8;
+  var TOTAL = 7;
   var state = { user: '', repo: 'my-business-dashboard', checks: {} };
   try { var saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && typeof saved === 'object') { state.user = String(saved.user || ''); state.repo = String(saved.repo || state.repo); state.checks = saved.checks && typeof saved.checks === 'object' ? saved.checks : {}; } } catch (e) {}
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
@@ -318,7 +303,7 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
     $('v-site2').textContent = site;
     $('v-reponame').textContent = shownR;
     $('v-repo-short').textContent = shownU + ' / ' + shownR;
-    $('v-repo-short2').textContent = shownU + '/' + shownR;
+    $('v-repo3').textContent = repoUrl;
     var ready = goodU && goodR;
     var links = { pages: repoUrl + '/settings/pages', publish: repoUrl + '/actions/workflows/publish-site.yml', edit: repoUrl + '/edit/main/data/betterspace-b2c/business.json' };
     Array.prototype.forEach.call(document.querySelectorAll('[data-link]'), function (a) {
