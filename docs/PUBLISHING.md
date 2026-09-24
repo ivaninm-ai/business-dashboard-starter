@@ -1,7 +1,7 @@
 # Publishing the template (instructor record)
 
 Template repository: **https://github.com/ivaninm-ai/business-dashboard-starter** (public, marked as a template).
-Offline classroom file: attached to the `v0.1.0` release — https://github.com/ivaninm-ai/business-dashboard-starter/releases/latest
+Offline classroom file: attached to the latest release (`v0.2.0`: adds My Excel) — https://github.com/ivaninm-ai/business-dashboard-starter/releases/latest
 
 ## Decisions (2026-09-24)
 
@@ -16,7 +16,7 @@ Offline classroom file: attached to the `v0.1.0` release — https://github.com/
 
 1. Change the code, then `npm run check` (build + tests) and open `dist/business-dashboard-demo.html`.
 2. Bump `version` in `package.json` and `src/version.js`, commit, push. The **Tests** workflow runs.
-3. Tag (`git tag v0.1.1 && git push origin v0.1.1`), create a release from the tag on GitHub and
+3. Tag (`git tag v0.2.1 && git push origin v0.2.1`, or type the new tag in GitHub's release form), create a release and
    attach the new `dist/business-dashboard-demo.html`. `dist/` is never committed.
 4. Students who already made their copy do not get updates automatically (a template copy has no
    link back); they can copy changed files by hand if they want them.
