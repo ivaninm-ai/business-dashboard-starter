@@ -1,0 +1,23 @@
+# Runs the checks on every push and pull request: figures against the answer keys,
+# Day 1 → Day 2 behaviour, translations, prepared briefs, and the single-file build.
+# No secrets are used.
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check

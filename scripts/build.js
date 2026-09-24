@@ -1,0 +1,61 @@
+// Builds the classroom file: ONE self-contained HTML page with the code, styles and
+// training data inside it. It opens by double-click (file://), needs no server and
+// no internet, and its Content-Security-Policy forbids every network request.
+//
+//   dist/business-dashboard-demo.html   the file to hand out / open in class
+//   dist/site/index.html                the same page, ready for static hosting
+//
+// The source in src/ stays modular; esbuild only bundles it for this output.
+// Run with `npm run build` (which packs data/ first).
+
+import { build } from 'esbuild';
+import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
+const src = p => path.join(root, 'src', p);
+const pkg = JSON.parse(readFileSync(path.join(root, 'package.json'), 'utf8'));
+
+export async function buildHtml() {
+  const result = await build({
+    entryPoints: [src('main.js')],
+    bundle: true,
+    format: 'iife',
+    write: false,
+    charset: 'utf8',
+    legalComments: 'none',
+    target: 'es2022', // any current Chrome, Edge, Firefox or Safari
+    logLevel: 'silent',
+  });
+  // Inline script safety: "</script" or "<!--" inside the code would end or confuse the tag.
+  const js = result.outputFiles[0].text.replace(/<\/script/gi, '<\\/script').replace(/<!--/g, '<\\!--');
+  const css = readFileSync(src('style.css'), 'utf8');
+  let html = readFileSync(src('index.html'), 'utf8');
+
+  // The browser hashes exactly what sits between <script> and </script>, newline included.
+  const scriptBody = `\n${js}`;
+  const scriptHash = createHash('sha256').update(scriptBody, 'utf8').digest('base64');
+  const csp = `default-src 'none'; script-src 'sha256-${scriptHash}'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; font-src 'none'; base-uri 'none'; form-action 'none'`;
+
+  const replaceOnce = (pattern, value, what) => {
+    if (!pattern.test(html)) throw new Error(`build: could not find ${what} in src/index.html`);
+    html = html.replace(pattern, () => value);
+  };
+  replaceOnce(/<meta http-equiv="Content-Security-Policy" content="[^"]*">/, `<meta http-equiv="Content-Security-Policy" content="${csp}">`, 'the CSP meta tag');
+  replaceOnce(/<link rel="stylesheet" href="style.css">/, `<style>\n${css}</style>`, 'the stylesheet link');
+  replaceOnce(/<script type="module" src="main.js"><\/script>/, `<script>${scriptBody}</script>`, 'the module script tag');
+  html = html.replace('<!doctype html>', `<!doctype html>\n<!-- Business Dashboard Starter ${pkg.version} · single-file build of src/ (scripts/build.js) · synthetic training data only · works offline -->`);
+  return html;
+}
+
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const html = await buildHtml();
+  const out = path.join(root, 'dist', 'business-dashboard-demo.html');
+  mkdirSync(path.join(root, 'dist', 'site'), { recursive: true });
+  writeFileSync(out, html);
+  writeFileSync(path.join(root, 'dist', 'site', 'index.html'), html);
+  console.log(`Built ${path.relative(root, out)} (${Math.round(Buffer.byteLength(html) / 1024)} KB) and dist/site/index.html`);
+  console.log('Open the demo by double-clicking dist/business-dashboard-demo.html.');
+}

@@ -1,0 +1,4 @@
+* text=auto eol=lf
+# Training data is kept byte-for-byte as supplied (UTF-8 with BOM, CRLF line endings).
+*.csv -text
+*.png binary

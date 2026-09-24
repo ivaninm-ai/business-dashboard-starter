@@ -1,0 +1,103 @@
+// What the viewer is looking at, plus the figures derived from it. Pages read from
+// here; nothing in this file touches the DOM. Figures are always recalculated from
+// the scenario's records — no total is stored or typed in by hand.
+
+import { loadScenario, previousDay, businessProfile } from '../data/scenarios.js';
+import { computeMetrics, formatMoney } from '../core/metrics.js';
+import { suggestionRows, scenarioTasks, baseMetrics, isOpen } from '../core/scenario-tasks.js';
+import { buildCalendarItems } from '../core/calendar.js';
+import { isIsoDate, addDays, monthStart } from '../core/dates.js';
+import { getLocale } from '../i18n/i18n.js';
+
+export const view = {
+  store: null,            // storage/local-state.js store
+  persistent: true,       // false when the browser does not allow saving
+  storageReason: '',
+  businessId: '',
+  day: 'day1',
+  filters: defaultFilters(),
+  page: 'overview',
+  calMonth: '',
+  taskView: 'open',
+};
+
+export function defaultFilters() { return { preset: 'mtd', start: '', end: '', channel: '', owner: '' }; }
+
+export const scenario = () => loadScenario(view.businessId, view.day);
+export function previousScenario() { const p = previousDay(view.day); return p ? loadScenario(view.businessId, p) : null; }
+export const profile = () => businessProfile(view.businessId);
+export const records = () => scenario().records;
+export const reportingDate = () => scenario().reportingDate;
+export const isZh = () => getLocale() === 'zh-CN';
+
+export function periodRange() {
+  const rd = reportingDate();
+  const f = view.filters;
+  if (f.preset === 'custom' && isIsoDate(f.start) && isIsoDate(f.end) && f.start <= f.end) return { start: f.start, end: f.end };
+  if (f.preset === 'prev_month') return { start: monthStart(addDays(monthStart(rd), -1)), end: addDays(monthStart(rd), -1) };
+  if (f.preset === 'last7') return { start: addDays(rd, -6), end: rd };
+  if (f.preset === 'last30') return { start: addDays(rd, -29), end: rd };
+  if (f.preset === 'all') return { start: scenario().historyStart || '2000-01-01', end: rd };
+  return { start: monthStart(rd), end: rd };
+}
+
+// Figures for the selected period and filters.
+export function metrics() {
+  const { start, end } = periodRange();
+  return computeMetrics(records(), reportingDate(), { periodStart: start, periodEnd: end, historyStart: scenario().historyStart, filters: { channel: view.filters.channel || undefined, owner: view.filters.owner || undefined } });
+}
+
+// Suggestions depend on the scenario and the language only, so they are cached.
+const rowsCache = new Map();
+function rows() {
+  const key = `${scenario().key}|${getLocale()}`;
+  if (!rowsCache.has(key)) rowsCache.set(key, suggestionRows(scenario(), previousScenario()));
+  return rowsCache.get(key);
+}
+
+export function allTasks() { return scenarioTasks(scenario(), previousScenario(), view.store.decisions(view.businessId), rows()); }
+export const openTasks = () => allTasks().filter(isOpen);
+export { isOpen };
+
+export const notes = () => view.store.notes(view.businessId);
+
+export function calendarItems() {
+  return buildCalendarItems({ records: records(), metrics: baseMetrics(scenario()), tasks: allTasks(), entries: notes(), reportingDate: reportingDate(), money });
+}
+
+export function money(cents) { const b = profile().business; return formatMoney(cents, b.currency_symbol || b.currency); }
+
+// Record-type names chosen by the business ("Orders & jobs", "Accounts"…), in the current language.
+export function label(key, fallback) { const p = profile(); return (isZh() ? p.labels_zh?.[key] : p.labels?.[key]) || fallback; }
+// Same, for menu items and headings: 中文（English）.
+export function labelTl(key, fallbackEn) {
+  const p = profile();
+  const en = p.labels?.[key] || fallbackEn;
+  return isZh() && p.labels_zh?.[key] ? `${p.labels_zh[key]}（${en}）` : en;
+}
+
+export function businessName(id = view.businessId) { const b = businessProfile(id).business; return (isZh() && b.name_zh) || b.name; }
+
+export function customerName(id) { return (records().customers || []).find(c => c.id === id)?.name || id || ''; }
+export function customerOwner(id) { return (records().customers || []).find(c => c.id === id)?.owner || ''; }
+
+// Record a task decision (accept, complete, dismiss, reopen, edit). Adapted from the
+// original saveDecision(): the same row shape, stored in this browser instead of Sheets.
+export function saveDecision(task, patch) {
+  const existing = view.store.business(view.businessId).decisions[task.task_key] || {};
+  const row = {
+    task_key: task.task_key,
+    status: existing.status || task.status,
+    action_date: existing.action_date ?? '',
+    owner: existing.owner ?? '',
+    note: existing.note || '',
+    title: existing.title || (task.custom ? task.title : ''),
+    detail: existing.detail || (task.custom ? task.reason : ''),
+    ...patch,
+    snapshot_at_decision: view.day,
+    updated_at: new Date().toISOString(),
+  };
+  if (row.status === 'accepted' && !row.action_date && !Object.hasOwn(patch, 'action_date')) row.action_date = task.suggested_date || '';
+  if (row.status === 'accepted' && !row.owner && !Object.hasOwn(patch, 'owner')) row.owner = task.suggested_owner || '';
+  return view.store.saveDecision(view.businessId, row);
+}
