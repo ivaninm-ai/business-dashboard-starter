@@ -2,244 +2,363 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:">
-<title>学生指南 · 业务仪表盘起步项目</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<!-- 业务仪表盘起步项目 · 学生 SOP（0.1.0）。设计语言沿用「业务仪表盘 · 安装 SOP」。不含任何钥匙，也不会向你要钥匙。 -->
+<title>业务仪表盘 · 起步项目 SOP</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap">
 <style>
 :root {
   color-scheme: light;
-  --brand: #5A1A2B; --brand-soft: #F3E3DC; --gold: #B8963E; --page: #FAF0E4; --surface: #FFF8EF;
-  --surface-2: #F5E9D7; --border: #E5D5C0; --ink: #3A2B25; --ink-2: #5E4E44; --muted: #766456;
-  --blue: #2370B5; --critical: #C2410C; --good: #3F7A3A;
-  --font: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Noto Sans CJK SC", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --ground: #f6f5f1; --surface: #ffffff; --surface-2: #eeece6; --ink: #1b1a17; --ink-2: #4d4a43; --muted: #7c786f;
+  --line: rgba(27, 26, 23, 0.12); --accent: #0f6e6e; --accent-ink: #0b5252; --accent-soft: #d9efee;
+  --good: #2f7d32; --good-soft: #e3f1e2; --warn: #b7791f; --warn-soft: #f9edd6; --danger: #b3261e; --danger-soft: #f8e2e0;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: "IBM Plex Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display: "Manrope", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "IBM Plex Sans", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --ground: #141412; --surface: #1e1d1a; --surface-2: #2a2926; --ink: #f2f0ea; --ink-2: #c9c5bb; --muted: #928e84;
+    --line: rgba(242, 240, 234, 0.14); --accent: #4fb3b0; --accent-ink: #8ad3d0; --accent-soft: #163c3b;
+    --good: #6fbf73; --good-soft: #1d3320; --warn: #e0a84a; --warn-soft: #3d2f14; --danger: #ef8a83; --danger-soft: #3f1f1c;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ground: #141412; --surface: #1e1d1a; --surface-2: #2a2926; --ink: #f2f0ea; --ink-2: #c9c5bb; --muted: #928e84;
+  --line: rgba(242, 240, 234, 0.14); --accent: #4fb3b0; --accent-ink: #8ad3d0; --accent-soft: #163c3b;
+  --good: #6fbf73; --good-soft: #1d3320; --warn: #e0a84a; --warn-soft: #3d2f14; --danger: #ef8a83; --danger-soft: #3f1f1c;
 }
 * { box-sizing: border-box; }
-html, body { margin: 0; background: var(--page); color: var(--ink); font: 16px/1.7 var(--font); }
-a { color: var(--brand); text-underline-offset: 3px; }
-.ribbon { background: var(--brand); color: var(--surface); font-size: 13px; text-align: center; padding: 6px 16px; }
-.ribbon b { color: #F1DFA8; }
-.wrap { max-width: 880px; margin: 0 auto; padding: 24px 16px 64px; }
-header.hero { padding: 28px 0 8px; border-bottom: 2px solid var(--brand); margin-bottom: 20px; }
-.mark { display: inline-block; width: 22px; height: 22px; border-radius: 6px; background: var(--brand); box-shadow: inset 0 -5px 0 var(--gold); vertical-align: -4px; margin-right: 8px; }
-h1 { font-size: 28px; line-height: 1.3; color: var(--brand); margin: 0 0 6px; }
-h2 { font-size: 22px; color: var(--brand); margin: 40px 0 8px; padding-top: 8px; }
-h3 { font-size: 17px; color: var(--brand); margin: 22px 0 6px; }
-p { margin: 0 0 10px; }
-.en { color: var(--muted); font-size: 14px; }
-.lead { font-size: 17px; color: var(--ink-2); }
-nav.toc { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0 0; }
-nav.toc a { font-size: 14px; text-decoration: none; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 3px 12px; color: var(--ink-2); }
-nav.toc a:hover { border-color: var(--brand); color: var(--brand); }
-.part { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .04em; color: var(--surface); background: var(--brand); border-radius: 4px; padding: 1px 8px; margin-right: 8px; vertical-align: 3px; }
-.remember { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin: 16px 0; }
-.remember div { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--brand); border-radius: 8px; padding: 12px 14px; }
-.remember b { display: block; color: var(--brand); }
-ol.steps { list-style: none; counter-reset: step; padding: 0; margin: 12px 0; }
-ol.steps > li { counter-increment: step; position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px 12px 56px; margin-bottom: 10px; }
-ol.steps > li::before { content: counter(step); position: absolute; left: 14px; top: 14px; width: 28px; height: 28px; border-radius: 50%; background: var(--brand); color: var(--surface); font-weight: 700; text-align: center; line-height: 28px; font-size: 15px; }
-ol.steps > li > b:first-child { color: var(--brand); }
-.ui { display: inline-block; font-size: 14px; line-height: 1.4; border: 1px solid var(--border); background: var(--surface); color: var(--ink-2); border-radius: 7px; padding: 1px 9px; white-space: nowrap; }
-.ui.primary { background: var(--brand); color: var(--surface); border-color: var(--brand); }
-.ui.on { background: var(--brand); color: var(--surface); border-color: var(--brand); }
-.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 7px; overflow: hidden; vertical-align: middle; }
-.seg span { font-size: 14px; padding: 1px 10px; background: var(--surface); color: var(--ink-2); }
-.seg span + span { border-left: 1px solid var(--border); }
-.seg span.on { background: var(--brand); color: var(--surface); }
-code, pre { font-family: var(--mono); font-size: 14px; }
-code { background: var(--surface-2); border-radius: 4px; padding: 1px 5px; }
-pre { background: #3A2B25; color: #FFF8EF; border-radius: 8px; padding: 12px 14px; overflow-x: auto; margin: 8px 0 12px; line-height: 1.55; }
-pre .c { color: #CDBBA5; }
-table { border-collapse: collapse; width: 100%; font-size: 15px; margin: 8px 0 14px; background: var(--surface); border-radius: 8px; overflow: hidden; }
-th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
-th { color: var(--ink-2); background: var(--surface-2); font-size: 14px; }
-td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.tablewrap { overflow-x: auto; }
-.note { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--gold); border-radius: 8px; padding: 10px 14px; margin: 12px 0; font-size: 15px; }
-.warn { border-left-color: var(--critical); }
-.flow { display: grid; gap: 0; margin: 12px 0 16px; }
-.flow .box { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; }
-.flow .box b { color: var(--brand); }
-.flow .box code { font-size: 13px; }
-.flow .arrow { text-align: center; color: var(--muted); font-size: 13px; line-height: 1.2; padding: 4px 0; }
-.flow .side { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.cards { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); margin: 10px 0; }
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
-.card h4 { margin: 0 0 4px; color: var(--brand); font-size: 16px; }
-.card p { font-size: 15px; margin: 0 0 6px; }
-.files { font-family: var(--mono); font-size: 13px; color: var(--ink-2); }
-.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin: 0 4px 0 8px; vertical-align: 0; }
-footer { margin-top: 48px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 13px; color: var(--muted); }
-@media (max-width: 560px) { h1 { font-size: 24px; } .flow .side { grid-template-columns: 1fr; } ol.steps > li { padding-left: 48px; } }
-@media print { .ribbon, nav.toc { display: none; } body { background: #fff; } h2 { break-after: avoid; } ol.steps > li, .card, .note { break-inside: avoid; } pre { background: #f5e9d7; color: #3a2b25; } }
+body { margin: 0; background: var(--ground); color: var(--ink); font: 15px/1.65 var(--sans); }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 24px 64px; padding-inline: 16px; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.2; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(28px, 4vw, 40px); font-weight: 800; letter-spacing: -0.01em; }
+h2 { font-size: 22px; font-weight: 700; }
+h3 { font-size: 16px; font-weight: 700; margin-top: 18px; }
+p { margin: 0 0 10px; max-width: 70ch; }
+a { color: var(--accent); }
+.eyebrow { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.lede { color: var(--ink-2); font-size: 16px; max-width: 70ch; }
+.layout { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 32px; align-items: start; margin-top: 28px; }
+@media (max-width: 860px) { .layout { grid-template-columns: 1fr; gap: 16px; } }
+.rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); display: flex; flex-direction: column; gap: 4px; }
+@media (max-width: 860px) { .rail { position: static; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); } }
+.rail a { display: grid; grid-template-columns: 26px 1fr; gap: 8px; align-items: center; padding: 7px 8px; border-radius: 8px; text-decoration: none; color: var(--ink-2); font-size: 14px; }
+.rail a:hover { background: var(--surface-2); }
+.rail a .n { width: 24px; height: 24px; border-radius: 50%; background: var(--surface-2); color: var(--ink-2); display: grid; place-items: center; font: 600 12px var(--mono); }
+.rail a.done .n { background: var(--good); color: #fff; }
+.rail a.done { color: var(--ink); }
+.rail .opt { font-size: 11px; color: var(--muted); margin-left: 4px; }
+.rail .progress { margin-top: 10px; font-size: 13px; color: var(--muted); grid-column: 1 / -1; }
+.main { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+.panel.details { border-color: var(--accent); }
+.panel h2 { margin-bottom: 10px; }
+.step { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 22px; scroll-margin-top: 12px; }
+.step-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.step-head .num { font: 700 13px var(--mono); color: var(--accent); background: var(--accent-soft); padding: 3px 10px; border-radius: 999px; }
+.step-head .where { font-size: 13px; color: var(--muted); margin-left: auto; }
+.step ol, .step ul, .panel ul { padding-left: 22px; margin: 8px 0 10px; }
+.step li, .panel li { margin-bottom: 6px; max-width: 72ch; }
+.step li::marker { color: var(--muted); }
+.field { display: grid; gap: 4px; margin-bottom: 12px; }
+.field > span { font-size: 13px; color: var(--ink-2); font-weight: 500; }
+.field input { font: 14px var(--sans); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; width: 100%; }
+.field input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.field .hint { font-size: 12px; color: var(--muted); }
+.field .hint.bad { color: var(--danger); }
+.fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0 18px; }
+.chip { display: inline-grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; max-width: 100%; background: var(--surface-2); border-radius: 8px; padding: 6px 6px 6px 10px; font: 500 13px var(--mono); color: var(--ink); margin: 2px 0; }
+.chip code { font: inherit; overflow-wrap: anywhere; }
+.chip button, .btn { font: 600 12px var(--sans); border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 4px 10px; border-radius: 6px; cursor: pointer; white-space: nowrap; }
+.chip button:hover, .btn:hover { background: var(--accent-soft); border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; padding: 8px 14px; font-size: 13px; text-decoration: none; display: inline-block; }
+.btn.primary:hover { background: var(--accent-ink); color: #fff; }
+.btn.primary[aria-disabled="true"] { opacity: .45; pointer-events: none; }
+.btn:focus-visible, .chip button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.kv { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; align-items: center; font-size: 14px; }
+.kv .k { color: var(--ink-2); }
+@media (max-width: 560px) { .kv { grid-template-columns: 1fr; gap: 2px; } .kv .k { margin-top: 8px; } }
+code { font-family: var(--mono); font-size: 0.92em; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; margin: 8px 0 12px; }
+th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; letter-spacing: 0.06em; color: var(--muted); }
+.table-wrap { overflow-x: auto; }
+.checkpoint { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; background: var(--good-soft); border-left: 4px solid var(--good); border-radius: 8px; padding: 12px 14px; margin-top: 14px; }
+.checkpoint .mark { font: 700 12px var(--mono); color: var(--good); letter-spacing: 0.06em; padding-top: 2px; }
+.checkpoint label { display: flex; gap: 8px; align-items: flex-start; cursor: pointer; }
+.checkpoint input { margin-top: 4px; accent-color: var(--good); }
+.note { background: var(--warn-soft); border-left: 4px solid var(--warn); border-radius: 8px; padding: 10px 14px; margin: 10px 0; font-size: 14px; }
+.danger { background: var(--danger-soft); border-left: 4px solid var(--danger); border-radius: 8px; padding: 10px 14px; margin: 10px 0; font-size: 14px; }
+.metaphor { background: var(--accent-soft); border-radius: 8px; padding: 10px 14px; margin: 10px 0; font-size: 14px; color: var(--ink); }
+.stuck { font-size: 13px; color: var(--ink-2); margin-top: 10px; }
+.stuck b { color: var(--ink); }
+.example { background: var(--surface-2); border-radius: 8px; padding: 10px 12px; font: 13px var(--mono); overflow-x: auto; white-space: pre; margin: 8px 0; color: var(--ink); }
+.example .lbl { display: inline-block; width: 3.5em; font-family: var(--sans); font-size: 12px; font-weight: 600; color: var(--muted); }
+.example .was { color: var(--ink-2); }
+.example .add { color: var(--good); font-weight: 500; }
+.pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 1px 8px; border-radius: 999px; background: var(--surface-2); color: var(--ink-2); }
+.pill.secret { background: var(--danger-soft); color: var(--danger); }
+.pill.var { background: var(--accent-soft); color: var(--accent-ink); }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+.two > div { background: var(--surface-2); border-radius: 10px; padding: 12px 14px; }
+.two h3 { margin-top: 0; margin-bottom: 4px; }
+footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+@media print { .rail, #clear { display: none; } .layout { display: block; } .step, .panel { break-inside: avoid; margin-bottom: 16px; } }
 </style>
 </head>
 <body>
-<div class="ribbon"><b>教学演示</b> · 所有记录都是虚构的练习数据 · Synthetic training data only</div>
 <div class="wrap">
+  <div class="eyebrow">InfiniteSales AI · 起步项目 0.1.0 · 约 20 分钟 · 全程在浏览器里 · 不用安装软件（第 6 步可选）</div>
+  <h1>业务仪表盘 · 起步项目 SOP</h1>
+  <p class="lede">做完之后，你会有一个属于自己的仪表盘网页：代码在你自己的 GitHub 仓库里，网站由 GitHub Pages 免费发布在你自己的网址上。不需要 Google Cloud、钥匙、服务器或付费。里面是虚构的 BetterSpace 练习数据，你在网页上的操作只保存在你自己的浏览器里。下面每一步都是网页操作；绿色框告诉你“怎么知道这一步做对了”。</p>
 
-<header class="hero">
-  <h1><span class="mark" aria-hidden="true"></span>业务仪表盘起步项目 · 学生指南</h1>
-  <p class="lead">打开就能用的小企业仪表盘演示：不需要账号、登录、API 密钥或网络。课堂上一起操作，课后可以复制成你自己的项目，继续扩展。</p>
-  <p class="en">Business Dashboard Starter — student guide. A setup-free demo you can open in class, then copy and extend as your own project.</p>
-  <nav class="toc" aria-label="目录">
-    <a href="#remember">先记住</a><a href="#open">A1 打开演示</a><a href="#scenario">A2 业务和日期</a><a href="#explore">A3 看数字</a><a href="#task">A4 待办与日历</a><a href="#day2">A5 第 2 天</a><a href="#reset">A6 重置</a><a href="#saving">保存说明</a><a href="#own">B1 自己的仓库</a><a href="#env">B2 开发环境</a><a href="#map">B3 结构与数据流</a><a href="#extend">B4 动手扩展</a><a href="#data">B5 换数据</a><a href="#later">B6 以后接入</a><a href="#publish">B7 发布</a><a href="#agent">B8 AI 助手</a><a href="#faq">常见问题</a>
-  </nav>
-</header>
+  <div class="layout">
+    <nav class="rail" aria-label="步骤" id="rail">
+      <a href="#s0" data-step="0"><span class="n">0</span>准备账号</a>
+      <a href="#s1" data-step="1"><span class="n">1</span>复制模板</a>
+      <a href="#s2" data-step="2"><span class="n">2</span>打开 Pages</a>
+      <a href="#s3" data-step="3"><span class="n">3</span>发布网站</a>
+      <a href="#s4" data-step="4"><span class="n">4</span>试用你的网站</a>
+      <a href="#s5" data-step="5"><span class="n">5</span>第一次修改</a>
+      <a href="#s6" data-step="6"><span class="n">6</span><span>在电脑上开发<span class="opt">可选</span></span></a>
+      <a href="#s7" data-step="7"><span class="n">7</span>让 AI 帮你扩展</a>
+      <a href="#rules"><span class="n">!</span>规则与限制</a>
+      <div class="progress" id="progress" aria-live="polite">已完成 0 / 8 步</div>
+    </nav>
 
-<section id="remember">
-  <div class="remember">
-    <div><b>本地保存不是云端备份</b>你的操作只存在那台电脑的那个浏览器里。<br><span class="en">Local browser saving is not a cloud backup.</span></div>
-    <div><b>示例分析不是实时分析</b>它是预先写好的，不会因为你的操作而改变。<br><span class="en">Prepared briefs are not live analysis.</span></div>
-    <div><b>学习项目，不放真实机密数据</b>打包后的文件里任何人都能看到全部记录。<br><span class="en">A learning starter, not for confidential business data.</span></div>
+    <div class="main">
+      <section class="panel details" id="details" aria-labelledby="hd">
+        <h2 id="hd">你的资料</h2>
+        <p>填一次，下面所有链接和网址都会自动换成你的。资料只存在这台设备的浏览器里，不会上传到任何地方。</p>
+        <div class="fields">
+          <label class="field"><span>你的 GitHub 用户名</span><input id="f-user" placeholder="例：mei-tan" autocomplete="off" spellcheck="false"><span class="hint" id="h-user">登录 GitHub 后，右上角头像里显示的名字</span></label>
+          <label class="field"><span>你的仓库名</span><input id="f-repo" value="my-business-dashboard" autocomplete="off" spellcheck="false"><span class="hint" id="h-repo">英文字母、数字、- 或 _</span></label>
+        </div>
+        <div class="kv">
+          <span class="k">你的仓库</span><span class="chip"><code id="v-repo">https://github.com/用户名/仓库名</code><button type="button" data-copy="v-repo">复制</button></span>
+          <span class="k">你的仪表盘网址</span><span class="chip"><code id="v-site">https://用户名.github.io/仓库名/</code><button type="button" data-copy="v-site">复制</button></span>
+          <span class="k">老师的模板</span><span class="chip"><code id="v-template">https://github.com/ivaninm-ai/business-dashboard-starter</code><button type="button" data-copy="v-template">复制</button></span>
+        </div>
+        <p style="margin-top:12px"><button class="btn" type="button" id="clear">清空本机资料和打勾</button></p>
+      </section>
+
+      <section class="step" id="s0" aria-labelledby="h0">
+        <div class="step-head"><span class="num">第 0 步</span><h2 id="h0">准备账号</h2><span class="where">github.com</span></div>
+        <ul>
+          <li><b>一个 GitHub 账号</b>（免费）。还没有：到 <a href="https://github.com/signup" target="_blank" rel="noopener">github.com/signup</a> 注册，并到邮箱点确认信。</li>
+          <li><b>Chrome 或 Edge 浏览器。</b>手机也能看网站，但第 1–5 步请用电脑做。</li>
+          <li><b>不需要</b>：Google Cloud、信用卡、API 钥匙、服务器。第 6 步之前也不用安装任何软件。</li>
+        </ul>
+        <div class="metaphor">比喻：老师的模板像一份食谱原稿。你按 <b>Use this template</b> 复印一份到自己名下；之后你怎么改，都不会影响老师的原稿，也不会影响同学的那一份。</div>
+        <div class="danger">⚠️ 你的仓库和网站都是<b>公开的</b>：任何人都能看到里面的代码和全部记录。只放虚构的练习数据——不要放真实客户资料、密码或任何钥匙。</div>
+        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="0"><span>我能登录 GitHub，右上角看到自己的头像；已经把用户名填进上面的“你的资料”。</span></label></div>
+      </section>
+
+      <section class="step" id="s1" aria-labelledby="h1">
+        <div class="step-head"><span class="num">第 1 步</span><h2 id="h1">复制模板到你的账号</h2><span class="where">在 GitHub</span></div>
+        <p><a class="btn primary" id="btn-template" href="https://github.com/ivaninm-ai/business-dashboard-starter/generate" target="_blank" rel="noopener">📦 一键复制模板到我的账号 ↗</a></p>
+        <ol>
+          <li>按上面的按钮，会打开 GitHub 的「从模板建新仓库」页；没登录会先叫你登录。</li>
+          <li><b>Owner</b> 选你自己 · <b>Repository name</b> 填 <span class="chip"><code id="v-reponame">my-business-dashboard</code><button type="button" data-copy="v-reponame">复制</button></span> · <b>Description</b> 可以留空。</li>
+          <li>选 <b>Public</b>——免费的 GitHub Pages 只能发布公开仓库。<b>Include all branches</b> 不用勾。</li>
+          <li>按 <b>Create repository</b>，等几秒。</li>
+        </ol>
+        <p>没用按钮也可以：打开老师的模板页面，按绿色的 <b>Use this template → Create a new repository</b>。</p>
+        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="1"><span>我的仓库打开了，左上角是 <span class="pill" id="v-repo-short">用户名 / 仓库名</span>，下面有一行小字 <i>generated from ivaninm-ai/business-dashboard-starter</i>，能看到 <code>src</code>、<code>data</code>、<code>docs</code> 等文件夹。</span></label></div>
+        <p class="stuck"><b>卡住了？</b>看不到 <b>Use this template</b>：先登录 GitHub。提示名字已被使用：换一个仓库名，并同步改上面的“你的仓库名”。</p>
+      </section>
+
+      <section class="step" id="s2" aria-labelledby="h2">
+        <div class="step-head"><span class="num">第 2 步</span><h2 id="h2">打开 GitHub Pages</h2><span class="where">你的仓库 › Settings › Pages</span></div>
+        <p><a class="btn primary" data-link="pages" href="#details" target="_blank" rel="noopener">⚙️ 打开我的 Pages 设置 ↗</a></p>
+        <ol>
+          <li>在<b>你自己的</b>仓库点顶部的 <b>Settings</b>（齿轮）→ 左边选 <b>Pages</b>。</li>
+          <li><b>Build and deployment</b> 下面的 <b>Source</b>，选 <b>GitHub Actions</b>（不是 <i>Deploy from a branch</i>）。选了就会保存，不用再按别的按钮。</li>
+        </ol>
+        <div class="metaphor">比喻：GitHub Pages 是 GitHub 免费借你的一块展示橱窗。这一步只是告诉 GitHub：“橱窗里的东西，由我的自动流程来摆。”</div>
+        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="2"><span>Pages 页面里 Source 显示 <b>GitHub Actions</b>。</span></label></div>
+        <p class="stuck"><b>卡住了？</b>看不到 <b>Settings</b>：你打开的多半是老师的模板，不是你自己的仓库——看左上角是不是你的用户名。</p>
+      </section>
+
+      <section class="step" id="s3" aria-labelledby="h3">
+        <div class="step-head"><span class="num">第 3 步</span><h2 id="h3">发布你的网站</h2><span class="where">你的仓库 › Actions</span></div>
+        <p><a class="btn primary" data-link="publish" href="#details" target="_blank" rel="noopener">🚀 打开 Publish site ↗</a></p>
+        <ol>
+          <li>点顶部的 <b>Actions</b> → 左边选 <b>Publish site</b>。</li>
+          <li>右边按 <b>Run workflow</b> → Branch 保持 <b>main</b> → 按绿色的 <b>Run workflow</b>。</li>
+          <li>刷新一下页面，会出现一条黄色圆点的运行记录。等 1–3 分钟，变成<b>绿色勾</b>就完成了。它会先自动检查（打包 + 所有测试），全部通过才会发布。</li>
+          <li>打开你的网址：<span class="chip"><code id="v-site2">https://用户名.github.io/仓库名/</code><button type="button" data-copy="v-site2">复制</button></span>（第一次可能要再等 1 分钟）。</li>
+        </ol>
+        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="3"><span>我的网址打开了：最上面有深红色横条「教学演示 · 所有记录都是虚构的练习数据」，下面是 BetterSpace 家居生活馆的概览和数字（例如期间订单额 RM 25,650）。</span></label></div>
+        <p class="stuck"><b>卡住了？</b>
+          <br>· Actions 页面叫你启用 workflows：按 <b>I understand my workflows, go ahead and enable them</b>，再回到第 3 步。
+          <br>· 红色叉叉，失败在 <b>Configure Pages</b> 或 <b>deploy</b>：回第 2 步，确认 Source 是 <b>GitHub Actions</b>，然后再 Run workflow 一次。
+          <br>· 红色叉叉，失败在 <b>Run npm run check</b>：自动检查没通过，网站不会被改坏。刚复制的模板不应该出现这种情况；把截图发到学员群。
+          <br>· 网址显示 404：等 1–2 分钟再重新载入；检查网址里的用户名和仓库名；仓库要是 Public。</p>
+      </section>
+
+      <section class="step" id="s4" aria-labelledby="h4">
+        <div class="step-head"><span class="num">第 4 步</span><h2 id="h4">试用你的网站</h2><span class="where">你的仪表盘网址</span></div>
+        <ol>
+          <li>上方场景栏选业务：<b>B2C 家居零售</b> 或 <b>B2B 办公家具</b>。右上角可以切换 <b>中文 / English</b>。</li>
+          <li>打开 <b>待办（Tasks）</b>，按一条建议的 <b>接受（Accept）</b>，再按 <b>编辑（Edit）</b> 改行动日期 → <b>保存</b>。</li>
+          <li>打开 <b>日历（Calendar）</b>：这条待办出现在你选的日期上。</li>
+          <li>按 <b>前进到第 2 天（Advance to Day 2）</b>：数字换成 8 月 31 日的数据，你的决定会保留。</li>
+          <li>看 <b>示例分析（Example analysis）</b>：它是<b>预先写好</b>的，不是实时 AI。</li>
+          <li>最后按 <b>重置演示（Reset demo）</b> 回到起点。</li>
+        </ol>
+        <div class="note">⚠️ 你的操作只保存在<b>这台电脑的这个浏览器</b>里。这不是备份：换电脑、换浏览器或清除浏览器数据，就会从头开始；别人打开你的网址，也看不到你的操作。</div>
+        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="4"><span>接受的待办出现在日历上；重新载入网页后还在；按重置后回到第 1 天。</span></label></div>
+      </section>
+
+      <section class="step" id="s5" aria-labelledby="h5">
+        <div class="step-head"><span class="num">第 5 步</span><h2 id="h5">第一次修改：换成你自己的店名</h2><span class="where">你的仓库 › data › business.json</span></div>
+        <p><a class="btn primary" data-link="edit" href="#details" target="_blank" rel="noopener">✏️ 打开要修改的文件 ↗</a></p>
+        <ol>
+          <li>按上面的按钮（或在你的仓库里点 <code>data</code> → <code>betterspace-b2c</code> → <code>business.json</code> → 右上角铅笔 <b>Edit this file</b>）。</li>
+          <li>找到 <code>"name_zh"</code> 这一行，<b>只改引号里面的字</b>。引号、冒号和行尾的逗号都要保留：
+            <div class="example"><span class="lbl">原来</span><span class="was">"name_zh": "BetterSpace 家居生活馆",</span>
+<span class="lbl">改成</span><span class="add">"name_zh": "我的家居小店",</span></div>
+            英文名在上面的 <code>"name"</code> 行，想改也可以用同样方法改。</li>
+          <li>按右上角 <b>Commit changes…</b> → 再按 <b>Commit changes</b>。</li>
+          <li>回到 <b>Actions → Publish site → Run workflow</b>，重新发布。<b>每次修改后都要重新发布一次</b>，网站才会更新。</li>
+          <li>等绿色勾，再打开你的网址，按 <b>Ctrl + F5</b> 强制重新载入。</li>
+        </ol>
+        <div class="metaphor">比喻：Commit 就像游戏存档。每次存档都有记录；改坏了可以回到上一个存档（文件页面右上角的 <b>History</b>）。</div>
+        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="5"><span>在中文界面、B2C 业务下，左上角显示我的新店名。</span></label></div>
+        <p class="stuck"><b>卡住了？</b>发布出现红叉，失败在 <b>Run npm run check</b>：多半是文件格式被改坏了（少了引号或逗号）。自动检查会拦住它，网站仍是上一个正常版本。打开文件，对照上面的例子改回来，再 Commit 和发布一次。</p>
+      </section>
+
+      <section class="step" id="s6" aria-labelledby="h6">
+        <div class="step-head"><span class="num">第 6 步</span><h2 id="h6">在自己电脑上开发（可选）</h2><span class="where">你的电脑</span></div>
+        <p>在浏览器里改文件适合小修改。想认真扩展（新增指标、图表、页面），就在自己电脑上开发：改完马上能看到效果，也能先跑检查再上传。</p>
+        <ol>
+          <li>安装 <b>Node.js 22 LTS</b>（<a href="https://nodejs.org" target="_blank" rel="noopener">nodejs.org</a>）和 <b>GitHub Desktop</b>（<a href="https://desktop.github.com" target="_blank" rel="noopener">desktop.github.com</a>），都用默认选项。</li>
+          <li>GitHub Desktop 登录同一个 GitHub 账号 → <b>File → Clone repository</b> → 选 <span class="pill" id="v-repo-short2">用户名/仓库名</span> → <b>Clone</b>。</li>
+          <li><b>Repository → Open in Command Prompt</b>（或 PowerShell），依次输入：
+            <div class="kv" style="margin:8px 0">
+              <span class="k">第一次</span><span class="chip"><code id="c-install">npm install</code><button type="button" data-copy="c-install">复制</button></span>
+              <span class="k">打开开发网页</span><span class="chip"><code id="c-dev">npm run dev</code><button type="button" data-copy="c-dev">复制</button></span>
+            </div>
+            然后在浏览器打开 <b>http://localhost:5173</b>。修改 <code>src/</code> 里的文件后，重新载入网页就能看到变化。按 <b>Ctrl + C</b> 停止。</li>
+          <li>上传之前先跑完整检查：<span class="chip"><code id="c-check">npm run check</code><button type="button" data-copy="c-check">复制</button></span> 最后应该显示 <code>fail 0</code>。</li>
+          <li>回到 GitHub Desktop：左下角写一句说明 → <b>Commit to main</b> → <b>Push origin</b>。然后照第 3 步 <b>Publish site</b>。</li>
+        </ol>
+        <div class="note">⚠️ 安装时可能看到 esbuild 的「install-scripts」提示，这是正常的，不影响使用。</div>
+        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="6"><span>http://localhost:5173 显示仪表盘；<code>npm run check</code> 显示 <code>fail 0</code>；Push 之后，GitHub 上的 <b>Tests</b> 是绿色勾。</span></label></div>
+        <p class="stuck"><b>卡住了？</b>「'npm' 不是内部或外部命令」：Node.js 没装好，或装完没重开命令窗口。双击 <code>src/index.html</code> 打不开是正常的——开发时一定要用 <code>npm run dev</code>。</p>
+      </section>
+
+      <section class="step" id="s7" aria-labelledby="h7">
+        <div class="step-head"><span class="num">第 7 步</span><h2 id="h7">让 AI 编程助手帮你扩展</h2><span class="where">你的电脑 · AI 编程助手</span></div>
+        <p>在第 6 步的文件夹里打开 AI 编程助手（例如 Claude Code）。项目里的 <code>AGENTS.md</code> 写着不能改坏的规则：数字必须从记录算出来、报告日期固定、不联网、不放钥匙、所有文字要有中文翻译、示例分析要诚实标明。每次都先让它读这个文件。</p>
+        <div class="example">请先读 AGENTS.md。在 B2B 概览加一个「本期服务类订单额」KPI，
+加上中文翻译和测试，然后运行 npm run check，
+告诉我结果，以及你没能验证的地方。</div>
+        <div class="two">
+          <div><h3>新增指标</h3><p>例如「本期服务类订单额」。B2B 第 1 天 8 月应为 RM 3,400（5 笔）——答案要自己从数据算，不能从应用里抄。</p></div>
+          <div><h3>新增图表</h3><p>例如「按产品的订单额」。用现成的横条图，颜色只用样式表里已有的颜色。</p></div>
+          <div><h3>新增待办规则</h3><p>例如「感谢回头客」。每条建议的编号要稳定，第 1 天和第 2 天才对得上。</p></div>
+          <div><h3>新增页面</h3><p>例如「产品」页。复制一个现有页面，再加到菜单里。</p></div>
+        </div>
+        <p>完整做法和代码位置在仓库的 <code>docs/STUDENT_SOP.md</code>。</p>
+        <div class="danger">⚠️ 不要把任何 API 钥匙写进网页代码——网站是公开的，任何人都能看到。以后想接入实时 AI，钥匙必须放在你自己管理的服务器上（见 <code>docs/STUDENT_SOP.md</code> 第 6 节）。</div>
+        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="7"><span>助手做完后，<code>npm run check</code> 通过；我在网页上看过中文和英文；Push 并 Publish site 后，新功能出现在我的网址上。</span></label></div>
+      </section>
+
+      <section class="panel" id="rules" aria-labelledby="hr">
+        <h2 id="hr">规则与限制</h2>
+        <div class="table-wrap"><table>
+          <thead><tr><th>要记住</th><th>为什么</th></tr></thead>
+          <tbody>
+            <tr><td><b>本地保存不是云端备份</b></td><td>网页上的操作只存在那台电脑的那个浏览器里；没有登录、没有同步、没有共享。</td></tr>
+            <tr><td><b>示例分析不是实时分析</b></td><td>它是预先写好的，描述原始数据；你接受或修改待办，它不会重新分析。</td></tr>
+            <tr><td><b>只放虚构或匿名数据</b></td><td>仓库和网站都是公开的，网站文件里包含全部记录。这是学习项目，不适合机密的真实业务数据。</td></tr>
+            <tr><td><b>每次修改都要重新发布</b></td><td>Commit 或 Push 只是更新代码；运行 <b>Publish site</b> 后网站才会更新。检查没通过就不会发布。</td></tr>
+            <tr><td><b>报告日期是固定的</b></td><td>第 1 天是 2026 年 8 月 30 日，第 2 天是 8 月 31 日，不会随今天的日期改变。</td></tr>
+            <tr><td><b>换成自己的数据要按步骤来</b></td><td>先读 <code>docs/STUDENT_SOP.md</code> 第 5 节：数据格式、答案文件和示例分析都要一起更新。</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <footer>InfiniteSales AI · 业务仪表盘起步项目 SOP · 0.1.0 · 模板：github.com/ivaninm-ai/business-dashboard-starter · 上面填的资料只存在你这台设备的浏览器里，不会上传到任何地方。这份指南不含任何钥匙，也不会向你要钥匙。有问题把截图发到学员群。</footer>
+    </div>
   </div>
-</section>
-
-<h2><span class="part">A</span>课堂演示 · The classroom demo</h2>
-
-<h3 id="open">A1 打开演示 · Open it</h3>
-<ol class="steps">
-  <li><b>下载文件</b> <code>business-dashboard-demo.html</code>：打开 <a href="https://github.com/ivaninm-ai/business-dashboard-starter/releases/latest">https://github.com/ivaninm-ai/business-dashboard-starter/releases/latest</a>，在 Assets 里点它（也可以用老师发给你的文件）。</li>
-  <li><b>双击</b>，用 Chrome 或 Edge 打开。页面直接显示「BetterSpace 家居生活馆」第 1 天的概览。<br><span class="en">Double-click it; it opens straight into the B2C Day 1 overview.</span></li>
-  <li><b>确认</b>页面最上方有深红色横条「教学演示 · 所有记录都是虚构的练习数据」。</li>
-</ol>
-<p class="note">已在 Windows 的 Edge 和 Chrome 中测试（直接从磁盘打开）。Firefox、Safari 应该也可以，但还没测试。页面空白时，请确认浏览器开启了 JavaScript 并且是较新版本。<br><span class="en">Tested in Edge and Chrome on Windows from disk; Firefox and Safari not yet tested.</span></p>
-
-<h3 id="scenario">A2 选择业务和日期 · Choose a business and a day</h3>
-<p>页面上方的场景栏：</p>
-<p>业务 <span class="seg"><span class="on">B2C 家居零售</span><span>B2B 办公家具</span></span>　场景 <span class="seg"><span class="on">第 1 天 · 2026年8月30日</span><span>第 2 天 · 2026年8月31日</span></span></p>
-<p>两个虚构企业，各自有两天的完整数据快照。<b>报告日期是固定的</b>（第 1 天 8 月 30 日，第 2 天 8 月 31 日），不会跟着电脑的日期变，所以每次上课看到的数字都一样。右上角可以切换 <span class="ui">语言 · Language：中文 / English</span>。</p>
-<p class="en">Two synthetic businesses, two full snapshots each. The reporting date is fixed, so the figures never drift with today's date.</p>
-
-<h3 id="explore">A3 看数字和示例分析 · Explore</h3>
-<div class="cards">
-  <div class="card"><h4>概览 Overview</h4><p>订单额、已收款、未收款、逾期、待完成、低库存。每个数字下面写着它的范围和日期。</p></div>
-  <div class="card"><h4>订单 · 客户 · 收款 · 库存</h4><p>点表格中的一行，就能看到数字背后的那条记录和它在文件中的位置。</p></div>
-  <div class="card"><h4>示例分析 Example analysis</h4><p>为同一天<b>预先写好</b>的分析，标着「预先准备 · 不是实时 AI」。可以展开「查看它依据的事实」。</p></div>
 </div>
 
-<h3 id="task">A4 接受一个待办，看它出现在日历上 · Accept a task</h3>
-<ol class="steps">
-  <li>打开 <b>待办（Tasks）</b>，选一条建议，例如「跟进 BS-001 的收款」。点「依据：BS-001」会打开那张订单。</li>
-  <li>按 <span class="ui primary">接受（Accept）</span>。建议的日期和负责人变成正式的行动日期。</li>
-  <li>按 <span class="ui">编辑（Edit）</span>，把行动日期改成 9 月 2 日，写一条备注，按 <span class="ui primary">保存（Save）</span>。</li>
-  <li>打开 <b>日历（Calendar）</b>：这条待办出现在你选的日期上。再按 <span class="ui primary">+ 新增备注（Add note）</span> 加一条自己的备注。</li>
-</ol>
-<p class="legend">日历颜色：<i style="background:#B08A33"></i>记录中的截止日期 <i style="background:#2370B5"></i>已接受的待办 <i style="border:2px dashed #8C7B6B;width:8px;height:8px"></i>你的备注 <i style="background:#C2410C"></i>⚠ 已过报告日期的截止日期</p>
+<script>
+(function () {
+  var KEY = 'bd-starter-sop-v1';
+  var TOTAL = 8;
+  var state = { user: '', repo: 'my-business-dashboard', checks: {} };
+  try { var saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && typeof saved === 'object') { state.user = String(saved.user || ''); state.repo = String(saved.repo || state.repo); state.checks = saved.checks && typeof saved.checks === 'object' ? saved.checks : {}; } } catch (e) {}
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  var $ = function (id) { return document.getElementById(id); };
+  var userOk = function (u) { return /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/.test(u) && !/--/.test(u) && !/-$/.test(u); };
+  var repoOk = function (r) { return /^[A-Za-z0-9._-]{1,100}$/.test(r) && r !== '.' && r !== '..'; };
 
-<h3 id="day2">A5 前进到第 2 天 · Advance to Day 2</h3>
-<p>按 <span class="ui primary">前进到第 2 天（Advance to Day 2）</span>。记录换成 8 月 31 日的快照，所有数字重新计算。你在第 1 天做的决定会保留（按同一个待办编号），并标着「第 1 天已决定」；第 2 天才有的建议标着「第 2 天新增」；新数据已经不支持的建议移到「已由数据解决」。</p>
-<div class="tablewrap"><table>
-  <thead><tr><th>业务</th><th>值得讨论的变化 · What changed</th></tr></thead>
-  <tbody>
-    <tr><td>B2B</td><td><b>BS-001</b> 的尾款 RM 4,500 付清：逾期余额 RM 30,515 → RM 26,015，订单额不变——收款不是新订单。</td></tr>
-    <tr><td>B2B</td><td><b>T001</b> 在库 22 → 30，但全部被预留，可用仍是 0——到货不等于可卖。</td></tr>
-    <tr><td>B2B</td><td><b>BS-003</b> 原定 8 月 30 日完成：第 1 天「今天到期」，第 2 天变成逾期。新潜在客户 <b>BC-046</b> 没有负责人。</td></tr>
-    <tr><td>B2C</td><td><b>RS-001</b> 完成了，逾期提醒消失；但 <b>RS-002、RS-229、RS-238</b> 没在 8 月 30 日完成，逾期交付从 8 笔变成 10 笔。</td></tr>
-  </tbody>
-</table></div>
+  function render() {
+    var u = state.user.trim(), r = state.repo.trim() || 'my-business-dashboard';
+    var goodU = userOk(u), goodR = repoOk(r);
+    $('h-user').textContent = !u ? '登录 GitHub 后，右上角头像里显示的名字' : goodU ? '✓ 看起来没问题' : '只能有英文字母、数字和连字符（-），不要有空格或 @';
+    $('h-user').className = 'hint' + (u && !goodU ? ' bad' : '');
+    $('h-repo').textContent = goodR ? '英文字母、数字、- 或 _' : '只能有英文字母、数字、-、_ 或 .，不要有空格或中文';
+    $('h-repo').className = 'hint' + (goodR ? '' : ' bad');
+    var shownU = goodU ? u : '用户名', shownR = goodR ? r : '仓库名';
+    var repoUrl = 'https://github.com/' + shownU + '/' + shownR;
+    var site = 'https://' + shownU.toLowerCase() + '.github.io/' + shownR + '/';
+    $('v-repo').textContent = repoUrl;
+    $('v-site').textContent = site;
+    $('v-site2').textContent = site;
+    $('v-reponame').textContent = shownR;
+    $('v-repo-short').textContent = shownU + ' / ' + shownR;
+    $('v-repo-short2').textContent = shownU + '/' + shownR;
+    var ready = goodU && goodR;
+    var links = { pages: repoUrl + '/settings/pages', publish: repoUrl + '/actions/workflows/publish-site.yml', edit: repoUrl + '/edit/main/data/betterspace-b2c/business.json' };
+    Array.prototype.forEach.call(document.querySelectorAll('[data-link]'), function (a) {
+      if (ready) { a.href = links[a.getAttribute('data-link')]; a.target = '_blank'; a.removeAttribute('title'); }
+      else { a.href = '#details'; a.removeAttribute('target'); a.title = '先在“你的资料”填 GitHub 用户名和仓库名'; }
+    });
+    var done = 0;
+    Array.prototype.forEach.call(document.querySelectorAll('#rail a[data-step]'), function (a) {
+      var d = !!state.checks[a.getAttribute('data-step')];
+      a.classList.toggle('done', d);
+      if (d) done++;
+    });
+    $('progress').textContent = '已完成 ' + done + ' / ' + TOTAL + ' 步' + (done === TOTAL ? ' 🎉' : '');
+  }
 
-<h3 id="reset">A6 重置演示 · Reset</h3>
-<p>按 <span class="ui">重置演示（Reset demo）…</span>，选「只重置这个业务」或「重置两个业务」。重置后回到第 1 天，没有待办决定和备注；语言选择会保留；内置的记录永远不会被修改。</p>
-
-<h3 id="saving">保存说明 · About saving</h3>
-<ul>
-  <li>操作只保存在<b>这台电脑的这个浏览器</b>里，不是备份，不会同步，也不会给别人看到。B2C 和 B2B 分开保存。</li>
-  <li>换浏览器、换电脑、清除浏览器数据、关闭无痕窗口，都会从头开始。</li>
-  <li>在 Chrome 和 Edge 中，同一台电脑上从磁盘打开的所有演示副本<b>共用同一份保存状态</b>。几个人共用电脑时，先按「重置演示」。</li>
-  <li>如果浏览器不允许保存，页面会显示黄色提示；演示仍然能用，但重新载入后更改会消失。</li>
-</ul>
-
-<h2><span class="part">B</span>课后：建立和扩展你自己的版本 · Your own copy</h2>
-
-<h3 id="own">B1 建立你自己的仓库 · Create your repository</h3>
-<ol class="steps">
-  <li>登录你自己的 GitHub 账号（没有就免费注册），打开模板 <a href="https://github.com/ivaninm-ai/business-dashboard-starter">https://github.com/ivaninm-ai/business-dashboard-starter</a>，按 <span class="ui primary">Use this template</span> → <span class="ui">Create a new repository</span>。</li>
-  <li>Owner 选你自己的账号，取个名字（例如 <code>my-business-dashboard</code>），创建。</li>
-  <li>下载到电脑：GitHub Desktop（Code → Open with GitHub Desktop），或 <code>git clone</code>。不用 GitHub 的话也可以 Download ZIP。</li>
-</ol>
-
-<h3 id="env">B2 开发环境 · Development environment</h3>
-<p>安装 <b>Node.js 22 LTS 或更新版本</b>（nodejs.org）。在项目文件夹打开终端：</p>
-<pre><span class="c"># 第一次：安装打包工具（只有 esbuild 一个）</span>
-npm install
-<span class="c"># 开发：打开 http://localhost:5173 ，改完文件后重新载入浏览器</span>
-npm run dev
-<span class="c"># 核对所有数字、规则、翻译和示例分析</span>
-npm test
-<span class="c"># 生成可以双击打开的单一文件 dist/business-dashboard-demo.html</span>
-npm run build
-<span class="c"># 分享前：build + test</span>
-npm run check</pre>
-<p class="en">npm 11 may warn that esbuild's install script was skipped; the build still works.</p>
-
-<h3 id="map">B3 项目结构与数据流 · Folders and data flow</h3>
-<div class="flow">
-  <div class="box"><b>练习数据</b> <code>data/&lt;业务&gt;/day1|day2/*.csv</code> · <code>metadata.json</code>（报告日期）· <code>business.json</code>（列名对应、状态含义、待办规则）</div>
-  <div class="arrow">▼ <code>npm run data</code></div>
-  <div class="box"><b>读取场景</b> <code>src/data/scenarios.js</code> — 解析 CSV、对应列名、检查记录；报告日期 = <code>as_of_date</code></div>
-  <div class="arrow">▼</div>
-  <div class="box"><b>计算</b> <code>src/core/</code> — <code>metrics.js</code> 数字 · <code>tasks.js</code> 待办规则 · <code>scenario-tasks.js</code> 第 1 天→第 2 天 · <code>calendar.js</code> 日历</div>
-  <div class="arrow">▼</div>
-  <div class="side">
-    <div class="box"><b>当前视图</b> <code>src/ui/view-state.js</code><br>业务、日期、筛选</div>
-    <div class="box"><b>本地保存</b> <code>src/storage/local-state.js</code><br>待办决定、备注、日期、语言</div>
-  </div>
-  <div class="arrow">▼</div>
-  <div class="box"><b>页面</b> <code>src/ui/pages/*.js</code>（文字经过 <code>tr()</code>/<code>tl()</code>，中文在 <code>src/i18n/zh.js</code>）· <b>示例分析</b> <code>src/briefs/</code></div>
-</div>
-<p class="en">Records → scenario loader → calculations → view state (+ browser storage) → pages. Answer keys live in <code>test/expected/</code> and are never read by the app.</p>
-
-<h3 id="extend">B4 动手扩展 · Four exercises</h3>
-<p>每个练习的完整代码在 <code>docs/STUDENT_SOP.md</code> 第 4 节。做完都要运行 <code>npm test</code>，再在浏览器里看一遍（中文和英文）。</p>
-<div class="cards">
-  <div class="card"><h4>新增 KPI</h4><p>例如「本期服务类订单额」。B2B 第 1 天 8 月应为 <b>RM 3,400</b>（5 笔）——答案要自己从数据算，不能从应用里抄。</p><p class="files">core/metrics.js → pages/overview.js → i18n/zh.js → test/</p></div>
-  <div class="card"><h4>新增图表</h4><p>用现成的 <code>hbars()</code> 或 <code>trendChart()</code>，颜色只用样式表里的变量。</p><p class="files">ui/components.js → pages/*.js</p></div>
-  <div class="card"><h4>新增待办规则</h4><p>例如「感谢回头客」。编号必须稳定（规则:记录ID），第 1 天和第 2 天才对得上。</p><p class="files">core/model.js → core/tasks.js → data/*/business.json</p></div>
-  <div class="card"><h4>新增页面</h4><p>复制一个页面文件，在 <code>main.js</code> 注册，在 <code>shell.js</code> 的菜单加一项。</p><p class="files">ui/pages/ → main.js → ui/shell.js</p></div>
-</div>
-
-<h3 id="data">B5 换成你自己的数据 · Replace the data deliberately</h3>
-<ol class="steps">
-  <li>复制 <code>data/betterspace-b2c/</code> 成新文件夹；<code>business.json</code> 的 <code>id</code> 要和文件夹名一样。</li>
-  <li>保持四个表：客户、销售（一行一个订单）、收款（对应订单）、库存快照。列名和 <code>business.json</code> 的对应一致；日期 <code>2026-08-30</code>，金额用数字。</li>
-  <li>每一天的 <code>metadata.json</code> 写报告日期 <code>as_of_date</code>。第 2 天是完整快照，不是新增几行。</li>
-  <li><code>npm run data</code>。记录有问题时，页面会列出问题而不显示数字。</li>
-  <li>为新数据写答案 <code>test/expected/…</code>（自己用试算表算），并重写或删除 <code>src/briefs/examples.js</code> 里对应的示例分析。</li>
-</ol>
-<p class="note warn">只放虚构或已匿名化的数据。<code>npm run build</code> 会把全部记录放进 HTML 文件，任何拿到文件的人都能读到。</p>
-
-<h3 id="later">B6 以后接入实时 AI 和真正的存储 · Later: live AI and real storage</h3>
-<div class="cards">
-  <div class="card"><h4>实时 AI</h4><p>API 密钥<b>只能放在你自己控制的服务器</b>上，绝不能写进网页。服务器用 <code>buildBriefInput()</code> 的事实 + <code>prompts/daily_brief.md</code> 调用 AI，用 <code>unsupportedTokens()</code> 核对数字后才显示，并标明模型和时间。还要改 CSP 只允许连到你的服务器。</p></div>
-  <div class="card"><h4>真正的存储</h4><p>所有保存都经过 <code>createStateStore()</code>。换成云端时用同样的函数名实现，改成 <code>await</code>，并考虑登录、权限、备份和隐私法。</p></div>
-</div>
-
-<h3 id="publish">B7 发布你自己的版本（可选）· Publish your copy</h3>
-<p><b>GitHub Pages：</b>你的仓库 → Settings → Pages → Source 选 <b>GitHub Actions</b> → Actions → <b>Publish site</b> → Run workflow。网址是 <code>https://&lt;用户名&gt;.github.io/&lt;仓库名&gt;/</code>。<br><b>其他静态网站服务：</b><code>npm run build</code> 后上传 <code>dist/site/index.html</code>。</p>
-<p class="note warn">发布后任何有链接的人都能看到文件里的全部记录——只发布虚构数据。</p>
-
-<h3 id="agent">B8 和 AI 编程助手合作 · Working with an AI coding assistant</h3>
-<p>先让助手读 <code>AGENTS.md</code>（Claude Code 会通过 <code>CLAUDE.md</code> 自动读取）。里面写着不能改坏的规则：数字来自记录、报告日期固定、数据边界、不联网不放密钥、翻译、示例分析要诚实。可以这样说：</p>
-<pre>请先读 AGENTS.md。在 B2B 概览加一个「本期服务类订单额」KPI，
-加上中文翻译和测试，然后运行 npm run check，告诉我结果和你没能验证的地方。</pre>
-
-<h2 id="faq">常见问题 · FAQ</h2>
-<div class="tablewrap"><table>
-  <tbody>
-    <tr><th>页面是空白的</th><td>确认浏览器开启了 JavaScript，并且是较新版本的 Chrome、Edge、Firefox 或 Safari。</td></tr>
-    <tr><th>重新打开后我的操作不见了</th><td>是不是换了浏览器、用了无痕窗口，或清除了浏览器数据？页面上方有黄色提示时，表示这个浏览器不允许保存。</td></tr>
-    <tr><th>别人的操作出现在我的演示里</th><td>同一台电脑、同一个浏览器里所有演示副本共用保存状态。按「重置演示」。</td></tr>
-    <tr><th>示例分析和我改过的待办不一致</th><td>正常：示例分析是预先写好的，描述的是原始数据，不会重新分析你的操作。</td></tr>
-    <tr><th>双击 <code>src/index.html</code> 没反应</th><td>源代码要用 <code>npm run dev</code> 打开；双击用的是 <code>npm run build</code> 生成的 <code>dist/</code> 文件。</td></tr>
-    <tr><th><code>npm test</code> 说数字不对</th><td>先看是哪个场景、哪个数字；修正计算代码，不要去改 <code>test/expected/</code> 的答案。</td></tr>
-  </tbody>
-</table></div>
-
-<footer>
-  业务仪表盘起步项目 0.1.0 · 所有记录均为虚构的 BetterSpace 练习数据 · 详细说明：<code>docs/START_HERE.md</code>（课堂）、<code>docs/STUDENT_SOP.md</code>（扩展）、<code>AGENTS.md</code>（AI 助手）。<br>
-  Business Dashboard Starter 0.1.0 · synthetic training data only.
-</footer>
-</div>
+  $('f-user').value = state.user;
+  $('f-repo').value = state.repo;
+  $('f-user').addEventListener('input', function (e) { state.user = e.target.value.trim(); save(); render(); });
+  $('f-repo').addEventListener('input', function (e) { state.repo = e.target.value.trim(); save(); render(); });
+  Array.prototype.forEach.call(document.querySelectorAll('input[data-check]'), function (cb) {
+    cb.checked = !!state.checks[cb.getAttribute('data-check')];
+    cb.addEventListener('change', function () { state.checks[cb.getAttribute('data-check')] = cb.checked; save(); render(); });
+  });
+  $('clear').addEventListener('click', function () {
+    state = { user: '', repo: 'my-business-dashboard', checks: {} };
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    $('f-user').value = ''; $('f-repo').value = state.repo;
+    Array.prototype.forEach.call(document.querySelectorAll('input[data-check]'), function (cb) { cb.checked = false; });
+    render();
+  });
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('button[data-copy]') : null;
+    if (!b) return;
+    var text = $(b.getAttribute('data-copy')).textContent;
+    var done = function (msg) { var old = b.textContent; b.textContent = msg; setTimeout(function () { b.textContent = old; }, 1400); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function () { done('已复制'); }, function () { done('请手动复制'); });
+    else done('请手动复制');
+  });
+  render();
+})();
+</script>
 </body>
 </html>
