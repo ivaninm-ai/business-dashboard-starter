@@ -5,11 +5,11 @@
 
 ## 1. 打开演示 · Open the demo
 
-1. 找到文件 **`business-dashboard-demo.html`**（在项目的 `dist/` 文件夹里，或老师发给你的文件）。
+1. 下载文件 **`business-dashboard-demo.html`**：在 https://github.com/ivaninm-ai/business-dashboard-starter/releases/latest 的 Assets 里点它（或用老师发给你的文件，或自己 `npm run build` 后在 `dist/` 里找到）。
 2. **双击**，用 Chrome 或 Edge 打开。页面会直接显示「BetterSpace 家居生活馆」第 1 天的概览。
 3. 看到页面最上方的深红色横条：「教学演示 · 所有记录都是虚构的练习数据」，就说明打开成功。
 
-Double-click `business-dashboard-demo.html` (in `dist/`, or the copy your teacher sent). It opens in Chrome or Edge straight into the B2C Day 1 overview. The dark-red ribbon at the top confirms it is the training demo.
+Download `business-dashboard-demo.html` from the Assets of https://github.com/ivaninm-ai/business-dashboard-starter/releases/latest (or use your teacher's copy, or `dist/` after `npm run build`), then double-click it. It opens in Chrome or Edge straight into the B2C Day 1 overview. The dark-red ribbon at the top confirms it is the training demo.
 
 **已测试 · Tested:** Windows 上的 Microsoft Edge 和 Google Chrome，直接从磁盘打开（file://）。Firefox 和 Safari 应该可以使用，但还没有测试过。
 Tested in Edge and Chrome on Windows, opened from disk. Firefox and Safari should work but have not been tested.

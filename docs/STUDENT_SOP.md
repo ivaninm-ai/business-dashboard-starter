@@ -13,15 +13,15 @@ For students who want to build on the starter after class: get your own copy, ru
 
 ## 1. 建立你自己的仓库 · Create your own repository
 
-老师把模板发布到 GitHub 之后：
+模板在这里：**https://github.com/ivaninm-ai/business-dashboard-starter**
 
-1. 打开模板仓库页面，按 **Use this template → Create a new repository**。
+1. 打开上面的模板页面（需要先登录你自己的 GitHub 账号，没有就免费注册一个），按 **Use this template → Create a new repository**。
 2. Owner 选你自己的账号，取一个名字（例如 `my-business-dashboard`），按 **Create repository**。
 3. 把它下载到电脑：用 **GitHub Desktop**（Code → Open with GitHub Desktop），或在终端运行 `git clone <你的仓库地址>`。
 
 不想用 GitHub？在模板页面按 **Code → Download ZIP**，解压即可（但这样就没有版本记录）。
 
-Once the template is published: **Use this template → Create a new repository** under your own account, then clone it (GitHub Desktop or `git clone`). Or download the ZIP.
+Template: https://github.com/ivaninm-ai/business-dashboard-starter — sign in to your own GitHub account, press **Use this template → Create a new repository**, then clone it (GitHub Desktop or `git clone`). Or download the ZIP.
 
 ## 2. 开发环境 · Development environment
 

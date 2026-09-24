@@ -11,9 +11,9 @@ A **setup-free** classroom demo and starter project for a small-business dashboa
 
 | 我想… · I want to… | 做法 · How |
 |---|---|
-| 在课堂上打开演示 · Open the classroom demo | 双击 `dist/business-dashboard-demo.html`（不需要安装、登录或联网）· Double-click the file — no install, sign-in or internet. See [docs/START_HERE.md](docs/START_HERE.md). |
+| 在课堂上打开演示 · Open the classroom demo | 从 [Releases](https://github.com/ivaninm-ai/business-dashboard-starter/releases/latest) 下载 `business-dashboard-demo.html`（或 `npm run build` 后在 `dist/`），双击打开——不需要安装、登录或联网 · Download it from Releases (or build it), then double-click. See [docs/START_HERE.md](docs/START_HERE.md). |
 | 在浏览器里阅读学生指南 · Read the student guide | 打开 [docs/student-guide.html](docs/student-guide.html) |
-| 修改和扩展自己的版本 · Change and extend my own copy | 按 [docs/STUDENT_SOP.md](docs/STUDENT_SOP.md) 操作 |
+| 建立自己的版本 · Get my own copy | 按本页右上方的 **Use this template → Create a new repository**，然后按 [docs/STUDENT_SOP.md](docs/STUDENT_SOP.md) 操作 · Press **Use this template**, then follow the SOP |
 | 让 AI 编程助手帮忙修改 · Ask an AI coding assistant to help | 先让它读 [AGENTS.md](AGENTS.md) |
 
 开发命令（需要 Node.js 22 或更新版本）· Development commands (Node.js 22+):
