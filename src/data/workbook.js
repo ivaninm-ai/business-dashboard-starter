@@ -18,6 +18,7 @@ import { ENTITIES } from '../core/model.js';
 import { applyTableMapping, relationalChecks, resolveReportingDate, hasErrors, findHeaderIndex, issue } from '../core/mapping.js';
 import { monthStart } from '../core/dates.js';
 import { tr } from '../i18n/i18n.js';
+import { SITE_CONFIG } from '../site-config.js';
 
 export const MY_EXCEL = 'my-excel';
 export const WORKBOOK_VERSION = 1;
@@ -68,7 +69,8 @@ export async function readWorkbook(arrayBuffer) {
 
 // The business profile for a workbook: the training layout, minus optional columns the
 // file does not have, with the task rules of the training business it resembles.
-export function workbookProfile(fileName, sheets) {
+// businessName: the site's BUSINESS_NAME setting; without it the file name is the name.
+export function workbookProfile(fileName, sheets, businessName = SITE_CONFIG.businessName) {
   const base = layout();
   const warnings = [];
   const tables = base.tables.map(t => {
@@ -87,11 +89,11 @@ export function workbookProfile(fileName, sheets) {
   // Owners and follow-ups (like B2B) → B2B rules; otherwise B2C rules, plus follow-ups if recorded.
   let tasks = (hasOwner && hasFollowUp ? DATASETS['betterspace-b2b'] : DATASETS['betterspace-b2c']).profile.policies.tasks.map(r => ({ ...r }));
   if (hasFollowUp && !hasOwner) tasks = tasks.map(r => (r.rule === 'follow_up_due' ? { ...r, enabled: true } : r));
-  const name = String(fileName || '').replace(/\.xlsx$/i, '').trim();
+  const name = businessName || String(fileName || '').replace(/\.xlsx$/i, '').trim();
   return {
     profile: {
       id: MY_EXCEL,
-      business: { name: name || 'My Excel', name_zh: name || '我的 Excel', short: 'My Excel', short_zh: '我的 Excel', model: '', industry: '', description: '', team: [], timezone: base.business.timezone, currency: base.business.currency, currency_symbol: base.business.currency_symbol, synthetic: false },
+      business: { name: name || 'My Excel', name_zh: name || '我的 Excel', short: businessName || 'My Excel', short_zh: businessName || '我的 Excel', model: '', industry: '', description: '', team: [], timezone: base.business.timezone, currency: base.business.currency, currency_symbol: base.business.currency_symbol, synthetic: false },
       period: {},
       labels: { customers: 'Customers', customer: 'Customer', sales: 'Orders', sale: 'Order', payments: 'Payments', payment: 'Payment', stock: 'Stock', item: 'Product', owner: 'Owner', channel: 'Channel' },
       labels_zh: { customers: '客户', customer: '客户', sales: '订单', sale: '订单', payments: '收款', payment: '收款', stock: '库存', item: '产品', owner: '负责人', channel: '渠道' },

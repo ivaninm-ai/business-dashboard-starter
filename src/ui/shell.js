@@ -4,7 +4,7 @@
 import { $, h, t, add, modal, toast } from './dom.js';
 import { view, scenario, openTasks, labelTl, businessName, defaultFilters, isZh, isExcel } from './view-state.js';
 import { navigate, rerender } from './router.js';
-import { allBusinessIds, businessProfile, dayMetadata, DAYS, dayNumber, nextDay } from '../data/scenarios.js';
+import { allBusinessIds, businessProfile, dayMetadata, DAYS, dayNumber, nextDay, MY_EXCEL } from '../data/scenarios.js';
 import { pickExcel, forgetExcel, restoreWorkbook } from './pages/excel.js';
 import { formatDate } from '../core/dates.js';
 import { setLocale, getLocale, tr, tl } from '../i18n/i18n.js';
@@ -82,7 +82,7 @@ function renderRibbon() {
 
 function segmented(label, items) {
   return h('div', { class: 'scn-group', role: 'group', 'aria-label': label }, t('span', label, 'scn-label'),
-    h('div', { class: 'segmented' }, ...items.map(it => h('button', { type: 'button', class: it.active ? 'active' : '', 'aria-pressed': String(it.active), title: it.title || null, onclick: it.onclick }, it.text))));
+    h('div', { class: 'segmented' }, ...items.map(it => h('button', { type: 'button', class: [it.active && 'active', it.shrink && 'shrink'].filter(Boolean).join(' '), 'aria-pressed': String(it.active), title: it.title || null, onclick: it.onclick }, it.text))));
 }
 
 function renderScenarioBar() {
@@ -90,7 +90,7 @@ function renderScenarioBar() {
   const zh = isZh();
   add(bar, segmented(tr('Business'), allBusinessIds().map(id => {
     const b = businessProfile(id).business;
-    return { text: (zh ? b.short_zh : b.short) || b.name, title: (zh ? b.name_zh : b.name) || b.name, active: id === view.businessId, onclick: () => switchBusiness(id) };
+    return { text: (zh ? b.short_zh : b.short) || b.name, title: (zh ? b.name_zh : b.name) || b.name, active: id === view.businessId, shrink: id === MY_EXCEL, onclick: () => switchBusiness(id) };
   })));
   if (isExcel()) {
     const s = scenario();

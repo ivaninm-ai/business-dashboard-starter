@@ -13,12 +13,18 @@ import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { siteConfigFromEnv, siteConfigModule, describeSiteConfig } from './site-config.js';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const src = p => path.join(root, 'src', p);
 const pkg = JSON.parse(readFileSync(path.join(root, 'package.json'), 'utf8'));
 
-export async function buildHtml() {
+// config: the site settings (BUSINESS_NAME, START_WITH) — from the environment unless given.
+export async function buildHtml(config = siteConfigFromEnv()) {
+  const siteConfig = {
+    name: 'site-config',
+    setup(b) { b.onLoad({ filter: /[\\/]src[\\/]site-config\.js$/ }, () => ({ contents: siteConfigModule(config), loader: 'js' })); },
+  };
   const result = await build({
     entryPoints: [src('main.js')],
     bundle: true,
@@ -28,6 +34,7 @@ export async function buildHtml() {
     legalComments: 'eof', // keeps the MIT notice of the bundled Excel reader
     target: 'es2022', // any current Chrome, Edge, Firefox or Safari
     logLevel: 'silent',
+    plugins: [siteConfig],
   });
   // Inline script safety: "</script" or "<!--" inside the code would end or confuse the tag.
   const js = result.outputFiles[0].text.replace(/<\/script/gi, '<\\/script').replace(/<!--/g, '<\\!--');
@@ -54,7 +61,10 @@ export async function buildHtml() {
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const html = await buildHtml();
+  let config;
+  try { config = siteConfigFromEnv(); } catch (e) { console.error(e.message); process.exit(1); }
+  console.log(describeSiteConfig(config));
+  const html = await buildHtml(config);
   const out = path.join(root, 'dist', 'business-dashboard-demo.html');
   mkdirSync(path.join(root, 'dist', 'site'), { recursive: true });
   writeFileSync(out, html);

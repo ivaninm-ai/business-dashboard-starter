@@ -3,7 +3,7 @@
 
 import { setLocale, tr, tl } from './i18n/i18n.js';
 import { openStorage, createStateStore } from './storage/local-state.js';
-import { businessIds, hasBusiness } from './data/scenarios.js';
+import { startBusiness } from './data/scenarios.js';
 import { view, scenario, isExcel } from './ui/view-state.js';
 import { h, t } from './ui/dom.js';
 import { registerPage, navigate, onBeforeRender } from './ui/router.js';
@@ -45,7 +45,10 @@ function boot() {
   setLocale(prefs.locale || 'zh-CN');
   // Your own Excel, if one was opened here before (kept in this browser).
   try { restoreWorkbook(); } catch (e) { console.error(e); }
-  view.businessId = hasBusiness(prefs.business) ? prefs.business : businessIds()[0];
+  // START_WITH (a site setting) or the visitor's own last choice.
+  const start = startBusiness(prefs);
+  view.businessId = start.businessId;
+  if (start.seen) view.store.setPrefs({ business: start.businessId, start: start.seen });
   view.day = view.store.day(view.businessId);
 
   registerPage('overview', guarded(renderOverview));

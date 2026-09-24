@@ -64,6 +64,7 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fo
 .ribbon a { color: var(--surface); }
 .topbar { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 12px; padding: 8px 16px; background: var(--surface); border-bottom: 2px solid var(--brand); }
 .topbar .brand { color: var(--brand); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#business-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .topbar-right { display: flex; align-items: center; gap: 8px; }
 .lang { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink-2); }
 .lang select { padding: 4px 8px; }
@@ -71,9 +72,11 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fo
 .scn-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .scn-label { font-size: 12px; color: var(--muted); font-weight: 600; }
 .segmented { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--surface); }
-.segmented button { font: inherit; font-size: 13px; border: 0; background: transparent; color: var(--ink-2); padding: 5px 12px; cursor: pointer; }
+.segmented button { font: inherit; font-size: 13px; border: 0; background: transparent; color: var(--ink-2); padding: 5px 12px; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
 .segmented button + button { border-left: 1px solid var(--border); }
 .segmented button:hover { background: var(--surface-2); }
+/* A long business name (the site's BUSINESS_NAME) is shortened with … on narrow screens; the other labels keep their size. */
+.segmented button.shrink { flex-shrink: 1; min-width: 4em; max-width: 12em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .segmented button.active { background: var(--brand); color: var(--surface); font-weight: 600; }
 .scn-note { font-size: 12px; color: var(--muted); }
 .scn-reset { margin-left: auto; }

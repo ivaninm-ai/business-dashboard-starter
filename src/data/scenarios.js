@@ -7,6 +7,7 @@ import { DATASETS } from './datasets.generated.js';
 import { MY_EXCEL, emptyWorkbookProfile } from './workbook.js';
 import { parseCsv } from '../core/csv.js';
 import { applyTableMapping, relationalChecks, hasErrors } from '../core/mapping.js';
+import { SITE_CONFIG } from '../site-config.js';
 
 export const DAYS = ['day1', 'day2'];
 export { MY_EXCEL };
@@ -18,6 +19,15 @@ export function businessIds() { return Object.keys(DATASETS); }
 export function allBusinessIds() { return [...businessIds(), MY_EXCEL]; }
 
 export function hasBusiness(id) { return Object.hasOwn(DATASETS, id) || id === MY_EXCEL; }
+
+// Which business opens: the visitor's last choice in this browser; otherwise the site's
+// START_WITH setting, or the first training business. When the site owner changes
+// START_WITH, the new setting wins once (prefs.start records which setting was seen).
+export function startBusiness(prefs, startWith = SITE_CONFIG.startWith) {
+  const siteDefault = hasBusiness(startWith) ? startWith : businessIds()[0];
+  if (startWith && prefs.start !== startWith) return { businessId: siteDefault, seen: startWith };
+  return { businessId: hasBusiness(prefs.business) ? prefs.business : siteDefault, seen: null };
+}
 
 // The viewer's own workbook, once opened (see workbook.js). One snapshot, no Day 2.
 let workbook = null;

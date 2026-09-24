@@ -126,7 +126,7 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
       <a href="#s3" data-step="3"><span class="n">3</span>发布网站</a>
       <a href="#s4" data-step="4"><span class="n">4</span>试用你的网站</a>
       <a href="#s5" data-step="5"><span class="n">5</span>打开你的 Excel</a>
-      <a href="#s6" data-step="6"><span class="n">6</span>第一次修改</a>
+      <a href="#s6" data-step="6"><span class="n">6</span>设定店名和首页</a>
       <a href="#s7" data-step="7"><span class="n">7</span>让 AI 帮你扩展</a>
       <a href="#rules"><span class="n">!</span>规则与限制</a>
       <div class="progress" id="progress" aria-live="polite">已完成 0 / 8 步</div>
@@ -243,21 +243,27 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
       </section>
 
       <section class="step" id="s6" aria-labelledby="h6">
-        <div class="step-head"><span class="num">第 6 步</span><h2 id="h6">第一次修改：换成你自己的店名</h2><span class="where">你的仓库 › data › business.json</span></div>
-        <p><a class="btn primary" data-link="edit" href="#details" target="_blank" rel="noopener">✏️ 打开要修改的文件 ↗</a></p>
+        <div class="step-head"><span class="num">第 6 步</span><h2 id="h6">设定你的店名和首页</h2><span class="where">你的仓库 › Settings › Secrets and variables › Actions</span></div>
+        <p>不用改任何文件：在仓库的设定里加两个<b>变量</b>，再发布一次，你的网站就会显示你的店名，一打开就是你自己的 Excel。</p>
+        <p><a class="btn primary" data-link="variables" href="#details" target="_blank" rel="noopener">⚙️ 打开我的变量设定 ↗</a></p>
         <ol>
-          <li>按上面的按钮（或在你的仓库里点 <code>data</code> → <code>betterspace-b2c</code> → <code>business.json</code> → 右上角铅笔 <b>Edit this file</b>）。</li>
-          <li>找到 <code>"name_zh"</code> 这一行，<b>只改引号里面的字</b>。引号、冒号和行尾的逗号都要保留：
-            <div class="example"><span class="lbl">原来</span><span class="was">"name_zh": "BetterSpace 家居生活馆",</span>
-<span class="lbl">改成</span><span class="add">"name_zh": "我的家居小店",</span></div>
-            英文名在上面的 <code>"name"</code> 行，想改也可以用同样方法改。</li>
-          <li>按右上角 <b>Commit changes…</b> → 再按 <b>Commit changes</b>。</li>
-          <li>回到 <b>Actions → Publish site → Run workflow</b>，重新发布。<b>每次修改后都要重新发布一次</b>，网站才会更新。</li>
+          <li>按上面的按钮（或在你的仓库里点 <b>Settings</b> → 左边 <b>Secrets and variables</b> → <b>Actions</b> → 上方的 <b>Variables</b> 分页）。</li>
+          <li>按 <b>New repository variable</b>，照下表填 <b>Name</b> 和 <b>Value</b>，再按 <b>Add variable</b>。第二个变量用同样方法再加一次。
+            <div class="table-wrap"><table>
+              <thead><tr><th>Name（照抄）</th><th>Value（你填）</th><th>作用</th></tr></thead>
+              <tbody>
+                <tr><td><code>BUSINESS_NAME</code></td><td>你的店名，例如 <code>小明家具店</code></td><td>「我的 Excel」改叫你的店名：左上角和业务选单都会显示。最多 40 个字。</td></tr>
+                <tr><td><code>START_WITH</code></td><td><code>my-excel</code></td><td>网站一打开就是你自己的 Excel。想先看范例，就填 <code>b2c</code> 或 <code>b2b</code>。</td></tr>
+              </tbody>
+            </table></div></li>
+          <li>回到 <b>Actions → Publish site → Run workflow</b>，重新发布。<b>改了变量也要重新发布一次</b>，网站才会更新。</li>
           <li>等绿色勾，再打开你的网址，按 <b>Ctrl + F5</b> 强制重新载入。</li>
         </ol>
-        <div class="metaphor">比喻：Commit 就像游戏存档。每次存档都有记录；改坏了可以回到上一个存档（文件页面右上角的 <b>History</b>）。</div>
-        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="6"><span>在中文界面、B2C 业务下，左上角显示我的新店名。</span></label></div>
-        <p class="stuck"><b>卡住了？</b>发布出现红叉，失败在 <b>Run npm run check</b>：多半是文件格式被改坏了（少了引号或逗号）。自动检查会拦住它，网站仍是上一个正常版本。打开文件，对照上面的例子改回来，再 Commit 和发布一次。</p>
+        <div class="metaphor">比喻：变量就像店门口的招牌。换招牌不用拆店：代码一行都不动，只换设定。</div>
+        <div class="note">⚠️ 要加在 <b>Variables</b> 分页，不是 Secrets。变量会写进网站，任何人都看得到：只放店名这类公开资料，不要放密码或钥匙。</div>
+        <p>以后想改：回到同一页，按变量旁边的铅笔改 Value，再发布一次。不想要了就删掉变量，再发布一次。每个访客第一次打开时会照 <code>START_WITH</code>；之后他们自己选的业务会记在他们的浏览器里。</p>
+        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="6"><span>重新发布后打开我的网址：一打开就是我的 Excel，左上角和业务选单显示我的店名。</span></label></div>
+        <p class="stuck"><b>卡住了？</b>发布出现红叉，失败在 <b>Run npm run check</b>：点开看红字，它会写明哪个变量不对，例如 <code>START_WITH 只能是 my-excel、b2c、b2b</code>。回到 Variables 改好，再发布一次；在那之前，网站仍是上一个正常版本。店名没变：确认 Name 全是大写英文、没有空格，而且是加了变量<b>之后</b>才按 Run workflow。</p>
       </section>
 
       <section class="step" id="s7" aria-labelledby="h7">
@@ -293,7 +299,7 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
             <tr><td><b>示例分析不是实时分析</b></td><td>它是预先写好的，描述原始数据；你接受或修改待办，它不会重新分析。</td></tr>
             <tr><td><b>你的版本可以自由使用</b></td><td>模板用 MIT 授权：你可以修改、自己用、商用，也可以请程序员帮你扩展，只要保留仓库里的 <code>LICENSE</code> 文件。软件按「原样」提供，不附带任何保证。</td></tr>
             <tr><td><b>只放虚构或匿名数据</b></td><td>仓库和网站都是公开的，网站文件里包含全部记录。这是学习项目，不适合机密的真实业务数据。</td></tr>
-            <tr><td><b>每次修改都要重新发布</b></td><td>Commit 或 Push 只是更新代码；运行 <b>Publish site</b> 后网站才会更新。检查没通过就不会发布。</td></tr>
+            <tr><td><b>每次修改都要重新发布</b></td><td>改了变量、Commit 或 Push 之后，都要运行 <b>Publish site</b>，网站才会更新。检查没通过就不会发布。</td></tr>
             <tr><td><b>报告日期是固定的</b></td><td>第 1 天是 2026 年 8 月 30 日，第 2 天是 8 月 31 日，不会随今天的日期改变。</td></tr>
             <tr><td><b>换成自己的数据要按步骤来</b></td><td>先读 <code>docs/STUDENT_SOP.md</code> 第 5 节：数据格式、答案文件和示例分析都要一起更新。</td></tr>
           </tbody>
@@ -333,7 +339,7 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
     $('v-repo-short').textContent = shownU + ' / ' + shownR;
     $('v-repo3').textContent = repoUrl;
     var ready = goodU && goodR;
-    var links = { pages: repoUrl + '/settings/pages', publish: repoUrl + '/actions/workflows/publish-site.yml', edit: repoUrl + '/edit/main/data/betterspace-b2c/business.json' };
+    var links = { pages: repoUrl + '/settings/pages', publish: repoUrl + '/actions/workflows/publish-site.yml', variables: repoUrl + '/settings/variables/actions' };
     Array.prototype.forEach.call(document.querySelectorAll('[data-link]'), function (a) {
       if (ready) { a.href = links[a.getAttribute('data-link')]; a.target = '_blank'; a.removeAttribute('title'); }
       else { a.href = '#details'; a.removeAttribute('target'); a.title = '先在“你的资料”填 GitHub 用户名和仓库名'; }

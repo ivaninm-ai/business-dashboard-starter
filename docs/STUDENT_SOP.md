@@ -177,6 +177,19 @@ src/briefs/           examples.js 预先准备的分析；brief-input.js 事实�
 
 网站上的保存状态和双击打开的文件是分开的（不同的来源）。
 
+### 网站设定（仓库变量）· Site settings (repository variables)
+
+不用改文件。在你的仓库 **Settings → Secrets and variables → Actions → Variables** 按 **New repository variable**，再运行 **Publish site**：
+
+| Name | Value | 作用 · Effect |
+|---|---|---|
+| `BUSINESS_NAME` | 你的店名（最多 40 个字）· your business name (max 40 characters) | 「我的 Excel」显示成这个名字（左上角和业务选单）· names "My Excel" in the header and the business menu |
+| `START_WITH` | `my-excel`、`b2c` 或 `b2b`（或 `data/` 里的业务文件夹名） | 访客第一次打开时显示哪个业务；之后记住访客自己的选择。改了设定，每个访客会再照新设定打开一次 · which business opens first; afterwards each visitor's own choice is kept |
+
+两个都可以不设。值写错时，发布会在 `npm run check` 停下，红字说明哪里错，网站保持上一个版本。变量会写进公开的网页：不要放密码或钥匙。本机试用：`BUSINESS_NAME=小明家具店 START_WITH=my-excel npm run dev`（Windows PowerShell：先 `$env:BUSINESS_NAME='小明家具店'`）。代码在 `scripts/site-config.js`（检查）和 `src/site-config.js`（默认值）。
+
+Both are optional. A wrong value stops the publish at `npm run check` with a message saying what to fix, and the site keeps its previous version. Values are built into the public page: never put a password or key in one.
+
 ## 9. 让 AI 编程助手帮忙 · Working with an AI coding assistant
 
 先让助手读 **`AGENTS.md`**（Claude Code 会通过 `CLAUDE.md` 自动读取）。里面写着哪些东西不能改坏：数字规则、固定的报告日期、数据边界、翻译、示例分析的诚实原则。可以这样说：
