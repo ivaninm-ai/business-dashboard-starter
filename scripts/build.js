@@ -46,7 +46,10 @@ export async function buildHtml() {
   replaceOnce(/<meta http-equiv="Content-Security-Policy" content="[^"]*">/, `<meta http-equiv="Content-Security-Policy" content="${csp}">`, 'the CSP meta tag');
   replaceOnce(/<link rel="stylesheet" href="style.css">/, `<style>\n${css}</style>`, 'the stylesheet link');
   replaceOnce(/<script type="module" src="main.js"><\/script>/, `<script>${scriptBody}</script>`, 'the module script tag');
-  html = html.replace('<!doctype html>', `<!doctype html>\n<!-- Business Dashboard Starter ${pkg.version} · single-file build of src/ (scripts/build.js) · synthetic training data only · works offline -->`);
+  // The MIT licence asks for its notice in every copy, and this file is the copy people pass around.
+  const license = readFileSync(path.join(root, 'LICENSE'), 'utf8').replace(/\r\n?/g, '\n').trim();
+  if (license.includes('--')) throw new Error('build: LICENSE text cannot go inside an HTML comment');
+  html = html.replace('<!doctype html>', `<!doctype html>\n<!-- Business Dashboard Starter ${pkg.version} · single-file build of src/ (scripts/build.js) · synthetic training data only · works offline -->\n<!--\n${license}\n-->`);
   return html;
 }
 

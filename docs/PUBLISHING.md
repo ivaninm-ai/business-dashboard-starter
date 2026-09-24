@@ -6,9 +6,10 @@ Offline classroom file: attached to the latest release (`v0.2.0`: adds My Excel)
 ## Decisions (2026-09-24)
 
 - Public repository `ivaninm-ai/business-dashboard-starter`, separate from `analysis-dashboard-template`.
-- **No licence for now** (the original template had none either). Until one is added, students may
-  view and copy the template on GitHub but have no explicit right to reuse the code elsewhere. To add
-  one later: create `LICENSE` (e.g. MIT) in the repo and mention it in the README.
+- **MIT licence**, copyright Infinite New Media (added 2026-09-24, after v0.2.0). Students and anyone
+  else may use, change and sell their copies, or have someone extend them, as long as they keep the
+  notice; the software is provided without warranty. The build puts the notice at the top of
+  `dist/business-dashboard-demo.html`. The original Google Sheets template is not affected.
 - Template only: no GitHub Pages site for the class copy. Each student can publish their own copy
   with the **Publish site** workflow (manual, no secrets).
 

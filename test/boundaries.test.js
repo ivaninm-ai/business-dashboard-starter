@@ -76,6 +76,7 @@ test('the single-file build is self-contained, offline and labelled as synthetic
   assert.match(html, /BS-001,BC-001,2026-08-20/, 'B2B records are inside the file');
   assert.match(html, /RS-321/, 'B2C Day 2 records are inside the file');
   assert.match(html, /synthetic training data only/);
+  assert.match(html, /MIT License\s+Copyright \(c\) 2026 Infinite New Media/, 'the licence notice travels with the file');
   assert.doesNotMatch(html, /expected_metrics|august_order_value/);
   // A note, not a failure: editing src/ without rebuilding is normal while developing.
   const built = path.join(root, 'dist/business-dashboard-demo.html');

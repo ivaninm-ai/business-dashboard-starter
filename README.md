@@ -67,3 +67,13 @@ docs/           使用说明 · documentation
 - 计算、待办、日历、字段对应、界面翻译和视觉风格，改编自 Business Dashboard 模板 1.2.0（rc.4/rc.5）的代码；Google 登录、Sheets 存储、后台 worker 和设置向导都已移除。
 - 练习数据原样复制自 BetterSpace 虚构培训数据包（`01_B2C_Retail`、`02_B2B_Furniture` 及其 `refresh_day2`），见 [data/README.md](data/README.md)。
 - Figures, task rules, calendar, column mapping, translations and styling are adapted from the Business Dashboard template 1.2.0 (rc.4/rc.5); Google sign-in, Sheets storage, background workers and the setup wizard were removed. The training data is copied unchanged from the BetterSpace synthetic pack.
+
+## 授权 · Licence
+
+[MIT License](LICENSE) · Copyright (c) 2026 Infinite New Media
+
+- 你可以自由使用、修改、分享，也可以商用或请程序员帮你扩展，只要在你的版本里保留 `LICENSE` 文件（版权声明）。
+- 软件按「原样」提供，不附带任何保证；用它做决定时请自己核对数字。
+- 打包在网页里的 Excel 读取器（read-excel-file、fflate）由它们的作者以 MIT 授权，声明保留在 `src/vendor/read-excel-file.js` 里。
+
+You may use, change, share and sell it, or have someone build on it for you, as long as you keep the `LICENSE` file (the copyright notice) in your copy. It is provided as is, without warranty. The bundled Excel reader (read-excel-file, fflate) is MIT-licensed by its own authors; its notices are kept in `src/vendor/read-excel-file.js`.

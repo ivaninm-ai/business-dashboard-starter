@@ -25,6 +25,7 @@ non-programmer: explain changes plainly and keep them small.
 - `src/briefs/` — `examples.js` (prepared briefs), `brief-input.js` (facts text), `brief-facts.js` (number checker).
 - `src/i18n/` — `tr()` plain text, `tl()` menu/button text as `中文（English）`; Chinese in `zh.js`.
 - `data/` — training data + `business.json` per business. `test/expected/` — answer keys (tests only).
+- `LICENSE` — MIT, copyright Infinite New Media. Keep it (and the notice the build puts at the top of the built file); a student's own additions may carry their own name.
 
 ## Rules you must not break
 
