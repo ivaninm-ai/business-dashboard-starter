@@ -43,8 +43,10 @@ const syncUnzip = {
 
 export async function buildVendor() {
   const pkg = JSON.parse(readFileSync(path.join(root, 'node_modules/read-excel-file/package.json'), 'utf8'));
-  const license = readFileSync(path.join(root, 'node_modules/read-excel-file/LICENSE'), 'utf8').trim();
-  const fflateLicense = readFileSync(path.join(root, 'node_modules/fflate/LICENSE'), 'utf8').trim();
+  // Line endings normalised so the output is identical on Windows, macOS and Linux.
+  const readLicense = p => readFileSync(path.join(root, p), 'utf8').replace(/\r\n?/g, '\n').trim();
+  const license = readLicense('node_modules/read-excel-file/LICENSE');
+  const fflateLicense = readLicense('node_modules/fflate/LICENSE');
   const result = await build({
     stdin: { contents: "export { default } from 'read-excel-file/universal';", resolveDir: root, loader: 'js' },
     bundle: true,
