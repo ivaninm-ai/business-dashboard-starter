@@ -1,7 +1,7 @@
 # Publishing the template (instructor record)
 
 Template repository: **https://github.com/ivaninm-ai/business-dashboard-starter** (public, marked as a template).
-Offline classroom file: attached to the latest release (`v0.4.0`: no built-in data — opens your own Excel; `v0.3.0` added Gemini analysis and site settings; `v0.2.0` added My Excel) — https://github.com/ivaninm-ai/business-dashboard-starter/releases/latest
+Offline classroom file: attached to the latest release (`v0.5.0`: match your columns — Excel in other layouts; `v0.4.0` no built-in data; `v0.3.0` added Gemini analysis and site settings; `v0.2.0` added My Excel) — https://github.com/ivaninm-ai/business-dashboard-starter/releases/latest
 
 ## Decisions (2026-09-24)
 
