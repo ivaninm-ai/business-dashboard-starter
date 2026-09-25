@@ -93,6 +93,9 @@ a { color: var(--accent); }
 @keyframes go-glow { 0%, 100% { box-shadow: 0 6px 18px rgba(124, 58, 237, 0.35), 0 0 0 3px rgba(124, 58, 237, 0.2); } 50% { box-shadow: 0 8px 26px rgba(190, 24, 93, 0.45), 0 0 0 6px rgba(124, 58, 237, 0.12); } }
 .go.wait { background: #6b6862; box-shadow: none; animation: none; }
 .go.wait::before { display: none; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 14px; font-size: 14px; color: var(--ink-2); }
+.legend > span { display: inline-flex; align-items: center; gap: 8px; }
+.legend-check { font: 700 12px/1.4 var(--mono); color: var(--good); background: var(--good-soft); border-left: 3px solid var(--good); padding: 1px 8px; border-radius: 4px; }
 .legend-go { display: inline-block; font: 700 12px/1.4 var(--sans); color: #fff; background: linear-gradient(120deg, #2563eb, #7c3aed 50%, #be185d); padding: 1px 9px; border-radius: 6px; white-space: nowrap; }
 @media (max-width: 560px) { .go { display: flex; flex-wrap: wrap; justify-content: center; text-align: center; } }
 @media print { .go { animation: none; box-shadow: none; } .go::before { display: none; } }
@@ -133,7 +136,11 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
 <div class="wrap">
   <div class="eyebrow">InfiniteSales AI · 起步项目 0.5.0 · 约 20 分钟 · 全程在浏览器里 · 不用安装任何软件</div>
   <h1>业务仪表盘 · 起步项目 SOP</h1>
-  <p class="lede">做完之后，你会有一个属于自己的仪表盘网页：代码在你自己的 GitHub 仓库里，网站由 GitHub Pages 免费发布在你自己的网址上。不需要 Google Cloud、服务器或付费（第 7 步的 Gemini 钥匙也是免费的）。网站本身<b>没有任何数据</b>：你打开自己的 Excel（或老师给的练习 Excel），数字、待办和日历就按你的记录算出来；Excel 只在你的浏览器里读取，不会上传。最后两步用免费的 Google AI：请 Gemini 分析你的数字，请 Jules 帮你加功能。下面每一步都是网页操作；绿色框告诉你“怎么知道这一步做对了”；<span class="legend-go">彩色发光的按钮 ↗</span>会在新分页打开 GitHub 或 Google 的页面，做完再切回这一页。</p>
+  <p class="lede">做完之后，你会有一个自己的仪表盘网站：打开你的 Excel，就能看到经营数字、待办和日历，还能请 AI 分析数字、帮你加功能。全部免费。</p>
+  <div class="legend">
+    <span><span class="legend-check">检查</span>绿色框：确认这一步做对了</span>
+    <span><span class="legend-go">彩色按钮 ↗</span>在新分页打开 GitHub 或 Google</span>
+  </div>
 
   <div class="layout">
     <nav class="rail" aria-label="步骤" id="rail">
