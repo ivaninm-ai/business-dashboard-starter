@@ -2,7 +2,7 @@
 // file bar (your Excel file, read again, forget, clear decisions) and the menu.
 
 import { $, h, t, add, modal, toast } from './dom.js';
-import { view, scenario, openTasks, labelTl, businessName, defaultFilters } from './view-state.js';
+import { view, scenario, openTasks, labelTl, businessName, defaultFilters, absent } from './view-state.js';
 import { navigate, rerender } from './router.js';
 import { pickExcel, forgetExcel, restoreWorkbook } from './pages/excel.js';
 import { formatDate } from '../core/dates.js';
@@ -21,6 +21,9 @@ const NAV = [
   ['brief', () => tl('AI analysis')],
   ['about', () => tl('About this dashboard')],
 ];
+
+// Pages that show one sheet: hidden when the workbook does not have it.
+const PAGE_SHEET = { customers: 'Customers', payments: 'Payments', stock: 'Stock' };
 
 export function initShell() {
   const nav = $('#nav');
@@ -57,6 +60,7 @@ export function refreshShell() {
     const entry = NAV.find(([id]) => id === a.dataset.page);
     a.querySelector('.nav-label').textContent = entry[1]();
     a.classList.toggle('active', a.dataset.page === view.page);
+    a.hidden = !!PAGE_SHEET[a.dataset.page] && absent(PAGE_SHEET[a.dataset.page]);
     if (a.dataset.page === view.page) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
   }
   const open = scenario()?.ok ? openTasks().length : 0;
@@ -79,6 +83,7 @@ function renderScenarioBar() {
   add(bar, h('span', { class: 'scn-file', title: tr('Read {0}', new Date(s.source.loadedAt).toLocaleString()) }, h('span', { 'aria-hidden': 'true' }, '📄 '), s.source.fileName),
     h('button', { class: 'btn small', onclick: pickExcel }, tl('Read the Excel again…')),
     h('button', { class: 'btn ghost small', onclick: forgetExcel }, tl('Forget this file')),
+    s.source.matched ? h('button', { class: 'btn ghost small', onclick: () => pickExcel({ rematch: true }) }, tl('Change the matching…')) : null,
     s.reportingDate ? h('span', { class: 'scn-note' }, tr('Reporting date {0} (latest date in the file)', formatDate(s.reportingDate))) : null,
     h('button', { class: 'btn ghost small scn-reset', onclick: openResetDialog }, tl('Clear decisions and notes…')));
 }

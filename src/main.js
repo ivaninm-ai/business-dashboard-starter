@@ -18,13 +18,14 @@ import { renderTasks } from './ui/pages/tasks.js';
 import { renderCalendar } from './ui/pages/calendar.js';
 import { renderBrief } from './ui/pages/brief.js';
 import { renderAbout } from './ui/pages/about.js';
-import { renderExcelStart, restoreWorkbook, pickExcel, forgetExcel } from './ui/pages/excel.js';
+import { renderExcelStart, restoreWorkbook, pickExcel, forgetExcel, pendingMatch, renderMatchPage } from './ui/pages/excel.js';
 
 // If the records fail their checks (for example after replacing the data), show the
 // problems instead of figures that might be wrong. "My Excel" without a file shows
 // the page for opening one.
 function guarded(render) {
   return () => {
+    if (pendingMatch()) return renderMatchPage();
     const s = scenario();
     if (!s) return renderExcelStart();
     if (s.ok) return render();

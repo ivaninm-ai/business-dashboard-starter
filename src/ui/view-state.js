@@ -26,6 +26,8 @@ export function defaultFilters() { return { preset: 'mtd', start: '', end: '', c
 // null while no Excel file is open (pages are guarded in main.js).
 export const scenario = () => loadScenario();
 export const isExcel = () => view.businessId === MY_EXCEL;
+// Sheets a matched workbook does not have ('Customers', 'Payments', 'Stock'): pages hidden.
+export const absent = role => (loadScenario()?.source?.absent || []).includes(role);
 // One snapshot only: there is no earlier day to compare with.
 export const previousScenario = () => null;
 export const profile = () => businessProfile(view.businessId);

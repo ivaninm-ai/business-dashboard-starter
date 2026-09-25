@@ -1,20 +1,19 @@
-// "My Excel": the viewer's own workbook, read on this computer. It must use the
-// layout of the BetterSpace training workbooks (data/templates/): four sheets —
-// Customers, Sales, Payments, Stock — with the same column names in the first row.
-// The workbook becomes a scenario exactly like a bundled one, so figures, tasks and
-// the calendar are calculated by the same code. Nothing is uploaded: the page has no
-// network access at all.
+// "My Excel": the viewer's own workbook, read on this computer and never uploaded. The
+// layout the figures are calculated from is the practice workbooks' (data/templates/):
+// four sheets — Customers, Sales, Payments, Stock — with their column names in the first
+// row. A workbook in another layout is first rewritten into this one with the viewer's
+// matching (matching.js); then the same code reads it.
 //
-// Differences from the bundled training scenarios:
-//   - one snapshot only (no Day 2);
-//   - the reporting date is the latest dated event in the file (sales, receipts,
-//     completions, stock counts, new accounts), since there is no metadata.json;
-//   - columns that are not required may be left out; figures that use them are then
-//     blank or zero, and the missing columns are listed as warnings.
+//   - one snapshot only; the reporting date is the latest dated event in the file (sales,
+//     receipts, completions, stock counts, new accounts);
+//   - columns that are not required may be left out; figures that use them are then blank
+//     or zero, and the missing columns are listed as warnings;
+//   - a matched workbook may have no customers, payments or stock sheet ("absent"): those
+//     pages are hidden and the task rules that need them are switched off.
 
 import readXlsxFile from '../vendor/read-excel-file.js';
 import { LAYOUTS } from './layouts.generated.js';
-import { ENTITIES } from '../core/model.js';
+import { ENTITIES, TASK_RULES } from '../core/model.js';
 import { applyTableMapping, relationalChecks, resolveReportingDate, hasErrors, findHeaderIndex, issue } from '../core/mapping.js';
 import { monthStart } from '../core/dates.js';
 import { tr } from '../i18n/i18n.js';
@@ -49,8 +48,9 @@ export function cellValue(v) {
   return String(v);
 }
 
-// Reads an .xlsx file's bytes and keeps only the four sheets the dashboard uses.
-// Returns { sheets: { Customers: rows, … }, missing: [sheet names not found] }.
+// Reads an .xlsx file's bytes. Returns { sheets: { Customers: rows, … } (the four standard
+// sheets found by name), missing: [standard sheets not found], all: [{ name, rows }] (every
+// sheet, for matching) }.
 export async function readWorkbook(arrayBuffer) {
   if (!arrayBuffer || arrayBuffer.byteLength > WORKBOOK_LIMITS.bytes) throw new Error(tr('Choose an Excel file no larger than 10 MB.'));
   let all;
@@ -64,13 +64,14 @@ export async function readWorkbook(arrayBuffer) {
     if (rows) sheets[name] = rows.map(r => r.map(cellValue));
     else missing.push(name);
   }
-  return { sheets, missing };
+  return { sheets, missing, all: all.map(s => ({ name: String(s.sheet), rows: s.data.map(r => r.map(cellValue)) })) };
 }
 
 // The business profile for a workbook: the training layout, minus optional columns the
 // file does not have, with the task rules of the training business it resembles.
 // businessName: the site's BUSINESS_NAME setting; without it the file name is the name.
-export function workbookProfile(fileName, sheets, businessName = SITE_CONFIG.businessName) {
+// absent: sheets the (matched) workbook does not have; rules that need them are switched off.
+export function workbookProfile(fileName, sheets, businessName = SITE_CONFIG.businessName, absent = []) {
   const base = layout();
   const warnings = [];
   const tables = base.tables.map(t => {
@@ -89,6 +90,8 @@ export function workbookProfile(fileName, sheets, businessName = SITE_CONFIG.bus
   // Owners and follow-ups (like B2B) → B2B rules; otherwise B2C rules, plus follow-ups if recorded.
   let tasks = (hasOwner && hasFollowUp ? LAYOUTS['betterspace-b2b'] : LAYOUTS['betterspace-b2c']).policies.tasks.map(r => ({ ...r }));
   if (hasFollowUp && !hasOwner) tasks = tasks.map(r => (r.rule === 'follow_up_due' ? { ...r, enabled: true } : r));
+  const missingEntities = new Set(absent.map(s => s.toLowerCase()));
+  tasks = tasks.filter(r => !(TASK_RULES[r.rule]?.needs || []).some(e => missingEntities.has(e)));
   const name = businessName || String(fileName || '').replace(/\.xlsx$/i, '').trim();
   return {
     profile: {
@@ -105,9 +108,10 @@ export function workbookProfile(fileName, sheets, businessName = SITE_CONFIG.bus
   };
 }
 
-// Stored workbook ({ fileName, loadedAt, sheets }) → a scenario like loadScenario() returns.
-export function workbookScenario({ fileName, loadedAt, sheets, missing = [] }) {
-  const { profile, missingOptional } = workbookProfile(fileName, sheets);
+// Stored workbook ({ fileName, loadedAt, sheets, absent, matched }) → a scenario like
+// loadScenario() returns. matched: the sheets were rewritten from the viewer's own layout.
+export function workbookScenario({ fileName, loadedAt, sheets, missing = [], absent = [], matched = false }) {
+  const { profile, missingOptional } = workbookProfile(fileName, sheets, undefined, absent);
   const issues = [];
   for (const name of missing.length ? missing : SHEETS.filter(s => !sheets[s])) {
     issues.push(issue('error', 'missing_sheet', tr('Sheet "{0}" was not found. The workbook needs the sheets Customers, Sales, Payments and Stock (as in the template).', name)));
@@ -125,7 +129,7 @@ export function workbookScenario({ fileName, loadedAt, sheets, missing = [] }) {
     }
     issues.push(...relationalChecks(records));
   }
-  if (missingOptional.length) issues.push(issue('warning', 'optional_columns_missing', tr('Optional columns not in the file (figures that use them stay blank or zero): {0}.', missingOptional.join(', '))));
+  if (missingOptional.length && !matched) issues.push(issue('warning', 'optional_columns_missing', tr('Optional columns not in the file (figures that use them stay blank or zero): {0}.', missingOptional.join(', '))));
   let reportingDate = null;
   if (!hasErrors(issues)) {
     try { reportingDate = resolveReportingDate({ reporting_date: { mode: 'latest_event_date' } }, records, null).date; }
@@ -145,7 +149,7 @@ export function workbookScenario({ fileName, loadedAt, sheets, missing = [] }) {
     records,
     issues,
     ok: !hasErrors(issues),
-    source: { fileName, loadedAt, counts: Object.fromEntries(SHEETS.map(s => [s, Math.max(0, (sheets[s] || []).length - 1)])) },
+    source: { fileName, loadedAt, counts: Object.fromEntries(SHEETS.map(s => [s, Math.max(0, (sheets[s] || []).length - 1)])), absent: [...absent], matched },
   });
 }
 

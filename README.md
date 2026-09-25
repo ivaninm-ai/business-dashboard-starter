@@ -35,7 +35,8 @@ Then open http://localhost:5173. Also: `npm test` (checks figures and rules), `n
 ## 它做什么，不做什么 · What it does and does not do
 
 **会做 · Does**
-- 读取你的 Excel（四个工作表 Customers、Sales、Payments、Stock），在这台电脑上计算所有数字；报告日期是文件里最新的日期。
+- 读取你的 Excel，在这台电脑上计算所有数字；报告日期是文件里最新的日期。
+- **对应你的列**：Excel 格式和练习工作簿不一样（工作表名、列名、状态写法不同，或没有库存等工作表）时，页面会先猜好哪个工作表、哪一列是什么，你检查后打开；同样格式的文件以后自动套用。
 - 接受、完成、忽略待办，修改行动日期；在日历上加备注；这些操作保存在**这个浏览器**里。
 - Excel 更新后按「重新读取 Excel」：数字跟着变，同一笔记录的待办决定按稳定的编号保留。
 - **用 Gemini 分析**（可选）：用你自己的免费 Gemini 钥匙，按现在的数字写实时分析，标明是 AI 写的，并自动核对里面的数字。钥匙只存在你的浏览器。
@@ -44,21 +45,21 @@ Then open http://localhost:5173. Also: `npm test` (checks figures and rules), `n
 **不会做 · Does not**
 - 不登录、不需要服务器。除了可选的「用 Gemini 分析」，不联网；页面的安全策略只允许连到 Google 的 Gemini API 这一个地址。
 - 网站本身不含任何业务数据；你的 Excel 不会上传，也不会发布到网站上。
-- 不读取任意格式的文件（Excel 必须和练习工作簿格式相同），不做云端备份或多设备同步，没有团队共享。
+- 只懂订单、客户、收款和库存这几种记录；其他记录（例如上课出席、订阅）会被忽略，需要改程序。不做云端备份或多设备同步，没有团队共享。
 
 ## 文件夹 · Folders
 
 ```
 src/            网页本身（未打包，可直接阅读）· the app, unbundled
   core/         计算、待办规则、日历（纯函数，浏览器和测试共用）· figures, task rules, calendar
-  data/         读取你的 Excel（workbook.js）；*.generated.js 由 npm run data 生成（只有列的格式和练习工作簿）
+  data/         读取你的 Excel（workbook.js）、对应你的列（matching.js）；*.generated.js 由 npm run data 生成（只有列的格式和练习工作簿）
   vendor/       打包好的 Excel 读取器（read-excel-file，MIT），由 npm run vendor 生成
   storage/      浏览器本地保存（localStorage）· browser-local state
   briefs/       Gemini 请求（ai-prompt.js、gemini.js）和数字核对 · Gemini request and number check
   i18n/         中文/英文 · translations
   ui/           页面、组件、外框 · pages, components, shell
 data/           测试材料：BetterSpace 练习数据（CSV）和 business.json（列的格式、规则）；templates/ 是练习工作簿 · test material and practice workbooks
-test/           自动测试；test/expected/ 是答案 · tests and answer keys
+test/           自动测试；test/expected/ 是答案；test/fixtures/ 是两个格式不同的虚构 Excel（咖啡馆、补习中心）· tests, answer keys, other-layout workbooks
 scripts/        pack-data（打包格式和练习工作簿）、serve（开发服务器）、build（单一文件）
 docs/           使用说明 · documentation
 ```

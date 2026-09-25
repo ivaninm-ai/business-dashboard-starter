@@ -1,18 +1,24 @@
 // "My Excel": open the viewer's own workbook, remember it in this browser, forget it.
-// The file is read with the bundled reader on this computer; the page cannot send it
-// anywhere (the file is read locally; the only network access is the optional
-// "Analyse with Gemini", which sends calculated figures, never the file).
+// The file is read with the bundled reader on this computer and never sent anywhere (the
+// only network access is the optional "Analyse with Gemini", which sends calculated
+// figures, never the file). A workbook in another layout goes through "Match your
+// columns" (renderMatchPage, data/matching.js) first.
 
 import { h, t, add, modal, toast } from '../dom.js';
 import { pageHead } from '../components.js';
 import { view, defaultFilters } from '../view-state.js';
 import { navigate, rerender } from '../router.js';
 import { readWorkbook, workbookScenario, workbookColumns, MY_EXCEL } from '../../data/workbook.js';
+import { ROLE_TEXT, ABSENT_TEXT, FIELD_TEXT, OPTION_TEXT, VALUE_TEXT } from './match-text.js';
+import { ROLES, OPTIONAL_ROLES, roleFields, guessMatching, refreshValues, chooseSheet, chooseColumn, chooseValue, openQuestions, applyMatching, workbookSignature } from '../../data/matching.js';
 import { setWorkbookScenario, loadScenario } from '../../data/scenarios.js';
 import { TEMPLATES } from '../../data/templates.generated.js';
 import { tr, tl, sentences } from '../../i18n/i18n.js';
 
 let lastProblem = null; // { fileName, messages } from the latest attempt that could not be used (this visit only)
+// A workbook waiting to be matched: { fileName, loadedAt, all, matching, signature, hadWorkbook, problems, remembered }.
+let pending = null;
+export const pendingMatch = () => pending;
 
 // On start-up: rebuild "My Excel" from the copy remembered in this browser, if any.
 export function restoreWorkbook() {
@@ -20,10 +26,12 @@ export function restoreWorkbook() {
   setWorkbookScenario(saved ? workbookScenario(saved) : null);
 }
 
-export function pickExcel() {
+// options.rematch: open the matching page even when a remembered matching fits.
+export function pickExcel(options = {}) {
+  if (options instanceof Event) options = {};
   document.querySelectorAll('input.excel-picker').forEach(el => el.remove());
   const input = h('input', { type: 'file', class: 'excel-picker', accept: '.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', hidden: true });
-  input.addEventListener('change', () => { const file = input.files?.[0]; input.remove(); if (file) openExcel(file); });
+  input.addEventListener('change', () => { const file = input.files?.[0]; input.remove(); if (file) openExcel(file, options); });
   document.body.append(input);
   input.click();
 }
@@ -39,7 +47,9 @@ function showProblems(fileName, messages, keptPrevious) {
   rerender();
 }
 
-export async function openExcel(file) {
+const errorsOf = scenario => scenario.issues.filter(i => i.level === 'error').map(i => i.message);
+
+export async function openExcel(file, { rematch = false } = {}) {
   const hadWorkbook = !!loadScenario();
   if (!/\.xlsx$/i.test(file.name)) return showProblems(file.name, [tr('Choose an .xlsx file. Older .xls files and CSV files must first be saved in Excel as "Excel Workbook (*.xlsx)".')], hadWorkbook);
   toast(tr('Reading {0} on this computer…', file.name), { ms: 8000 });
@@ -47,17 +57,46 @@ export async function openExcel(file) {
   try { read = await readWorkbook(await file.arrayBuffer()); }
   catch (e) { return showProblems(file.name, [e.message], hadWorkbook); }
   const loadedAt = new Date().toISOString();
-  const scenario = workbookScenario({ fileName: file.name, loadedAt, sheets: read.sheets, missing: read.missing });
-  if (!scenario.ok) return showProblems(file.name, scenario.issues.filter(i => i.level === 'error').map(i => i.message), hadWorkbook);
+  // The practice-workbook layout opens straight away. Wrong values in it are reported as before.
+  if (!rematch && !read.missing.length) {
+    const scenario = workbookScenario({ fileName: file.name, loadedAt, sheets: read.sheets });
+    if (scenario.ok) return useWorkbook({ fileName: file.name, loadedAt, sheets: read.sheets }, scenario);
+    if (!scenario.issues.some(i => ['missing_header', 'unknown_status', 'unknown_value'].includes(i.code))) return showProblems(file.name, errorsOf(scenario), hadWorkbook);
+  }
+  // Another layout: "Match your columns", reusing the matching remembered for the same sheets and columns.
+  const signature = workbookSignature(read.all);
+  const saved = view.store.matching(signature);
+  const remembered = !!saved;
+  const matching = remembered ? refreshValues(read.all, saved) : guessMatching(read.all);
+  pending = { fileName: file.name, loadedAt, all: read.all, matching, signature, hadWorkbook, problems: [], remembered };
+  if (remembered && !rematch && !openQuestions(read.all, matching).length && finishMatching()) return;
+  lastProblem = null;
+  navigate('overview');
+}
+
+// Reads the pending workbook with its matching; on problems, the matching page lists them.
+function finishMatching() {
+  const p = pending;
+  const { sheets, absent } = applyMatching(p.all, p.matching);
+  const scenario = workbookScenario({ fileName: p.fileName, loadedAt: p.loadedAt, sheets, absent, matched: true });
+  if (!scenario.ok) { p.problems = errorsOf(scenario); navigate('overview'); return false; }
+  view.store.setMatching(p.signature, p.matching);
+  pending = null;
+  useWorkbook({ fileName: p.fileName, loadedAt: p.loadedAt, sheets, absent, matched: true }, scenario);
+  return true;
+}
+
+function useWorkbook(stored, scenario) {
+  const fileName = stored.fileName;
   lastProblem = null;
   setWorkbookScenario(scenario);
-  const saved = view.store.saveWorkbook({ fileName: file.name, loadedAt, sheets: read.sheets });
+  const saved = view.store.saveWorkbook(stored);
   view.businessId = MY_EXCEL;
   view.day = 'day1';
   view.filters = defaultFilters();
   view.calMonth = '';
   const c = scenario.source.counts;
-  const summary = tr('Opened {0}: {1} customers, {2} orders, {3} receipts, {4} products.', file.name, c.Customers, c.Sales, c.Payments, c.Stock);
+  const summary = tr('Opened {0}: {1} customers, {2} orders, {3} receipts, {4} products.', fileName, c.Customers, c.Sales, c.Payments, c.Stock);
   const kept = !view.persistent ? tr('It is not remembered: this browser does not allow saving.')
     : saved === 'saved' ? tr('It is remembered in this browser until you choose Forget this file.')
     : saved === 'too_large' ? tr('It is too large to remember; after a reload, choose it again.')
@@ -73,6 +112,7 @@ export function forgetExcel() {
     view.store.forgetWorkbook(MY_EXCEL);
     setWorkbookScenario(null);
     lastProblem = null;
+    pending = null;
     toast(tr('Forgotten. Your Excel file itself was not changed.'));
     rerender();
     return false;
@@ -127,3 +167,114 @@ export function renderExcelStart() {
 }
 
 export function excelProblemMessage() { return lastProblem; }
+
+// ---------------------------------------------------------------- Match your columns
+
+const fieldLabel = (role, canonical) => tr(FIELD_TEXT[`${role}.${canonical}`] || canonical);
+function questionText(q) {
+  if (q.kind === 'sheet') return tr('which sheet has the orders');
+  if (q.kind === 'column') return tr('the column for "{0}"', fieldLabel(q.role, q.canonical));
+  return tr('what "{0}" means', q.value);
+}
+
+function select(value, options, onchange, label) {
+  return h('select', { 'aria-label': label, onchange: e => onchange(e.target.value) },
+    ...options.map(([v, text]) => h('option', { value: v, selected: v === value }, text)));
+}
+
+// Every change re-draws the page where it was.
+function change(update) {
+  const y = window.scrollY;
+  pending.matching = update(pending.matching);
+  pending.problems = [];
+  rerender();
+  window.scrollTo(0, y);
+}
+
+function example(p, role, header) {
+  const sheet = p.all.find(x => x.name === p.matching.roles[role]);
+  const idx = (sheet?.rows[0] || []).map(v => String(v ?? '').trim()).indexOf(header);
+  if (idx === -1) return '';
+  const row = sheet.rows.slice(1).find(r => String(r?.[idx] ?? '').trim() !== '');
+  return row ? String(row[idx]) : '';
+}
+
+function roleCard(p, role) {
+  const [title, help] = ROLE_TEXT[role];
+  const m = p.matching;
+  const none = role === 'Sales' ? tr('— choose a sheet —') : tr('I do not have this');
+  const card = h('div', { class: 'card match-role' }, t('h2', tr(title)), t('p', tr(help), 'small ink2'),
+    h('label', { class: 'row small' }, t('span', tr('Sheet:')),
+      select(m.roles[role] || '', [['', none], ...p.all.map(x => [x.name, x.name])], v => change(mm => chooseSheet(p.all, mm, role, v || null)), tr(title))));
+  if (!m.roles[role]) { add(card, t('p', tr(ABSENT_TEXT[role] || ''), 'small muted')); return card; }
+  const sheet = p.all.find(x => x.name === m.roles[role]);
+  const headers = (sheet?.rows[0] || []).map(v => String(v ?? '').trim()).filter(Boolean);
+  const rows = roleFields(role).map(f => {
+    const chosen = m.columns[role]?.[f.canonical] || '';
+    return h('tr', { class: f.required && !chosen ? 'missing' : '' },
+      h('td', {}, fieldLabel(role, f.canonical), f.required ? h('span', { class: 'badge warning' }, tr('required')) : null),
+      h('td', {}, select(chosen, [['', f.required ? tr('— choose a column —') : tr('(not in my file)')], ...headers.map(x => [x, x])], v => change(mm => chooseColumn(p.all, mm, role, f.canonical, v)), fieldLabel(role, f.canonical))),
+      t('td', chosen ? example(p, role, chosen) : '', 'small muted'));
+  });
+  add(card, h('div', { class: 'table-wrap' }, h('table', {},
+    h('thead', {}, h('tr', {}, t('th', tr('The dashboard needs')), t('th', tr('Your column')), t('th', tr('First value')))),
+    h('tbody', {}, ...rows))));
+  return card;
+}
+
+function valuesCard(p) {
+  const m = p.matching;
+  const keys = Object.keys(m.values || {});
+  if (!keys.length) return null;
+  const card = h('div', { class: 'card match-values' });
+  for (const key of keys) {
+    const [role, canonical] = key.split('.');
+    const field = roleFields(role).find(f => f.canonical === canonical);
+    const [title, help] = VALUE_TEXT[key] || [fieldLabel(role, canonical), ''];
+    add(card, t('h2', tr(title)), help ? t('p', tr(help), 'small ink2') : null,
+      h('div', { class: 'table-wrap' }, h('table', {},
+        h('thead', {}, h('tr', {}, t('th', tr('Your word')), t('th', tr('Means')))),
+        h('tbody', {}, ...Object.entries(m.values[key]).map(([word, meaning]) => h('tr', { class: meaning ? '' : 'missing' },
+          t('td', word),
+          h('td', {}, select(meaning, [['', tr('— choose —')], ...field.options.map(o => [o, tr(OPTION_TEXT[o] || o)])], v => change(mm => chooseValue(mm, key, word, v)), word))))))));
+  }
+  return card;
+}
+
+function hasTextDates(p) {
+  for (const role of ROLES) for (const f of roleFields(role).filter(x => x.type === 'date')) {
+    const header = p.matching.columns[role]?.[f.canonical];
+    if (header && /^\d{1,2}[/.-]\d{1,2}[/.-]\d{4}$/.test(example(p, role, header).trim())) return true;
+  }
+  return false;
+}
+
+export function cancelMatching() { pending = null; rerender(); }
+
+// Shown instead of the data pages while a workbook waits to be matched.
+export function renderMatchPage() {
+  const p = pending;
+  const questions = openQuestions(p.all, p.matching);
+  const root = h('div', {}, pageHead(tl('Match your columns')));
+  add(root, h('div', { class: 'banner info' },
+    t('p', tr('{0} is laid out differently from the practice workbook. Tell the dashboard which sheet and which column holds what. The guesses are already filled in: check them.', p.fileName)),
+    t('p', p.remembered ? tr('Your earlier matching for this layout is filled in.') : tr('You do this once: the next time you read a file with the same sheets and columns, this matching is used again.'), 'small')));
+  if (p.problems.length) {
+    add(root, h('div', { class: 'banner critical' }, t('p', tr('With this matching the file still has problems:')),
+      h('ul', { class: 'small' }, ...p.problems.slice(0, 12).map(x => t('li', x))),
+      t('p', tr('Check the columns chosen below, or fix the rows in Excel and read the file again.'), 'small')));
+  }
+  for (const role of ROLES) add(root, roleCard(p, role));
+  add(root, valuesCard(p));
+  if (hasTextDates(p)) {
+    add(root, h('div', { class: 'card' }, t('h2', tr('Dates written as text')),
+      h('label', { class: 'row small' }, t('span', tr('A date like 03/09/2026 is:')),
+        select(p.matching.dateOrder, [['dmy', tr('day/month/year (3 September)')], ['mdy', tr('month/day/year (9 March)')]], v => change(mm => ({ ...mm, dateOrder: v })), tr('Dates written as text')))));
+  }
+  add(root, h('div', { class: 'card match-actions' },
+    t('p', questions.length ? tr('Still to answer: {0}.', questions.slice(0, 6).map(questionText).join(' · ')) : tr('Everything is matched.'), questions.length ? 'small' : 'small good-text'),
+    h('div', { class: 'row' },
+      h('button', { type: 'button', class: 'btn primary', disabled: questions.length > 0, onclick: finishMatching }, tl('Open with this matching')),
+      h('button', { type: 'button', class: 'btn ghost', onclick: cancelMatching }, tl('Cancel')))));
+  return root;
+}

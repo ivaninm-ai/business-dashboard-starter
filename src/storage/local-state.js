@@ -10,6 +10,12 @@
 //   bd-starter.v1.workbook              { version, fileName, loadedAt, sheets: {Customers: rows, …} }
 //     — the viewer's own Excel ("My Excel"): the four sheets' cell values, kept so a
 //       reload still shows it. Stored unencrypted in this browser; "Forget" removes it.
+//       A workbook in another layout is stored already rewritten (matching.js), with
+//       absent: [sheets it does not have] and matched: true.
+//   bd-starter.v1.matching              { version, list: [{ signature, matching }] }
+//     — how the viewer matched their workbooks' sheets, columns and words (the last five
+//       layouts), reused when a workbook with the same sheets and columns is read again.
+//       "Forget this file" removes them.
 //   bd-starter.v1.gemini                { version, key }
 //     — the viewer's own Gemini API key for "Analyse with Gemini", typed in by them and
 //       kept only here (unencrypted, like a saved password in a notebook on this computer).
@@ -86,7 +92,32 @@ function cleanWorkbook(w) {
     if (!Array.isArray(rows) || !rows.every(r => Array.isArray(r) && r.every(isCell))) return null;
     sheets[name] = rows;
   }
-  return { version: 1, fileName: w.fileName.slice(0, 200), loadedAt: text(w.loadedAt, 40), sheets };
+  const absent = Array.isArray(w.absent) ? w.absent.filter(a => ['Customers', 'Payments', 'Stock'].includes(a)) : [];
+  return { version: 1, fileName: w.fileName.slice(0, 200), loadedAt: text(w.loadedAt, 40), sheets, absent, matched: w.matched === true };
+}
+
+// A stored matching (see src/data/matching.js), checked field by field; null if unusable.
+const isName = v => typeof v === 'string' && v.length <= 200;
+const MATCHINGS_KEPT = 5;
+function cleanMatchings(stored) {
+  const list = stored && typeof stored === 'object' && stored.version === 1 && Array.isArray(stored.list) ? stored.list : [];
+  return list.map(cleanMatching).filter(Boolean).slice(0, MATCHINGS_KEPT);
+}
+function cleanMatching(m) {
+  if (!m || typeof m !== 'object' || typeof m.signature !== 'string' || !m.matching || typeof m.matching !== 'object') return null;
+  const x = m.matching;
+  const roles = {}, columns = {}, values = {};
+  for (const role of ['Sales', 'Customers', 'Payments', 'Stock']) {
+    roles[role] = isName(x.roles?.[role]) ? x.roles[role] : null;
+    columns[role] = {};
+    for (const [k, v] of Object.entries(x.columns?.[role] || {})) if (/^[a-z_]{1,40}$/.test(k) && isName(v)) columns[role][k] = v;
+  }
+  for (const [key, map] of Object.entries(x.values || {})) {
+    if (!/^[A-Za-z]+\.[a-z_]+$/.test(key) || !map || typeof map !== 'object') continue;
+    values[key] = {};
+    for (const [v, meaning] of Object.entries(map)) if (isName(v) && typeof meaning === 'string' && meaning.length <= 20) values[key][v] = meaning;
+  }
+  return { signature: m.signature.slice(0, 20), matching: { version: 1, roles, columns, values, dateOrder: x.dateOrder === 'mdy' ? 'mdy' : 'dmy' } };
 }
 
 export function createStateStore(storage) {
@@ -119,13 +150,19 @@ export function createStateStore(storage) {
     deleteNote(id, entryId) { return update(id, s => { delete s.notes[entryId]; }); },
     // "My Excel". saveWorkbook returns 'saved', 'too_large' (kept for this visit only) or 'failed'.
     workbook() { return cleanWorkbook(read(`${PREFIX}.workbook`)); },
-    saveWorkbook({ fileName, loadedAt, sheets }) {
-      const json = JSON.stringify({ version: 1, fileName, loadedAt, sheets });
+    saveWorkbook({ fileName, loadedAt, sheets, absent = [], matched = false }) {
+      const json = JSON.stringify({ version: 1, fileName, loadedAt, sheets, absent, matched });
       if (json.length > WORKBOOK_STORE_LIMIT) { try { storage.removeItem(`${PREFIX}.workbook`); } catch { /* ignore */ } return 'too_large'; }
       try { storage.setItem(`${PREFIX}.workbook`, json); return 'saved'; } catch { return 'failed'; }
     },
-    // Forgetting the file also clears its task decisions and notes (they belong to its records).
-    forgetWorkbook(id) { try { storage.removeItem(`${PREFIX}.workbook`); storage.removeItem(businessKey(id)); return true; } catch { return false; } },
+    // How the viewer matched a workbook with this layout signature (null when none is kept).
+    matching(signature) { return cleanMatchings(read(`${PREFIX}.matching`)).find(m => m.signature === signature)?.matching || null; },
+    setMatching(signature, matching) {
+      const others = cleanMatchings(read(`${PREFIX}.matching`)).filter(m => m.signature !== signature);
+      return write(`${PREFIX}.matching`, { version: 1, list: [{ signature, matching }, ...others].slice(0, MATCHINGS_KEPT) });
+    },
+    // Forgetting the file also clears its task decisions, notes and matching.
+    forgetWorkbook(id) { try { storage.removeItem(`${PREFIX}.workbook`); storage.removeItem(businessKey(id)); storage.removeItem(`${PREFIX}.matching`); return true; } catch { return false; } },
     // The viewer's own Gemini API key ('' when none).
     geminiKey() { const g = read(`${PREFIX}.gemini`); return g && typeof g === 'object' && g.version === 1 && typeof g.key === 'string' ? g.key.trim().slice(0, 200) : ''; },
     setGeminiKey(key) { return write(`${PREFIX}.gemini`, { version: 1, key: String(key).trim() }); },

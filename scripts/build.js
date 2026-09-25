@@ -29,6 +29,7 @@ export async function buildHtml(config = siteConfigFromEnv()) {
   };
   const result = await build({
     entryPoints: [src('main.js')],
+    absWorkingDir: root, // the same file whatever folder the build is run from
     bundle: true,
     format: 'iife',
     write: false,

@@ -59,7 +59,20 @@ Click any row to open the record behind a figure.
 
 其他待办的决定（按同一个编号 `规则:记录ID`）都保留。Decisions on the other tasks are kept, by the same task key.
 
-## 6. 请 Gemini 分析（可选）· Ask Gemini (optional)
+## 6. 格式不同的 Excel · A workbook in another layout
+
+学生自己的 Excel 多半格式不同（中文工作表名和列名、不同的状态写法、没有库存……）。仪表盘会出现 **对应你的列**：先猜好哪个工作表、哪一列是什么，学生检查后按 **用这个对应打开**；同样格式的文件以后自动套用。
+
+课堂示范可以用仓库里 `test/fixtures/` 的两个虚构例子：
+
+| 文件 | 格式 | 打开后 |
+|---|---|---|
+| `KopiKita_Cafe_2026.xlsx` | 咖啡馆：会员、销售单、收款记录、存货；中文列名、文字日期、「RM 12.50」金额、状态 已完成 / 制作中 / 已取消 | 全部自动对应好，直接打开 |
+| `Cerdik_Tuition_2026.xlsx` | 补习中心：Students、Invoices、Invoice Lines、Receipts、Classes；没有库存 | 库存选「我没有这个」，库存页隐藏；未收款余额 RM 1,800 |
+
+The matching page pre-fills its guesses; the viewer checks them once, and the same layout opens directly next time.
+
+## 7. 请 Gemini 分析（可选）· Ask Gemini (optional)
 
 打开 **AI 分析**，贴上你自己的免费 Gemini 钥匙（aistudio.google.com/apikey），按 **用 Gemini 分析**。答案标着「实时 AI」，下面的数字核对会列出答案里在数据中找不到的数字。只有这个按钮会联网；按之前什么都不会送出。客户和员工名字默认换成代号。
 

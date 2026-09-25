@@ -233,11 +233,12 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
         <p>网站本身没有任何数据：你打开一个 Excel，数字、待办和日历就按里面的记录算出来。文件只在你的浏览器里读取和计算，<b>不会上传</b>到 GitHub 或任何地方，也不会出现在别人打开的网站上。</p>
         <ol>
           <li>打开你的网址。页面写着「打开你的 Excel」。</li>
-          <li>准备 Excel：<b>老师给了练习用的 Excel，就直接用它</b>，跳到下一步。还没有文件：在页面下方按 <b>下载 BetterSpace_B2B.xlsx</b>（虚构的练习数据）。想用自己的数字：用 Excel 打开练习工作簿，保留四个工作表（Customers、Sales、Payments、Stock）的名称和第一行的列名，把下面的行换成你的记录，另存为 <b>.xlsx</b>。</li>
-          <li>回到网站，按 <b>选择 Excel 文件</b>，选你的文件。数字、待办和日历马上按你的数据计算；报告日期是文件里最新的日期。</li>
+          <li>准备 Excel：<b>老师给了练习用的 Excel，就直接用它</b>，跳到下一步。还没有文件：在页面下方按 <b>下载 BetterSpace_B2B.xlsx</b>（虚构的练习数据）。已经有自己的 Excel：直接用它，格式不一样也可以（见第 4 点）。</li>
+          <li>回到网站，按 <b>选择 Excel 文件</b>，选你的文件。和练习工作簿同样格式的文件，数字、待办和日历马上算出来；报告日期是文件里最新的日期。</li>
+          <li>格式不一样（例如工作表名、列名是中文，或状态写法不同）：页面会出现 <b>对应你的列</b>。仪表盘已经先猜好了哪个工作表是订单、客户、收款、库存，哪一列是什么、你的状态写法是什么意思——检查一遍，不对的就从下拉选单改，然后按 <b>用这个对应打开</b>。<b>只要做一次</b>：下次读取同样格式的文件会自动套用；想改就按上方的 <b>修改对应</b>。</li>
                   </ol>
         <div class="table-wrap"><table>
-          <thead><tr><th>工作表</th><th>一定要有的列</th></tr></thead>
+          <thead><tr><th>练习工作簿的工作表</th><th>一定要有的列（对应时也要选到）</th></tr></thead>
           <tbody>
             <tr><td><b>Customers</b></td><td><code>customer_id</code>, <code>customer_name</code></td></tr>
             <tr><td><b>Sales</b></td><td><code>sale_id</code>, <code>sale_date</code>, <code>total_amount</code></td></tr>
@@ -245,11 +246,11 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
             <tr><td><b>Stock</b></td><td><code>item_id</code>, <code>on_hand_quantity</code></td></tr>
           </tbody>
         </table></div>
-        <p>其他列（状态、付款期限、负责人等）最好照范例保留；缺少时，用到它们的数字会留空或为零，网页会告诉你缺了哪些。</p>
-        <div class="note">⚠️ 状态只能写 <code>Confirmed</code>、<code>In Progress</code>、<code>Completed</code> 或 <code>Cancelled</code>；日期用 Excel 日期或写成 <code>2026-08-30</code>；金额用数字。</div>
+        <p>只有<b>订单</b>一定要有；没有客户、收款或库存工作表也可以，那几页会自动隐藏。其他列（状态、付款期限、负责人等）有就选上；没有的话，用到它们的数字会留空或为零。</p>
+        <div class="note">⚠️ 「状态」指的是订单或服务<b>有没有做完</b>，不是有没有付钱（付款会从收款工作表计算）：「已付」「已开单」「未付」通常都选「已完成」，「作废」「取消」选「取消」。日期用 Excel 日期，或写成 <code>2026-08-30</code>、<code>30/08/2026</code>；金额用数字或写成 <code>RM 12.50</code>。</div>
         <div class="danger">⚠️ 文件会记在这个浏览器里，但这<b>不是备份</b>。不要在共用电脑上打开机密的真实数据。</div>
         <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="5"><span>打开文件后，概览显示数字；左上角是我的店名（没设店名就是文件名），上方的文件标签是我的文件名；重新载入网页后还在。</span></label></div>
-        <p class="stuck"><b>卡住了？</b>出现「这个 Excel 文件暂时不能使用」：看它列出的第一个问题，会写明是哪个工作表、哪一行、哪一列。最常见的是工作表名称或列名被改了、状态的写法不同，或文件是 .xls / .csv（要在 Excel 里另存为 .xlsx）。</p>
+        <p class="stuck"><b>卡住了？</b>「对应你的列」最下面写着「还要回答……」：照它说的选好那一项。按了打开却列出问题：看第一个问题，会写明是哪个工作表、哪一行、哪一列——多半是选错了列（例如把单价当成金额），或 Excel 里有写错的日期、金额。文件是 .xls / .csv：要在 Excel 里另存为 .xlsx。</p>
       </section>
 
       <section class="step" id="s6" aria-labelledby="h6">
@@ -334,6 +335,7 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
             <tr><td><b>网站不含你的数据</b></td><td>网站本身没有任何业务数据；你的 Excel 只在你的浏览器里读取。仓库是公开的：不要把你的 Excel 文件放进仓库。这是学习项目，不适合机密的真实业务数据。</td></tr>
             <tr><td><b>每次修改都要重新发布</b></td><td>改了变量、Commit 或 Push 之后，都要运行 <b>Publish site</b>，网站才会更新。检查没通过就不会发布。</td></tr>
             <tr><td><b>报告日期是 Excel 里最新的日期</b></td><td>数字都按文件里最新的日期（销售、收款、完成、库存盘点）计算，不是电脑今天的日期。</td></tr>
+            <tr><td><b>格式不同的 Excel 要先对应</b></td><td>第一次打开时回答「对应你的列」。仪表盘能读懂的是订单、客户、收款和库存这几种记录；其他记录（例如上课出席、会员积分）会被忽略。</td></tr>
             <tr><td><b>想让同事看同样的数字</b></td><td>把同一个 Excel 发给他，请他在自己的电脑上打开你的网址、选这个文件。网站不会替你共享数据。</td></tr>
           </tbody>
         </table></div>

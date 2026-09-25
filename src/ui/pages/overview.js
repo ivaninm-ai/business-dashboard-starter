@@ -1,6 +1,6 @@
 import { h, t, add } from '../dom.js';
 import { pageHead, scopeBar, filterBar, tile, trendChart, hbars, statusChip } from '../components.js';
-import { view, metrics, reportingDate, records, openTasks, label, money } from '../view-state.js';
+import { view, metrics, reportingDate, records, openTasks, label, money, absent } from '../view-state.js';
 import { formatDate } from '../../core/dates.js';
 import { tr, tl, getLocale } from '../../i18n/i18n.js';
 
@@ -14,11 +14,13 @@ export function renderOverview() {
     ? tr('vs {0}–{1}: unavailable (no prior sales)', formatDate(cmp.start), formatDate(cmp.end))
     : tr('{0}{1}% vs {2}–{3} ({4})', cmp.growth >= 0 ? '+' : '', (cmp.growth * 100).toFixed(1), formatDate(cmp.start), formatDate(cmp.end), money(cmp.prior_order_value));
   add(tiles, tile({ label: tr('Order value in period'), value: money(m.period_order_value), hero: true, delta: { text: deltaText, dir: cmp.growth === null ? '' : cmp.growth >= 0 ? 'up' : 'down' }, foot: tr('{0} orders{1} · booked value, not profit', m.period_order_count, m.average_order_value !== null ? tr(' · average {0}', money(m.average_order_value)) : '') }));
-  add(tiles, tile({ label: tr('Cash collected in period'), value: money(m.period_cash_collected), foot: tr('{0} receipts by payment date', m.period_receipt_count) }));
-  add(tiles, tile({ label: tr('Outstanding balance'), value: money(m.outstanding_balance), foot: tr('as of {0}', formatDate(rd)) }));
-  add(tiles, tile({ label: tr('Overdue balance'), value: money(m.overdue_balance), foot: tr('{0} sale(s) past due date', m.overdue_payment_count), cls: m.overdue_balance > 0 ? 'alert' : '' }));
+  if (!absent('Payments')) {
+    add(tiles, tile({ label: tr('Cash collected in period'), value: money(m.period_cash_collected), foot: tr('{0} receipts by payment date', m.period_receipt_count) }));
+    add(tiles, tile({ label: tr('Outstanding balance'), value: money(m.outstanding_balance), foot: tr('as of {0}', formatDate(rd)) }));
+    add(tiles, tile({ label: tr('Overdue balance'), value: money(m.overdue_balance), foot: tr('{0} sale(s) past due date', m.overdue_payment_count), cls: m.overdue_balance > 0 ? 'alert' : '' }));
+  }
   add(tiles, tile({ label: tr('Pending completion'), value: String(m.pending_completion_count), foot: tr('{0} overdue · {1} due today', m.overdue_completion_ids.length, m.due_today_completion_ids.length) }));
-  add(tiles, tile({ label: tr('Low-stock items'), value: String(m.low_stock_ids.length), foot: tr('{0} with no available units · snapshot {1}', m.out_of_stock_ids.length, m.stock_snapshot_date ? formatDate(m.stock_snapshot_date) : '—') }));
+  if (!absent('Stock')) add(tiles, tile({ label: tr('Low-stock items'), value: String(m.low_stock_ids.length), foot: tr('{0} with no available units · snapshot {1}', m.out_of_stock_ids.length, m.stock_snapshot_date ? formatDate(m.stock_snapshot_date) : '—') }));
   if ((records().customers || []).some(c => c.next_follow_up_date)) add(tiles, tile({ label: tr('Follow-ups'), value: String(m.overdue_follow_up_ids.length), foot: tr('recorded actions overdue · {0} due today · {1} unassigned prospects', m.follow_up_today_ids.length, m.unassigned_prospect_ids.length) }));
   if (m.negative_balance_count) add(tiles, tile({ label: tr('Data check'), value: String(m.negative_balance_count), foot: tr('sale(s) with receipts exceeding the amount — check the source'), cls: 'alert' }));
   add(root, tiles);

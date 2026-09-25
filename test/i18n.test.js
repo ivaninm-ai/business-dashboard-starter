@@ -74,3 +74,10 @@ test('task suggestions follow the language; keys and dates do not change', () =>
   assert.ok(zh.every(x => /[一-鿿]/.test(x.title) && /[一-鿿]/.test(x.reason)), 'every generated task is in Chinese');
   assert.match(en.find(x => x.task_key === 'payment_follow_up:BS-012').title, /^Follow up payment for BS-012/);
 });
+
+test('the "Match your columns" labels looked up by name are all translated', async () => {
+  const text = await import('../src/ui/pages/match-text.js');
+  const strings = Object.values(text).flatMap(d => Object.values(d)).flat().filter(Boolean);
+  assert.ok(strings.length > 40);
+  assert.deepEqual(strings.filter(s => !Object.hasOwn(ZH, s)), [], 'missing Chinese');
+});

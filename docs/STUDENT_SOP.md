@@ -137,12 +137,15 @@ src/briefs/           brief-input.js 事实清单；ai-prompt.js 给 Gemini 的�
 
 **不用改代码：打开你的 Excel。** 仪表盘本身没有数据。按「选择 Excel 文件」，打开一个和练习工作簿（`data/templates/`）格式相同的 `.xlsx`：四个工作表 Customers、Sales、Payments、Stock，第一行是列名。它只在浏览器里读取和计算（`src/data/workbook.js`），记在这个浏览器里，不会进入仓库，也不会发布到网站上。
 
-**格式不同的 Excel**（工作表或列名不一样）才需要改项目：
+**格式不同的 Excel 也不用改代码：对应你的列。** 打开格式不一样的 Excel 时，页面会出现「对应你的列」（`src/ui/pages/excel.js` 的 `renderMatchPage`，逻辑在 `src/data/matching.js`）：
 
-1. 在 `data/betterspace-b2b/business.json` 的 `tables[].sheet_name` 和 `tables[].fields[].header` 改成你的工作表名和列名（`canonical` 不要改），然后 `npm run data`。
-2. `status_map` 写明哪些状态文字表示「未完成 pending」「已完成 done」「不计入 excluded」。
-3. 目前只支持这种数据结构：**客户、销售（一行一个订单）、收款（对应到订单）、库存快照**。其他业务模式需要改 `src/core/model.js` 和计算规则。
-4. 改了格式，练习工作簿和 `test/workbook.test.js` 也要一起更新；`npm test` 会告诉你哪里对不上。
+1. 先猜：按工作表名（例如 销售单、Invoices）和列名（例如 单号、Invoice No、金额），猜出哪个工作表是订单、客户、收款、库存，哪一列是什么，以及状态写法的意思（例如 已完成、Paid → Completed；作废、Void → Cancelled）。中英文常见写法在 `COLUMN_NAMES`、`STATUS_WORDS` 里，可以再加。
+2. 学生检查、改正，按「用这个对应打开」。`applyMatching()` 把工作簿在记忆体里改写成练习工作簿的格式（标准的工作表名、列名和值），再用同一套代码读取，所以所有数字和规则都一样。
+3. 只有订单工作表一定要有。没有客户、收款或库存工作表时，那几页会隐藏，需要它们的待办规则会关掉；没有客户工作表但订单有客户编号时，客户名单从订单整理出来。
+4. 对应会记在浏览器里（最近五种格式，按工作表名和列名辨认）；读取同样格式的文件不再问，除非出现新的状态写法。
+5. `test/fixtures/` 有两个格式不同的虚构 Excel：咖啡馆（中文工作表名和列名、文字日期、「RM 12.50」这样的金额）和补习中心（发票加明细、没有库存、多一个上课记录工作表）。`test/matching.test.js` 用它们检查猜测和数字。
+
+**真正不同的业务模式**才需要改程序：目前只支持**客户、销售（一行一个订单）、收款（对应到订单）、库存快照**。例如只有发票明细、没有每张发票的总额（要先加总），或上课出席、订阅这类新记录，就要改 `src/core/model.js` 和计算规则，并加测试。
 
 ## 6. 实时 AI（Gemini）· Live AI with Gemini
 

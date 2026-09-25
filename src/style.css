@@ -245,6 +245,10 @@ tr.clickable:hover { background: var(--surface-2); }
 .modal .foot { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
 .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(520px, 100%); background: var(--surface); border-left: 2px solid var(--brand); z-index: 41; overflow: auto; padding: 18px; box-shadow: -4px 0 16px rgba(90, 26, 43, 0.12); }
 .drawer .close { float: right; }
+.match-role table select, .match-values table select { font: inherit; max-width: 100%; }
+.match-role tr.missing td, .match-values tr.missing td { background: var(--surface-2); }
+.match-role .badge { margin-left: 6px; }
+.good-text { color: var(--good-text); }
 .ai-live .key-input { flex: 1; min-width: 12em; font: inherit; padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); color: var(--ink); }
 .ai-answer { margin-top: 12px; border-top: 1px solid var(--border); padding-top: 10px; }
 .ai-answer .answer-text { white-space: pre-wrap; word-break: break-word; line-height: 1.6; margin: 8px 0 12px; }
