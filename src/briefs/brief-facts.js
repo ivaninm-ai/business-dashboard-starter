@@ -1,28 +1,6 @@
-// Checks that a written brief only uses numbers that are really in its input: the
-// same rule prompts/daily_brief.md gives an AI model ("every number you mention must
-// appear in the input"). test/briefs.test.js runs this over every prepared example,
-// and a live AI integration could run it over a model's answer before showing it.
-
-import { loadScenario, previousDay } from '../data/scenarios.js';
-import { baseMetrics, scenarioTasks } from '../core/scenario-tasks.js';
-import { buildCalendarItems } from '../core/calendar.js';
-import { formatMoney } from '../core/metrics.js';
-import { buildBriefInput } from './brief-input.js';
-
-// The facts a brief for this scenario may use, computed from the records with no task
-// decisions or notes (the state the prepared examples describe).
-export function baselineBriefInput(businessId, day, language = 'en') {
-  const scenario = loadScenario(businessId, day);
-  const prevDay = previousDay(day);
-  const previous = prevDay ? loadScenario(businessId, prevDay) : null;
-  const metrics = baseMetrics(scenario);
-  const previousMetrics = previous ? baseMetrics(previous) : null;
-  const tasks = scenarioTasks(scenario, previous, []);
-  const symbol = scenario.profile.business.currency_symbol;
-  const calendar = buildCalendarItems({ records: scenario.records, metrics, tasks, entries: [], reportingDate: scenario.reportingDate, money: v => formatMoney(v, symbol) });
-  const text = buildBriefInput({ scenario, metrics, tasks, calendar, language, previous, previousMetrics });
-  return { scenario, previous, metrics, previousMetrics, tasks, calendar, text };
-}
+// Checks that an AI answer only uses numbers that are really in its input — the rule the
+// request gives Gemini ("use only numbers, dates and keys that appear in the Data").
+// ai-prompt.js answerProblems() runs it over every Gemini answer before it is shown.
 
 export function allowedFacts(input) {
   const money = new Set(), counts = new Set(), dates = new Set(), percents = new Set(), ids = new Set(), names = new Set();
@@ -86,6 +64,3 @@ export function unsupportedTokens(text, facts, { year = 2026 } = {}) {
 }
 
 // Every text field of a brief, for checking.
-export function briefStrings(brief) {
-  return [brief.headline, brief.summary, ...brief.priorities.flatMap(p => [p.why, p.suggested_action]), ...brief.watch_items, ...brief.data_caveats];
-}

@@ -6,8 +6,8 @@ For students who want to build on the starter after class: get your own copy, ru
 
 > **先记住三件事 · Three things to remember**
 > 1. **浏览器本地保存不是云端备份。** 数据只在那台电脑的那个浏览器里。Local browser saving is not a cloud backup.
-> 2. **示例分析是预先准备的，不是实时分析。** Prepared briefs are not live analysis.
-> 3. **这是学习用的起步项目，不适合放机密的真实业务数据。** 打包后的文件里任何人都能看到全部记录。This is a learning starter, not a system for confidential business data — anyone with the built file can read every record in it.
+> 2. **仪表盘本身没有数据。** 它只显示你打开的 Excel，Excel 不会上传，也不会进入网站。The dashboard has no data of its own: it shows the Excel you open, which is never uploaded or published.
+> 3. **这是学习用的起步项目，不适合放机密的真实业务数据。** This is a learning starter, not a system for confidential business data.
 
 ---
 
@@ -44,7 +44,7 @@ npm run dev
 | 命令 · Command | 作用 · What it does |
 |---|---|
 | `npm run dev` | 打包数据，然后在 http://localhost:5173 运行未打包的源代码 · packs data, serves `src/` |
-| `npm test` | 核对所有数字、规则、翻译、示例分析和数据边界 · checks figures, rules, translations, briefs, boundaries |
+| `npm test` | 核对所有数字、规则、翻译、Gemini 请求和数据边界 · checks figures, rules, translations, the Gemini request, boundaries |
 | `npm run build` | 生成 `dist/business-dashboard-demo.html`（可双击打开的单一文件）和 `dist/site/index.html` |
 | `npm run check` | 先 build 再 test：分享前运行这个 · build + test; run before sharing |
 | `npm run data` | 只重新打包 `data/`（练习数据和 Excel 范例）· repack `data/` only |
@@ -58,22 +58,24 @@ npm run dev
 ## 3. 文件夹和数据流 · Folders and data flow
 
 ```
-data/<业务>/<第几天>/*.csv + metadata.json      data/<业务>/business.json
-            │  npm run data  (scripts/pack-data.js)
-            ▼
-src/data/datasets.generated.js   ──►  src/data/scenarios.js
-                                      读取 CSV、对应列名、检查记录；报告日期 = metadata.as_of_date
+你的 Excel（.xlsx，四个工作表）                     data/*/business.json（列的格式、规则）
+            │  src/data/workbook.js 读取                     │  npm run data
+            ▼                                                ▼
+src/vendor/read-excel-file.js  ──►  src/data/workbook.js  ◄──  src/data/layouts.generated.js
+                                    对应列名、检查记录；报告日期 = 文件里最新的日期
             ▼
 src/core/metrics.js       数字（订单额、收款、余额、库存……）
 src/core/tasks.js         待办建议规则（每条有稳定编号 规则:记录ID）
-src/core/scenario-tasks.js  第 1 天 → 第 2 天对照：新增 / 已由数据解决
+src/core/scenario-tasks.js  建议 + 你存下的决定
 src/core/calendar.js      日历项目
             ▼                                   ▲
-src/ui/view-state.js  当前业务、日期、筛选  ◄──  src/storage/local-state.js
-            ▼                                   （待办决定、备注、日期、语言，存在 localStorage）
+src/ui/view-state.js  筛选和算出的数字  ◄──  src/storage/local-state.js
+            ▼                                   （Excel、待办决定、备注、语言、Gemini 钥匙，存在 localStorage）
 src/ui/pages/*.js     每一页；文字都经过 tr()/tl()（src/i18n/）
-src/briefs/           examples.js 预先准备的分析；brief-input.js 事实清单；brief-facts.js 数字核对
+src/briefs/           brief-input.js 事实清单；ai-prompt.js 给 Gemini 的请求；gemini.js 联网；brief-facts.js 数字核对
 ```
+
+测试用的 BetterSpace 练习数据（`data/*/day1|day2/*.csv`）由 `test/support/training.js` 读取，应用本身从不读取。
 
 - `src/core/` 里的函数不碰网页（DOM），浏览器和测试都用同一份代码。
 - 页面每次有变化就整页重画（数据很小，不需要框架）。
@@ -85,7 +87,7 @@ src/briefs/           examples.js 预先准备的分析；brief-input.js 事实�
 
 ### 4.1 新增一个 KPI · Add a KPI tile
 
-例子：B2B 想看「本期服务类订单额」（安装、咨询）。
+例子：想看「本期服务类订单额」（安装、咨询）。用练习工作簿 BetterSpace_B2B.xlsx 核对。
 
 1. **计算**：在 `src/core/metrics.js` 的 `computeMetrics()` 返回值里加一个字段：
    ```js
@@ -96,7 +98,7 @@ src/briefs/           examples.js 预先准备的分析；brief-input.js 事实�
    add(tiles, tile({ label: tr('Service order value'), value: money(m.service_order_value), foot: tr('installation and consultation in the period') }));
    ```
 3. **翻译**：在 `src/i18n/zh.js` 加上 `'Service order value': '服务类订单额'` 和第二句的中文。
-4. **测试**：在 `test/metrics.test.js` 加一个测试。正确答案要**自己从数据算出来**，不能从应用里抄：B2B 第 1 天 8 月有 5 笔服务订单，合计 **RM 3,400**（可以在「订单与项目」页搜索 installation 和 consultation 核对）。
+4. **测试**：在 `test/metrics.test.js` 加一个测试。正确答案要**自己从数据算出来**，不能从应用里抄：练习工作簿 BetterSpace_B2B.xlsx（= B2B 第 1 天）8 月有 5 笔服务订单，合计 **RM 3,400**（可以在「订单」页搜索 installation 和 consultation 核对）。
    ```js
    test('b2b day1: service order value in August', () => {
      const s = loadScenario('betterspace-b2b', 'day1');
@@ -119,10 +121,10 @@ src/briefs/           examples.js 预先准备的分析；brief-input.js 事实�
 
 1. `src/core/model.js` 的 `TASK_RULES` 加一项：`thank_repeat_customer: { title: 'Thank a repeat customer', needs: ['customers', 'sales'], params: {}, doc: '...' }`。
 2. `src/core/tasks.js` 的 `generateSuggestions()` 加一个 `case 'thank_repeat_customer':`，对 `metrics.repeat_customer_ids` 逐一 `push({ rule, record_type: 'customers', record_id: id, title: tr(...), reason: tr(...), evidence: {...}, recorded_deadline: '', suggested_date: reportingDate, suggested_owner: '' })`。
-   **编号必须稳定**：`task_key` 自动是 `规则:记录ID`，第 1 天和第 2 天才对得上。不要把日期或序号放进编号。
-3. 在 `data/betterspace-b2c/business.json` 的 `policies.tasks` 加 `{ "rule": "thank_repeat_customer", "enabled": true }`，然后 `npm run data`。
+   **编号必须稳定**：`task_key` 自动是 `规则:记录ID`，重新读取更新后的 Excel 时，决定才对得上。不要把日期或序号放进编号。
+3. 在 `data/betterspace-b2c/business.json` 和 `data/betterspace-b2b/business.json` 的 `policies.tasks` 加 `{ "rule": "thank_repeat_customer", "enabled": true }`（Excel 按有没有负责人和跟进日期，套用 B2B 或 B2C 的规则），然后 `npm run data`。
 4. 翻译规则名称和文字；在 `test/` 加测试（例如第 1 天应产生 22 条，因为有 22 位回头客）。
-5. 注意：`test/state.test.js` 里写死了 B2B 第 1 天有 45 条建议——只改 B2C 就不会影响它。
+5. 注意：`test/state.test.js` 里写死了 B2B 练习数据有 45 条建议——加了规则就要更新这个数字。
 
 ### 4.4 新增一个页面 · Add a page
 
@@ -131,30 +133,23 @@ src/briefs/           examples.js 预先准备的分析；brief-input.js 事实�
 3. 在 `src/ui/shell.js` 的 `NAV` 加 `['products', () => tl('Products')]`。
 4. 翻译新文字，`npm test`，然后在浏览器打开 `#products`。
 
-## 5. 换成你自己的数据 · Replace the sample data deliberately
+## 5. 用你自己的数据 · Your own data
 
-**不用改代码的方法：我的 Excel。** 在网页上选「我的 Excel」，打开一个和 `data/templates/` 范例格式相同的 `.xlsx`。它只在浏览器里读取和计算（`src/data/workbook.js`，读取器是 `src/vendor/read-excel-file.js`），记在这个浏览器里，不会进入仓库，也不会发布到网站上。适合看自己的数字。
+**不用改代码：打开你的 Excel。** 仪表盘本身没有数据。按「选择 Excel 文件」，打开一个和练习工作簿（`data/templates/`）格式相同的 `.xlsx`：四个工作表 Customers、Sales、Payments、Stock，第一行是列名。它只在浏览器里读取和计算（`src/data/workbook.js`），记在这个浏览器里，不会进入仓库，也不会发布到网站上。
 
-**要把数据放进项目本身**（例如换掉内置的练习业务），才需要下面的步骤。
+**格式不同的 Excel**（工作表或列名不一样）才需要改项目：
 
-目前只支持这种数据结构：**客户、销售（一行一个订单）、收款（对应到订单）、库存快照**。其他业务模式需要改 `src/core/model.js` 和计算规则。
-
-1. 复制 `data/betterspace-b2c/` 成新文件夹，例如 `data/my-shop/`。`business.json` 里的 `"id"` 必须和文件夹名一样；`"order"` 决定它在业务选择里的位置。
-2. 四个 CSV 文件（Customers、Sales、Payments、Stock）：列名要和 `business.json` 的 `tables[].fields[].header` 一致——改 CSV 列名或改对应都可以。日期用 `2026-08-30` 格式，金额用数字（例如 `300` 或 `299.90`）。
-3. `status_map` 写明哪些状态文字表示「未完成 pending」「已完成 done」「不计入 excluded」。
-4. 每一天的 `metadata.json` 写 `as_of_date`（报告日期）和 `history_start`。第 2 天是完整快照，不是新增的几行。
-5. `npm run data`。如果记录没通过检查（例如缺列、日期格式错、收款对应不到订单），页面会列出问题而不显示数字。
-6. **更新测试**：
-   - `test/metrics.test.js` 目前核对两家 BetterSpace 企业。为你的数据写 `test/expected/<id>/<day>/expected_metrics.json`——数字要自己在试算表里算出来，**不能从应用里抄**，否则测试就没有意义。
-   - `src/briefs/examples.js`：数据变了，原来的示例分析就不对了。为每个新场景重写（`npm test` 会逐一核对数字），或者有意识地删掉 `test/briefs.test.js` 里「每个场景都要有」的要求。
-7. 只放虚构或已匿名化的数据。`npm run build` 会把全部记录放进那个 HTML 文件里。
+1. 在 `data/betterspace-b2b/business.json` 的 `tables[].sheet_name` 和 `tables[].fields[].header` 改成你的工作表名和列名（`canonical` 不要改），然后 `npm run data`。
+2. `status_map` 写明哪些状态文字表示「未完成 pending」「已完成 done」「不计入 excluded」。
+3. 目前只支持这种数据结构：**客户、销售（一行一个订单）、收款（对应到订单）、库存快照**。其他业务模式需要改 `src/core/model.js` 和计算规则。
+4. 改了格式，练习工作簿和 `test/workbook.test.js` 也要一起更新；`npm test` 会告诉你哪里对不上。
 
 ## 6. 实时 AI（Gemini）· Live AI with Gemini
 
-示例分析页的 **用 Gemini 分析** 用学生**自己的**免费 Gemini API 钥匙（Google AI Studio → Get API key）写实时分析：
+「AI 分析」页的 **用 Gemini 分析** 用学生**自己的**免费 Gemini API 钥匙（Google AI Studio → Get API key）写实时分析：
 
 1. 钥匙由学生贴在页面上，只存在那个浏览器（`bd-starter.v1.gemini`），放在请求标头 `x-goog-api-key`，只送到 Google。它**绝不**出现在代码、仓库、仓库变量或打包文件里；`scripts/site-config.js` 会拒绝像钥匙的变量值。
-2. 请求 = `src/briefs/ai-prompt.js` 的固定指示（不含任何数字）+ `buildBriefInput()` 的事实（包括这个浏览器里的待办决定和备注）。你自己的 Excel 默认把客户和员工名字换成代号。
+2. 请求 = `src/briefs/ai-prompt.js` 的固定指示（不含任何数字）+ `buildBriefInput()` 的事实（包括这个浏览器里的待办决定和备注）。客户和员工名字默认换成代号。
 3. `src/briefs/gemini.js` 是唯一会联网的模块：`https://generativelanguage.googleapis.com/v1beta/models/<model>:generateContent`，先用 `gemini-flash-latest`，忙或额度用完时改用 `gemini-flash-lite-latest`。CSP 的 `connect-src` 只允许这个网址（`src/index.html`、`scripts/build.js`），`test/boundaries.test.js` 检查只有这个模块会发请求。
 4. 回答标明「实时 AI」、模型和时间；显示前用 `answerProblems()`（`unsupportedTokens()`）核对，找不到的数字会列出来。没有假的「打字」效果。
 5. 隐私：Google 免费方案会用送出的内容改进产品，并请用户不要送出个人或机密资料。真实企业数据先确认企业规定和隐私法（例如马来西亚 PDPA）。
@@ -173,40 +168,39 @@ The **Analyse with Gemini** button uses the viewer's own free Gemini API key, ke
 
 ## 8. 发布你自己的版本（可选）· Publish your own copy (optional)
 
-**只发布虚构数据。** 发布后任何有链接的人都能看到文件里的全部记录。
+网站本身不含任何业务数据：每个访客在自己的浏览器里打开自己的 Excel。
 
 - **GitHub Pages**（你自己的仓库）：Settings → Pages → Build and deployment → Source 选 **GitHub Actions**。然后 Actions → **Publish site** → **Run workflow**。完成后网址是 `https://<你的用户名>.github.io/<仓库名>/`。
 - **其他静态网站服务**：运行 `npm run build`，把 `dist/site/index.html` 上传到你自己账号下的静态网站服务（例如 Netlify Drop、Cloudflare Pages）。
 
 网站上的保存状态和双击打开的文件是分开的（不同的来源）。
 
-### 网站设定（仓库变量）· Site settings (repository variables)
+### 网站设定（仓库变量）· Site setting (repository variable)
 
 不用改文件。在你的仓库 **Settings → Secrets and variables → Actions → Variables** 按 **New repository variable**，再运行 **Publish site**：
 
 | Name | Value | 作用 · Effect |
 |---|---|---|
-| `BUSINESS_NAME` | 你的店名（最多 40 个字）· your business name (max 40 characters) | 「我的 Excel」显示成这个名字（左上角和业务选单）· names "My Excel" in the header and the business menu |
-| `START_WITH` | `my-excel`、`b2c` 或 `b2b`（或 `data/` 里的业务文件夹名） | 访客第一次打开时显示哪个业务；之后记住访客自己的选择。改了设定，每个访客会再照新设定打开一次 · which business opens first; afterwards each visitor's own choice is kept |
+| `BUSINESS_NAME` | 你的店名（最多 40 个字）· your business name (max 40 characters) | 左上角和浏览器分页显示这个名字；没设的话显示 Excel 的文件名 · shown at the top and in the browser tab; without it, the Excel file name |
 
-两个都可以不设。值写错时，发布会在 `npm run check` 停下，红字说明哪里错，网站保持上一个版本。变量会写进公开的网页：不要放密码或钥匙。本机试用：`BUSINESS_NAME=小明家具店 START_WITH=my-excel npm run dev`（Windows PowerShell：先 `$env:BUSINESS_NAME='小明家具店'`）。代码在 `scripts/site-config.js`（检查）和 `src/site-config.js`（默认值）。
+可以不设。值写错时（太长、像钥匙），发布会在 `npm run check` 停下，红字说明哪里错，网站保持上一个版本。变量会写进公开的网页：不要放密码或钥匙。本机试用：`BUSINESS_NAME=小明家具店 npm run dev`（Windows PowerShell：先 `$env:BUSINESS_NAME='小明家具店'`）。代码在 `scripts/site-config.js`（检查）和 `src/site-config.js`（默认值）。
 
-Both are optional. A wrong value stops the publish at `npm run check` with a message saying what to fix, and the site keeps its previous version. Values are built into the public page: never put a password or key in one.
+Optional. A wrong value stops the publish at `npm run check` with a message saying what to fix, and the site keeps its previous version. The value is built into the public page: never put a password or key in it.
 
 ## 9. 让 AI 帮忙 · Working with AI
 
 ### 9.1 请 AI 分析数字 · Ask an AI about the numbers (no code)
 
-用示例分析页的 **用 Gemini 分析**：见上面第 6 节。学生版指南第 7 步教学生拿钥匙、贴钥匙、按按钮。
+用「AI 分析」页的 **用 Gemini 分析**：见上面第 6 节。学生版指南第 7 步教学生拿钥匙、贴钥匙、按按钮。
 
-Use **Analyse with Gemini** on the Example analysis page (section 6). Step 7 of the student guide shows how to get and paste a key.
+Use **Analyse with Gemini** on the AI analysis page (section 6). Step 7 of the student guide shows how to get and paste a key.
 
 ### 9.2 请 AI 改代码 · Have an AI coding agent change the app
 
 学生版指南（`docs/student-guide.html` 第 8 步）用 **Jules**（jules.google.com）：Google 的编程 AI，网页操作、免费版每天 15 个任务、要年满 18 岁。它连接 GitHub 仓库，在自己的虚拟机里改代码、跑测试，用 **Publish PR** 开 pull request；学生在 GitHub 上看到 **Tests** 绿色勾再 Merge，然后运行 Publish site。其他编程助手（Claude Code、Codex 等）也可以，做法相同。
 
-不论用哪个，都先让它读 **`AGENTS.md`**（Jules 会自动读；Claude Code 通过 `CLAUDE.md` 读取）。里面写着哪些东西不能改坏：数字规则、固定的报告日期、数据边界、翻译、示例分析的诚实原则。可以这样说：
+不论用哪个，都先让它读 **`AGENTS.md`**（Jules 会自动读；Claude Code 通过 `CLAUDE.md` 读取）。里面写着哪些东西不能改坏：数字规则、报告日期、不内置数据、只连 Gemini、翻译、AI 的诚实标示。可以这样说：
 
-> 请先读 AGENTS.md。在 B2B 概览加一个「本期服务类订单额」KPI，加上中文翻译和测试，然后运行 npm run check，告诉我结果。
+> 请先读 AGENTS.md。在概览加一个「本期服务类订单额」KPI，加上中文翻译和测试，然后运行 npm run check，告诉我结果。
 
 完成后自己在浏览器里看一遍，并确认 `npm run check` 全部通过（pull request 上的 **Tests** 是绿色勾），再 Merge 和发布。

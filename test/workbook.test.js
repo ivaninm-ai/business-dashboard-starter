@@ -7,7 +7,8 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readWorkbook, workbookScenario, workbookColumns, cellValue, SHEETS, MY_EXCEL } from '../src/data/workbook.js';
-import { loadScenario, setWorkbookScenario, businessProfile, allBusinessIds } from '../src/data/scenarios.js';
+import { loadScenario as openScenario, setWorkbookScenario, businessProfile, allBusinessIds } from '../src/data/scenarios.js';
+import { loadScenario } from './support/training.js';
 import { computeMetrics } from '../src/core/metrics.js';
 import { suggestionsFor } from '../src/core/scenario-tasks.js';
 import { createStateStore, memoryStorage, PREFIX } from '../src/storage/local-state.js';
@@ -46,7 +47,7 @@ for (const [file, business] of [['BetterSpace_B2C.xlsx', 'b2c'], ['BetterSpace_B
     assert.deepEqual(m.overdue_follow_up_ids, [...e.overdue_follow_up_ids].sort());
   });
 
-  test(`${file}: same records and task suggestions as the bundled CSV scenario`, async () => {
+  test(`${file}: same records and task suggestions as the training CSV files`, async () => {
     const s = await open(file);
     const csv = loadScenario(`betterspace-${business}`, 'day1');
     for (const entity of ['customers', 'sales', 'payments', 'stock']) {
@@ -57,16 +58,16 @@ for (const [file, business] of [['BetterSpace_B2C.xlsx', 'b2c'], ['BetterSpace_B
   });
 }
 
-test('the scenario registry serves the opened workbook as "My Excel"', async () => {
-  assert.deepEqual(allBusinessIds(), ['betterspace-b2c', 'betterspace-b2b', MY_EXCEL]);
+test('the dashboard has one business, the opened workbook, and no built-in data', async () => {
+  assert.deepEqual(allBusinessIds(), [MY_EXCEL]);
   setWorkbookScenario(null);
-  assert.equal(loadScenario(MY_EXCEL, 'day1'), null, 'nothing open yet');
-  assert.equal(businessProfile(MY_EXCEL).business.short_zh, '我的 Excel');
+  assert.equal(openScenario(), null, 'nothing open yet: the pages show how to open a file');
+  assert.equal(businessProfile().business.short_zh, '我的 Excel');
   const s = await open('BetterSpace_B2B.xlsx');
   setWorkbookScenario(s);
-  assert.equal(loadScenario(MY_EXCEL, 'day1'), s);
-  assert.equal(businessProfile(MY_EXCEL).business.name, 'BetterSpace_B2B');
-  assert.deepEqual(businessProfile(MY_EXCEL).business.team, ['Amir', 'Mei', 'Sarah']);
+  assert.equal(openScenario(), s);
+  assert.equal(businessProfile().business.name, 'BetterSpace_B2B');
+  assert.deepEqual(businessProfile().business.team, ['Amir', 'Mei', 'Sarah']);
   setWorkbookScenario(null);
 });
 
@@ -140,4 +141,21 @@ test('the Excel templates and the vendored reader are up to date', async () => {
   const { buildVendor, VENDOR_OUTPUT } = await import('../scripts/vendor.js');
   assert.equal(readFileSync(VENDOR_OUTPUT, 'utf8'), await buildVendor(), 'run `node scripts/vendor.js`');
   assert.deepEqual(SHEETS, ['Customers', 'Sales', 'Payments', 'Stock']);
+});
+
+// docs/START_HERE.md §5: the classroom demo of updating the Excel and reading it again.
+test('classroom demo: adding the BS-001 payment row to the B2B workbook updates the figures', async () => {
+  const s1 = await open('BetterSpace_B2B.xlsx');
+  const { sheets } = await readWorkbook(bytes('BetterSpace_B2B.xlsx'));
+  const updated = { ...sheets, Payments: [...sheets.Payments, ['BP-UPDATE', 'BS-001', '2026-08-31', 4500, 'Bank transfer']] };
+  const s2 = workbookScenario({ fileName: 'BetterSpace_B2B.xlsx', loadedAt: '2026-09-25T06:00:00.000Z', sheets: updated, missing: [] });
+  const m = s => computeMetrics(s.records, s.reportingDate, { historyStart: s.historyStart });
+  const [a, b] = [m(s1), m(s2)];
+  assert.deepEqual([s1.reportingDate, s2.reportingDate], ['2026-08-30', '2026-08-31']);
+  assert.deepEqual([a.overdue_balance, b.overdue_balance], [cents(30515), cents(26015)]);
+  assert.deepEqual([a.outstanding_balance, b.outstanding_balance], [cents(91090), cents(86590)]);
+  assert.deepEqual([a.period_cash_collected, b.period_cash_collected], [cents(193765), cents(198265)]);
+  assert.deepEqual([a.overdue_completion_ids, b.overdue_completion_ids], [[], ['BS-003']]);
+  const keys = s => suggestionsFor(s).map(t => t.task_key);
+  assert.ok(keys(s1).includes('payment_follow_up:BS-001') && !keys(s2).includes('payment_follow_up:BS-001'));
 });

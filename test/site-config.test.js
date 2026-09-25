@@ -1,22 +1,16 @@
-// Site settings: the GitHub repository variables BUSINESS_NAME and START_WITH, which let a
-// student name their own business and choose what opens first without editing any file.
+// Site settings: the GitHub repository variable BUSINESS_NAME, which names the dashboard
+// without editing any file.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { siteConfigFromEnv, siteConfigModule, businessFolders, BUSINESS_NAME_MAX, MY_EXCEL_ID } from '../scripts/site-config.js';
+import { siteConfigFromEnv, siteConfigModule, BUSINESS_NAME_MAX } from '../scripts/site-config.js';
 import { SITE_CONFIG } from '../src/site-config.js';
-import { MY_EXCEL, workbookProfile } from '../src/data/workbook.js';
-import { startBusiness, businessIds } from '../src/data/scenarios.js';
-import { createStateStore, memoryStorage } from '../src/storage/local-state.js';
+import { workbookProfile } from '../src/data/workbook.js';
 
-const B2C = 'betterspace-b2c', B2B = 'betterspace-b2b';
-
-test('without variables the site keeps its defaults', () => {
-  assert.deepEqual(siteConfigFromEnv({}), { businessName: '', startWith: '' });
-  assert.deepEqual(siteConfigFromEnv({ BUSINESS_NAME: '  ', START_WITH: '' }), { businessName: '', startWith: '' });
-  assert.deepEqual({ ...SITE_CONFIG }, { businessName: '', startWith: '' }, 'the file in src/ holds the classroom defaults');
-  assert.equal(MY_EXCEL_ID, MY_EXCEL);
-  assert.deepEqual(businessFolders().sort(), businessIds().slice().sort(), 'the build sees the same businesses as the app');
+test('without the variable the site keeps its default', () => {
+  assert.deepEqual(siteConfigFromEnv({}), { businessName: '' });
+  assert.deepEqual(siteConfigFromEnv({ BUSINESS_NAME: '  ', START_WITH: 'b2b' }), { businessName: '' }, 'START_WITH is no longer a setting and is ignored');
+  assert.deepEqual({ ...SITE_CONFIG }, { businessName: '' }, 'the file in src/ holds the classroom default');
 });
 
 test('BUSINESS_NAME is tidied and limited in length', () => {
@@ -25,35 +19,21 @@ test('BUSINESS_NAME is tidied and limited in length', () => {
   assert.throws(() => siteConfigFromEnv({ BUSINESS_NAME: '字'.repeat(BUSINESS_NAME_MAX + 1) }), /BUSINESS_NAME 太长了.*too long/s);
 });
 
-test('START_WITH accepts my-excel, b2c, b2b (any case) and explains a wrong value', () => {
-  assert.equal(siteConfigFromEnv({ START_WITH: 'my-excel' }).startWith, MY_EXCEL);
-  assert.equal(siteConfigFromEnv({ START_WITH: ' Excel ' }).startWith, MY_EXCEL);
-  assert.equal(siteConfigFromEnv({ START_WITH: 'B2B' }).startWith, B2B);
-  assert.equal(siteConfigFromEnv({ START_WITH: 'b2c' }).startWith, B2C);
-  assert.equal(siteConfigFromEnv({ START_WITH: B2B }).startWith, B2B);
-  assert.throws(() => siteConfigFromEnv({ START_WITH: '我的 Excel' }), e => {
-    assert.match(e.message, /START_WITH 只能是 my-excel、b2c、b2b/);
-    assert.match(e.message, /START_WITH must be one of my-excel, b2c, b2b; it is "我的 Excel"/);
-    return true;
-  });
-  assert.throws(() => siteConfigFromEnv({ START_WITH: 'b2x', BUSINESS_NAME: 'x'.repeat(99) }), /BUSINESS_NAME[\s\S]*START_WITH/, 'every problem is listed at once');
-});
-
-test('an API key pasted into a variable stops the build (variables are public)', () => {
+test('an API key pasted into the variable stops the build (variables are public)', () => {
   assert.throws(() => siteConfigFromEnv({ BUSINESS_NAME: 'AIzaSyD-this-is-not-a-real-key-123456789' }), /BUSINESS_NAME 看起来像 API 钥匙.*looks like an API key/s);
-  assert.throws(() => siteConfigFromEnv({ START_WITH: 'abcDEF1234567890abcDEF1234567890xyz' }), /START_WITH looks like an API key/);
+  assert.throws(() => siteConfigFromEnv({ BUSINESS_NAME: 'abcDEF1234567890abcDEF1234567890xyz' }), /looks like an API key/);
   assert.equal(siteConfigFromEnv({ BUSINESS_NAME: 'BetterSpace Office Solutions Sdn Bhd 2' }).businessName, 'BetterSpace Office Solutions Sdn Bhd 2', 'an ordinary long name is fine');
 });
 
 test('the settings module is plain data, safe for any name', async () => {
   const name = '小明 "家具" </script> <!-- 店';
-  const text = siteConfigModule({ businessName: name, startWith: B2B });
+  const text = siteConfigModule({ businessName: name });
   const mod = await import(`data:text/javascript,${encodeURIComponent(text)}`);
-  assert.deepEqual({ ...mod.SITE_CONFIG }, { businessName: name, startWith: B2B });
+  assert.deepEqual({ ...mod.SITE_CONFIG }, { businessName: name });
   assert.ok(Object.isFrozen(mod.SITE_CONFIG));
 });
 
-test('BUSINESS_NAME names "My Excel"; without it the file name does', () => {
+test('BUSINESS_NAME names the dashboard; without it the file name does', () => {
   const named = workbookProfile('Sales 2026.xlsx', {}, '小明家具店').profile.business;
   assert.deepEqual([named.name, named.name_zh, named.short, named.short_zh], ['小明家具店', '小明家具店', '小明家具店', '小明家具店']);
   const unnamed = workbookProfile('Sales 2026.xlsx', {}, '').profile.business;
@@ -62,32 +42,12 @@ test('BUSINESS_NAME names "My Excel"; without it the file name does', () => {
   assert.deepEqual([empty.name, empty.name_zh], ['My Excel', '我的 Excel']);
 });
 
-test('START_WITH picks the first business; the visitor\'s own choice then sticks', () => {
-  const store = createStateStore(memoryStorage());
-  const open = startWith => {
-    const start = startBusiness(store.prefs(), startWith);
-    if (start.seen) store.setPrefs({ business: start.businessId, start: start.seen });
-    return start.businessId;
-  };
-  assert.equal(open(''), B2C, 'no setting: the first training business');
-  store.setPrefs({ business: B2B });
-  assert.equal(open(''), B2B, 'the visitor chose B2B last time');
-  assert.equal(open(MY_EXCEL), MY_EXCEL, 'the site owner sets START_WITH: it wins once, even over an earlier choice');
-  store.setPrefs({ business: B2C });
-  assert.equal(open(MY_EXCEL), B2C, 'after that the visitor\'s own choice is kept');
-  assert.equal(open(B2B), B2B, 'a changed START_WITH wins once again');
-  assert.equal(open(B2B), B2B);
-  assert.equal(store.prefs().start, B2B);
-  assert.equal(startBusiness({ business: 'gone', start: '' }, '').businessId, B2C, 'an unknown stored business falls back');
-});
-
-test('the single-file build carries the settings inside its hashed script', async () => {
+test('the single-file build carries the setting inside its hashed script', async () => {
   const { buildHtml } = await import('../scripts/build.js');
-  const html = await buildHtml({ businessName: '小明家具店', startWith: MY_EXCEL });
+  const html = await buildHtml({ businessName: '小明家具店' });
   const body = html.slice(html.indexOf('<script>') + '<script>'.length, html.lastIndexOf('</script>'));
   assert.ok(html.includes(`script-src 'sha256-${createHash('sha256').update(body, 'utf8').digest('base64')}'`), 'CSP hash still matches');
   assert.match(body, /"?businessName"?: ?"小明家具店"/);
-  assert.match(body, /"?startWith"?: ?"my-excel"/);
-  const plain = await buildHtml({ businessName: '', startWith: '' });
+  const plain = await buildHtml({ businessName: '' });
   assert.doesNotMatch(plain, /小明家具店/);
 });

@@ -1,9 +1,9 @@
 # Optional: publish YOUR copy of the demo to GitHub Pages under your own account.
 # It only runs when you press "Run workflow" (Actions → Publish site). No secrets.
 # First: Settings → Pages → Build and deployment → Source: GitHub Actions.
-# Your site settings are repository variables (Settings → Secrets and variables → Actions →
-# Variables): BUSINESS_NAME and START_WITH. Both optional; change them, then run this again.
-# Everything in the built page — including all records — is public. Synthetic data only.
+# Your business name is a repository variable (Settings → Secrets and variables → Actions →
+# Variables): BUSINESS_NAME. Optional; change it, then run this again. Never put a key here.
+# The built page contains no business records: each visitor opens their own Excel.
 name: Publish site
 
 on:
@@ -31,7 +31,6 @@ jobs:
       - run: npm run check
         env:
           BUSINESS_NAME: ${{ vars.BUSINESS_NAME }}
-          START_WITH: ${{ vars.START_WITH }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

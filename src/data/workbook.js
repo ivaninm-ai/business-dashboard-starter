@@ -13,7 +13,7 @@
 //     blank or zero, and the missing columns are listed as warnings.
 
 import readXlsxFile from '../vendor/read-excel-file.js';
-import { DATASETS } from './datasets.generated.js';
+import { LAYOUTS } from './layouts.generated.js';
 import { ENTITIES } from '../core/model.js';
 import { applyTableMapping, relationalChecks, resolveReportingDate, hasErrors, findHeaderIndex, issue } from '../core/mapping.js';
 import { monthStart } from '../core/dates.js';
@@ -26,7 +26,7 @@ export const WORKBOOK_LIMITS = { bytes: 10 * 1024 * 1024, rowsPerSheet: 20000 };
 export const SHEETS = ['Customers', 'Sales', 'Payments', 'Stock'];
 
 // The full column layout is the B2B training workbook's (a superset of B2C's).
-const layout = () => DATASETS['betterspace-b2b'].profile;
+const layout = () => LAYOUTS['betterspace-b2b'];
 // Columns the B2C layout simply does not have (no account owners, no follow-ups):
 // leaving them out is normal, so it is not reported.
 const LAYOUT_OPTIONAL = new Set(['account_owner', 'next_follow_up_date']);
@@ -87,7 +87,7 @@ export function workbookProfile(fileName, sheets, businessName = SITE_CONFIG.bus
   const hasOwner = findHeaderIndex(customerHeader, 'account_owner') !== -1;
   const hasFollowUp = findHeaderIndex(customerHeader, 'next_follow_up_date') !== -1;
   // Owners and follow-ups (like B2B) → B2B rules; otherwise B2C rules, plus follow-ups if recorded.
-  let tasks = (hasOwner && hasFollowUp ? DATASETS['betterspace-b2b'] : DATASETS['betterspace-b2c']).profile.policies.tasks.map(r => ({ ...r }));
+  let tasks = (hasOwner && hasFollowUp ? LAYOUTS['betterspace-b2b'] : LAYOUTS['betterspace-b2c']).policies.tasks.map(r => ({ ...r }));
   if (hasFollowUp && !hasOwner) tasks = tasks.map(r => (r.rule === 'follow_up_due' ? { ...r, enabled: true } : r));
   const name = businessName || String(fileName || '').replace(/\.xlsx$/i, '').trim();
   return {

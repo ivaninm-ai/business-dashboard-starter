@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadScenario, businessIds, DAYS } from '../src/data/scenarios.js';
+import { loadScenario, businessIds, DAYS } from './support/training.js';
 import { computeMetrics } from '../src/core/metrics.js';
 import { resolveReportingDate } from '../src/core/mapping.js';
 import { suggestionsFor } from '../src/core/scenario-tasks.js';
@@ -18,7 +18,7 @@ const expected = (business, day) => JSON.parse(readFileSync(path.join(here, 'exp
 const cents = n => Math.round(n * 100);
 const SCENARIOS = [['b2c', 'day1'], ['b2c', 'day2'], ['b2b', 'day1'], ['b2b', 'day2']];
 
-test('exactly the two training businesses with two days each are bundled', () => {
+test('the training material has two businesses with two days each (test data, not in the dashboard)', () => {
   assert.deepEqual(businessIds(), ['betterspace-b2c', 'betterspace-b2b']);
   assert.deepEqual(DAYS, ['day1', 'day2']);
 });

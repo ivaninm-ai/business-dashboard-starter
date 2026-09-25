@@ -116,17 +116,17 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
 <div class="wrap">
   <div class="eyebrow">InfiniteSales AI · 起步项目 0.3.0 · 约 20 分钟 · 全程在浏览器里 · 不用安装任何软件</div>
   <h1>业务仪表盘 · 起步项目 SOP</h1>
-  <p class="lede">做完之后，你会有一个属于自己的仪表盘网页：代码在你自己的 GitHub 仓库里，网站由 GitHub Pages 免费发布在你自己的网址上。不需要 Google Cloud、服务器或付费（第 7 步的 Gemini 钥匙也是免费的）。里面是虚构的 BetterSpace 练习数据，也可以直接打开你自己的 Excel 看自己的数字，并在仓库设定里换上你的店名。最后两步用免费的 Google AI：用你自己的免费钥匙请 Gemini 分析你的数字，请 Jules 帮你加功能。你在网页上的操作只保存在你自己的浏览器里。下面每一步都是网页操作；绿色框告诉你“怎么知道这一步做对了”。</p>
+  <p class="lede">做完之后，你会有一个属于自己的仪表盘网页：代码在你自己的 GitHub 仓库里，网站由 GitHub Pages 免费发布在你自己的网址上。不需要 Google Cloud、服务器或付费（第 7 步的 Gemini 钥匙也是免费的）。网站本身<b>没有任何数据</b>：你打开自己的 Excel（或老师给的练习 Excel），数字、待办和日历就按你的记录算出来；Excel 只在你的浏览器里读取，不会上传。最后两步用免费的 Google AI：请 Gemini 分析你的数字，请 Jules 帮你加功能。下面每一步都是网页操作；绿色框告诉你“怎么知道这一步做对了”。</p>
 
   <div class="layout">
     <nav class="rail" aria-label="步骤" id="rail">
       <a href="#s0" data-step="0"><span class="n">0</span>准备账号</a>
       <a href="#s1" data-step="1"><span class="n">1</span>复制模板</a>
       <a href="#s2" data-step="2"><span class="n">2</span>打开 Pages</a>
-      <a href="#s3" data-step="3"><span class="n">3</span>设定店名和首页</a>
+      <a href="#s3" data-step="3"><span class="n">3</span>设定店名</a>
       <a href="#s4" data-step="4"><span class="n">4</span>发布网站</a>
-      <a href="#s5" data-step="5"><span class="n">5</span>试用你的网站</a>
-      <a href="#s6" data-step="6"><span class="n">6</span>打开你的 Excel</a>
+      <a href="#s5" data-step="5"><span class="n">5</span>打开你的 Excel</a>
+      <a href="#s6" data-step="6"><span class="n">6</span>试用仪表盘</a>
       <a href="#s7" data-step="7"><span class="n">7</span>请 Gemini 分析</a>
       <a href="#s8" data-step="8"><span class="n">8</span>请 AI 加功能</a>
       <a href="#rules"><span class="n">!</span>规则与限制</a>
@@ -189,26 +189,25 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
       </section>
 
       <section class="step" id="s3" aria-labelledby="h3">
-        <div class="step-head"><span class="num">第 3 步</span><h2 id="h3">设定你的店名和首页</h2><span class="where">你的仓库 › Settings › Secrets and variables › Actions</span></div>
-        <p>不用改任何文件：在仓库的设定里加两个<b>变量</b>。下一步发布网站时就会用上：你的网站会显示你的店名，一打开就是你自己的 Excel。</p>
+        <div class="step-head"><span class="num">第 3 步</span><h2 id="h3">设定你的店名</h2><span class="where">你的仓库 › Settings › Secrets and variables › Actions</span></div>
+        <p>不用改任何文件：在仓库的设定里加一个<b>变量</b>。下一步发布网站时就会用上：你的网站左上角会显示你的店名。</p>
         <p><a class="btn primary" data-link="variables" href="#details" target="_blank" rel="noopener">⚙️ 打开我的变量设定 ↗</a></p>
         <ol>
           <li>按上面的按钮（或在你的仓库里点 <b>Settings</b> → 左边 <b>Secrets and variables</b> → <b>Actions</b> → 上方的 <b>Variables</b> 分页）。</li>
-          <li>按 <b>New repository variable</b>，照下表填 <b>Name</b> 和 <b>Value</b>，再按 <b>Add variable</b>。第二个变量用同样方法再加一次。
+          <li>按 <b>New repository variable</b>，照下表填 <b>Name</b> 和 <b>Value</b>，再按 <b>Add variable</b>。
             <div class="table-wrap"><table>
               <thead><tr><th>Name（照抄）</th><th>Value（你填）</th><th>作用</th></tr></thead>
               <tbody>
-                <tr><td><code>BUSINESS_NAME</code></td><td>你的店名，例如 <code>小明家具店</code></td><td>「我的 Excel」改叫你的店名：左上角和业务选单都会显示。最多 40 个字。</td></tr>
-                <tr><td><code>START_WITH</code></td><td><code>my-excel</code></td><td>网站一打开就是你自己的 Excel。想先看范例，就填 <code>b2c</code> 或 <code>b2b</code>。</td></tr>
+                <tr><td><code>BUSINESS_NAME</code></td><td>你的店名，例如 <code>小明家具店</code></td><td>网站左上角和浏览器分页显示你的店名。最多 40 个字。</td></tr>
               </tbody>
             </table></div></li>
-          <li>加好之后，Variables 分页会列出这两个变量。接着做第 4 步，发布你的网站。</li>
+          <li>加好之后，Variables 分页会列出这个变量。接着做第 4 步，发布你的网站。</li>
         </ol>
         <div class="metaphor">比喻：变量就像店门口的招牌。换招牌不用拆店：代码一行都不动，只换设定。</div>
         <div class="note">⚠️ 要加在 <b>Variables</b> 分页，不是 Secrets。变量会写进网站，任何人都看得到：只放店名这类公开资料，不要放密码或钥匙。</div>
-        <p>以后想改：回到同一页，按变量旁边的铅笔改 Value，再发布一次（第 4 步）。<b>改了变量一定要重新发布</b>，网站才会更新。不想要了就删掉变量，再发布一次。每个访客第一次打开时会照 <code>START_WITH</code>；之后他们自己选的业务会记在他们的浏览器里。</p>
-        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="3"><span>Variables 分页里有 <code>BUSINESS_NAME</code> 和 <code>START_WITH</code> 两个变量，Name 全是大写英文。</span></label></div>
-        <p class="stuck"><b>卡住了？</b>看不到 Settings：你打开的多半是老师的模板，不是你自己的仓库。不小心加到 Secrets 分页：删掉它，改加在 Variables 分页。暂时不想设：可以跳过这一步，网站会用 BetterSpace 范例开场，「我的 Excel」保持原名；以后再回来加，重新发布就好。</p>
+        <p>以后想改：回到同一页，按变量旁边的铅笔改 Value，再发布一次（第 4 步）。<b>改了变量一定要重新发布</b>，网站才会更新。</p>
+        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="3"><span>Variables 分页里有 <code>BUSINESS_NAME</code>，Name 全是大写英文，Value 是我的店名。</span></label></div>
+        <p class="stuck"><b>卡住了？</b>看不到 Settings：你打开的多半是老师的模板，不是你自己的仓库。不小心加到 Secrets 分页：删掉它，改加在 Variables 分页。暂时不想设：可以跳过这一步，网站左上角会显示你打开的 Excel 的文件名；以后再回来加，重新发布就好。</p>
       </section>
 
       <section class="step" id="s4" aria-labelledby="h4">
@@ -220,38 +219,23 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
           <li>刷新一下页面，会出现一条黄色圆点的运行记录。等 1–3 分钟，变成<b>绿色勾</b>就完成了。它会先自动检查（打包 + 所有测试），全部通过才会发布。</li>
           <li>打开你的网址：<span class="chip"><code id="v-site2">https://用户名.github.io/仓库名/</code><button type="button" data-copy="v-site2">复制</button></span>（第一次可能要再等 1 分钟）。</li>
         </ol>
-        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="4"><span>我的网址打开了：左上角是我的店名，页面写着「打开你的 Excel」，上方的业务选单还有 <b>B2C 家居零售</b>、<b>B2B 办公家具</b> 两个练习范例。（跳过了第 3 步的话：打开的是 BetterSpace 家居生活馆的概览，例如期间订单额 RM 25,650。）</span></label></div>
+        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="4"><span>我的网址打开了：左上角是我的店名（跳过了第 3 步的话是「我的 Excel」），页面写着「打开你的 Excel」。</span></label></div>
         <p class="stuck"><b>卡住了？</b>
           <br>· Actions 页面叫你启用 workflows：按 <b>I understand my workflows, go ahead and enable them</b>，再回到这一步。
           <br>· 红色叉叉，失败在 <b>Configure Pages</b> 或 <b>deploy</b>：回第 2 步，确认 Source 是 <b>GitHub Actions</b>，然后再 Run workflow 一次。
-          <br>· 红色叉叉，失败在 <b>Run npm run check</b>：多半是第 3 步的变量填错了。点开看红字，它会写明哪个变量不对，例如 <code>START_WITH 只能是 my-excel、b2c、b2b</code>。回到 Variables 改好，再 Run workflow 一次。红字说的不是变量：把截图发到学员群。网站不会被改坏。
-          <br>· 店名或首页没变：确认第 3 步的 Name 全是大写、没有空格；变量要在按 Run workflow <b>之前</b>加好。加晚了就再 Run workflow 一次，然后按 <b>Ctrl + F5</b>。
+          <br>· 红色叉叉，失败在 <b>Run npm run check</b>：多半是第 3 步的变量有问题。点开看红字，它会写明原因，例如 <code>BUSINESS_NAME 太长了</code>。回到 Variables 改好，再 Run workflow 一次。红字说的不是变量：把截图发到学员群。网站不会被改坏。
+          <br>· 店名没变：确认第 3 步的 Name 全是大写、没有空格；变量要在按 Run workflow <b>之前</b>加好。加晚了就再 Run workflow 一次，然后按 <b>Ctrl + F5</b>。
           <br>· 网址显示 404：等 1–2 分钟再重新载入；检查网址里的用户名和仓库名；仓库要是 Public。</p>
       </section>
 
       <section class="step" id="s5" aria-labelledby="h5">
-        <div class="step-head"><span class="num">第 5 步</span><h2 id="h5">试用你的网站</h2><span class="where">你的仪表盘网址</span></div>
+        <div class="step-head"><span class="num">第 5 步</span><h2 id="h5">打开你自己的 Excel</h2><span class="where">你的网站</span></div>
+        <p>网站本身没有任何数据：你打开一个 Excel，数字、待办和日历就按里面的记录算出来。文件只在你的浏览器里读取和计算，<b>不会上传</b>到 GitHub 或任何地方，也不会出现在别人打开的网站上。</p>
         <ol>
-          <li>先用练习范例试试：在上方的业务选单选 <b>B2C 家居零售</b> 或 <b>B2B 办公家具</b>。右上角可以切换 <b>中文 / English</b>。</li>
-          <li>打开 <b>待办（Tasks）</b>，按一条建议的 <b>接受（Accept）</b>，再按 <b>编辑（Edit）</b> 改行动日期 → <b>保存</b>。</li>
-          <li>打开 <b>日历（Calendar）</b>：这条待办出现在你选的日期上。</li>
-          <li>按 <b>前进到第 2 天（Advance to Day 2）</b>：数字换成 8 月 31 日的数据，你的决定会保留。</li>
-          <li>看 <b>示例分析（Example analysis）</b>：它是<b>预先写好</b>的，不是实时 AI。</li>
-          <li>最后按 <b>重置演示（Reset demo）</b> 回到起点。</li>
-        </ol>
-        <div class="note">⚠️ 你的操作只保存在<b>这台电脑的这个浏览器</b>里。这不是备份：换电脑、换浏览器或清除浏览器数据，就会从头开始；别人打开你的网址，也看不到你的操作。</div>
-        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="5"><span>接受的待办出现在日历上；重新载入网页后还在；按重置后回到第 1 天。</span></label></div>
-      </section>
-
-      <section class="step" id="s6" aria-labelledby="h6">
-        <div class="step-head"><span class="num">第 6 步</span><h2 id="h6">打开你自己的 Excel</h2><span class="where">你的网站 › 你的店名（我的 Excel）</span></div>
-        <p>想用自己的数字试试？你的网站可以直接读取你电脑上的 Excel。文件只在你的浏览器里读取和计算，<b>不会上传</b>到 GitHub 或任何地方，也不会出现在别人打开的网站上。</p>
-        <ol>
-          <li>在上方的业务选单选<b>你的店名</b>（没设店名的话叫 <b>我的 Excel</b>）。</li>
-          <li>准备 Excel：<b>老师给了练习用的 Excel，就直接用它</b>，跳到下一步。想用自己的数字：按 <b>下载 BetterSpace_B2C.xlsx</b>（或 B2B），用 Excel 打开，保留四个工作表（Customers、Sales、Payments、Stock）的名称和第一行的列名，把下面的行换成你的记录，另存为 <b>.xlsx</b>。</li>
+          <li>打开你的网址。页面写着「打开你的 Excel」。</li>
+          <li>准备 Excel：<b>老师给了练习用的 Excel，就直接用它</b>，跳到下一步。还没有文件：在页面下方按 <b>下载 BetterSpace_B2B.xlsx</b>（虚构的练习数据）。想用自己的数字：用 Excel 打开练习工作簿，保留四个工作表（Customers、Sales、Payments、Stock）的名称和第一行的列名，把下面的行换成你的记录，另存为 <b>.xlsx</b>。</li>
           <li>回到网站，按 <b>选择 Excel 文件</b>，选你的文件。数字、待办和日历马上按你的数据计算；报告日期是文件里最新的日期。</li>
-          <li>Excel 改过之后：保存，再按 <b>重新读取 Excel</b>。不用了就按 <b>忘记这个文件</b>。</li>
-        </ol>
+                  </ol>
         <div class="table-wrap"><table>
           <thead><tr><th>工作表</th><th>一定要有的列</th></tr></thead>
           <tbody>
@@ -264,24 +248,37 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
         <p>其他列（状态、付款期限、负责人等）最好照范例保留；缺少时，用到它们的数字会留空或为零，网页会告诉你缺了哪些。</p>
         <div class="note">⚠️ 状态只能写 <code>Confirmed</code>、<code>In Progress</code>、<code>Completed</code> 或 <code>Cancelled</code>；日期用 Excel 日期或写成 <code>2026-08-30</code>；金额用数字。</div>
         <div class="danger">⚠️ 文件会记在这个浏览器里，但这<b>不是备份</b>。不要在共用电脑上打开机密的真实数据。</div>
-        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="6"><span>打开文件后，左上角是我的店名（没设店名就是文件名），旁边的文件标签是我的文件名，数字来自我的记录；重新载入网页后还在。</span></label></div>
+        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="5"><span>打开文件后，概览显示数字；左上角是我的店名（没设店名就是文件名），上方的文件标签是我的文件名；重新载入网页后还在。</span></label></div>
         <p class="stuck"><b>卡住了？</b>出现「这个 Excel 文件暂时不能使用」：看它列出的第一个问题，会写明是哪个工作表、哪一行、哪一列。最常见的是工作表名称或列名被改了、状态的写法不同，或文件是 .xls / .csv（要在 Excel 里另存为 .xlsx）。</p>
       </section>
 
+      <section class="step" id="s6" aria-labelledby="h6">
+        <div class="step-head"><span class="num">第 6 步</span><h2 id="h6">试用你的仪表盘</h2><span class="where">你的网站</span></div>
+        <ol>
+          <li>看 <b>概览</b>，再打开 <b>订单、客户、收款、库存</b>；点表格里的一行，就能看到数字背后的那笔记录。右上角可以切换 <b>中文 / English</b>。</li>
+          <li>打开 <b>待办（Tasks）</b>，按一条建议的 <b>接受（Accept）</b>，再按 <b>编辑（Edit）</b> 改行动日期 → <b>保存</b>。</li>
+          <li>打开 <b>日历（Calendar）</b>：这条待办出现在你选的日期上。按 <b>+ 新增备注</b> 加一条你自己的备注。</li>
+          <li>Excel 改过之后：在 Excel 里保存，回到网站按 <b>重新读取 Excel</b>。数字跟着变，同一笔记录的决定会保留。</li>
+          <li>想从头来：按 <b>清除待办决定和备注</b>（文件会保留）。不用这个文件了：按 <b>忘记这个文件</b>。</li>
+        </ol>
+        <div class="note">⚠️ 你的 Excel 和操作只保存在<b>这台电脑的这个浏览器</b>里。这不是备份：换电脑、换浏览器或清除浏览器数据，就要重新打开 Excel。别人打开你的网址，看不到你的 Excel 和操作；想给同事看，就请他在自己的电脑上打开同一个 Excel。</div>
+        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="6"><span>接受的待办出现在日历上；重新载入网页后还在；按「清除待办决定和备注」后，建议都回到未处理。</span></label></div>
+      </section>
+
       <section class="step" id="s7" aria-labelledby="h7">
-        <div class="step-head"><span class="num">第 7 步</span><h2 id="h7">请 Gemini 分析你的数字</h2><span class="where">Google AI Studio → 你的网站 › 示例分析</span></div>
+        <div class="step-head"><span class="num">第 7 步</span><h2 id="h7">请 Gemini 分析你的数字</h2><span class="where">Google AI Studio → 你的网站 › AI 分析</span></div>
         <p>用 Google 免费的 Gemini，按你网站上现在的数字写一份分析。你只要拿一把免费的<b>钥匙</b>（API key），贴到你的网站一次，以后按一个按钮就好。</p>
         <p><a class="btn primary" href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">🔑 打开 Google AI Studio 的钥匙页 ↗</a></p>
         <ol>
           <li>按上面的按钮，用 Google 账号登录 <b>Google AI Studio</b>。第一次会请你同意使用条款。</li>
           <li>在钥匙页找到你的 API key，按旁边的<b>复制</b>。还没有钥匙：按 <b>Create API key</b>，再复制。</li>
-          <li>打开你的网站 → 左边 <b>示例分析</b> → 「用 Gemini 分析」卡片 → 把钥匙贴进方框 → 按 <b>保存钥匙</b>。看到「钥匙已存在这个浏览器（尾号 …）」就对了。</li>
-          <li>选好要分析的业务（你的店名，或练习范例），回到 <b>示例分析</b>，按 <b>用 Gemini 分析</b>。等 10–30 秒。</li>
+          <li>打开你的网站 → 左边 <b>AI 分析</b> → 「用 Gemini 分析」卡片 → 把钥匙贴进方框 → 按 <b>保存钥匙</b>。看到「钥匙已存在这个浏览器（尾号 …）」就对了。</li>
+          <li>按 <b>用 Gemini 分析</b>。等 10–30 秒。</li>
           <li>答案出现在按钮下面，标着「实时 AI」。下面的<b>数字核对</b>会告诉你：答案里的数字是不是都能在你的数据里找到。</li>
         </ol>
         <div class="metaphor">比喻：仪表盘是帮你算账的会计，Gemini 是听完报告给意见的顾问。钥匙就像顾问的会员卡——每次请顾问，都要出示你自己的卡。</div>
         <div class="danger">⚠️ <b>钥匙就像密码。</b>只贴在你网站的「用 Gemini 分析」里：<b>绝对不要</b>放进 GitHub（仓库变量也不行——变量会写进公开的网站），不要贴到群里，也不要截图分享。钥匙只存在你这台电脑的这个浏览器；换电脑要再贴一次，不用了就按「删除钥匙」。</div>
-        <div class="note">⚠️ 按「用 Gemini 分析」会把你的数字送到 Google。Google 的免费方案会用送出的内容改进产品，并请你不要送出个人或机密资料。你自己的 Excel 默认会把客户和员工的名字换成代号；真实的业务数据，先确认你可以分享。</div>
+        <div class="note">⚠️ 按「用 Gemini 分析」会把你的数字送到 Google。Google 的免费方案会用送出的内容改进产品，并请你不要送出个人或机密资料。客户和员工的名字默认会换成代号；真实的业务数据，先确认你可以分享。</div>
         <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="7"><span>按了「用 Gemini 分析」后，答案出现并标着「实时 AI」；数字核对显示数字都在我的数据里（或列出了要我自己核对的数字）。</span></label></div>
         <p class="stuck"><b>卡住了？</b>
           <br>· 「Google 不接受这把钥匙」：回 AI Studio 重新复制<b>整串</b>钥匙，在网站按「删除钥匙」，再贴一次。
@@ -299,7 +296,7 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
           <li>第一次用：按 <b>Connect to GitHub account</b>，登录 GitHub，选 <b>Only select repositories</b>，选你的仓库 <span class="chip"><code id="v-repo3">https://github.com/用户名/仓库名</code><button type="button" data-copy="v-repo3">复制</button></span>，再确认。</li>
           <li>在 Jules 选你的仓库，分支保持 <b>main</b>。</li>
           <li>在对话框用一句话写你要什么，并请它<b>先读规则、做完跑检查</b>。例如：
-            <div class="example">请先读 AGENTS.md。在 B2B 概览加一个「本期服务类订单额」KPI，
+            <div class="example">请先读 AGENTS.md。在概览加一个「本期服务类订单额」KPI，
 加上中文翻译和测试，运行 npm run check，
 用中文告诉我结果，以及你没能验证的地方。</div></li>
           <li>按 <b>Give me a plan</b>。Jules 会先写计划：看得懂就按 <b>Approve plan</b>；看不懂就请它用中文解释。</li>
@@ -309,12 +306,12 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
         </ol>
         <div class="metaphor">比喻：Pull request 是 AI 交来的「修改申请书」。你按 Merge 才算批准；不按，你的网站什么都不会变。</div>
         <div class="two">
-          <div><h3>新增指标</h3><p>例如「本期服务类订单额」。B2B 第 1 天 8 月应为 RM 3,400（5 笔）——用这个数字检查 AI 做得对不对。</p></div>
+          <div><h3>新增指标</h3><p>例如「本期服务类订单额」。打开练习工作簿 BetterSpace_B2B.xlsx 时，8 月应为 RM 3,400（5 笔）——用这个数字检查 AI 做得对不对。</p></div>
           <div><h3>新增图表</h3><p>例如「按产品的订单额」。用现成的横条图，颜色只用已有的颜色。</p></div>
-          <div><h3>新增待办规则</h3><p>例如「感谢回头客」。每条建议的编号要稳定，第 1 天和第 2 天才对得上。</p></div>
+          <div><h3>新增待办规则</h3><p>例如「感谢回头客」。每条建议的编号要稳定，重新读取 Excel 后决定才对得上。</p></div>
           <div><h3>新增页面</h3><p>例如「产品」页。复制一个现有页面，再加到菜单里。</p></div>
         </div>
-        <p>Jules 会自动读仓库里的 <code>AGENTS.md</code>：里面写着不能改坏的规则——数字必须从记录算出来、报告日期固定、只连 Gemini、代码里不放钥匙、所有文字要有中文翻译、AI 的内容要诚实标明。完整技术说明在 <code>docs/STUDENT_SOP.md</code>。</p>
+        <p>Jules 会自动读仓库里的 <code>AGENTS.md</code>：里面写着不能改坏的规则——数字必须从记录算出来、网站不内置数据、只连 Gemini、代码里不放钥匙、所有文字要有中文翻译、AI 的内容要诚实标明。完整技术说明在 <code>docs/STUDENT_SOP.md</code>。</p>
         <div class="danger">⚠️ Tests 是红叉的 Pull request <b>不要 Merge</b>。也不要让 AI 把任何 API 钥匙写进网页代码——网站是公开的，任何人都能看到。</div>
         <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="8"><span>Pull request 上 Tests 是绿色勾；Merge 并 Publish site 之后，新功能出现在我的网址上。</span></label></div>
         <p class="stuck"><b>卡住了？</b>
@@ -331,14 +328,13 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
           <tbody>
             <tr><td><b>你的 Excel 只在你的浏览器里</b></td><td>它在你的电脑上读取，不会上传，也不会发布到你的网站上。按「忘记这个文件」就会从浏览器删除。</td></tr>
             <tr><td><b>本地保存不是云端备份</b></td><td>网页上的操作只存在那台电脑的那个浏览器里；没有登录、没有同步、没有共享。</td></tr>
-            <tr><td><b>示例分析不是实时分析</b></td><td>它是预先写好的，描述原始数据；你接受或修改待办，它不会重新分析。想要按你现在的数字分析，用第 7 步的 Gemini。</td></tr>
-            <tr><td><b>AI 的回答要自己核对</b></td><td>AI 会说错数字或编理由，以仪表盘为准；数字核对会帮你找出对不上的数字。送到免费 Gemini 的内容，可能被 Google 用来改进产品。</td></tr>
+                        <tr><td><b>AI 的回答要自己核对</b></td><td>AI 会说错数字或编理由，以仪表盘为准；数字核对会帮你找出对不上的数字。送到免费 Gemini 的内容，可能被 Google 用来改进产品。</td></tr>
             <tr><td><b>钥匙只放在一个地方</b></td><td>Gemini 钥匙只贴在你网站的「用 Gemini 分析」里，存在你的浏览器。不要放进 GitHub、仓库变量、群聊或截图。</td></tr>
             <tr><td><b>你的版本可以自由使用</b></td><td>模板用 MIT 授权：你可以修改、自己用、商用，也可以请程序员帮你扩展，只要保留仓库里的 <code>LICENSE</code> 文件。软件按「原样」提供，不附带任何保证。</td></tr>
-            <tr><td><b>只放虚构或匿名数据</b></td><td>仓库和网站都是公开的，网站文件里包含全部记录。这是学习项目，不适合机密的真实业务数据。</td></tr>
+            <tr><td><b>网站不含你的数据</b></td><td>网站本身没有任何业务数据；你的 Excel 只在你的浏览器里读取。仓库是公开的：不要把你的 Excel 文件放进仓库。这是学习项目，不适合机密的真实业务数据。</td></tr>
             <tr><td><b>每次修改都要重新发布</b></td><td>改了变量、Commit 或 Push 之后，都要运行 <b>Publish site</b>，网站才会更新。检查没通过就不会发布。</td></tr>
-            <tr><td><b>报告日期是固定的</b></td><td>第 1 天是 2026 年 8 月 30 日，第 2 天是 8 月 31 日，不会随今天的日期改变。</td></tr>
-            <tr><td><b>用自己的数据，就用「我的 Excel」</b></td><td>照第 6 步选你的 Excel 就好，不用改仓库里的文件。想把数据固定放进网站、让每个访客都看到，属于进阶修改：交给 AI 助手或程序员（<code>docs/STUDENT_SOP.md</code> 第 5 节），而且只能放虚构数据。</td></tr>
+            <tr><td><b>报告日期是 Excel 里最新的日期</b></td><td>数字都按文件里最新的日期（销售、收款、完成、库存盘点）计算，不是电脑今天的日期。</td></tr>
+            <tr><td><b>想让同事看同样的数字</b></td><td>把同一个 Excel 发给他，请他在自己的电脑上打开你的网址、选这个文件。网站不会替你共享数据。</td></tr>
           </tbody>
         </table></div>
       </section>

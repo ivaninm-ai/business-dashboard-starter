@@ -2,7 +2,7 @@
 // here; nothing in this file touches the DOM. Figures are always recalculated from
 // the scenario's records — no total is stored or typed in by hand.
 
-import { loadScenario, previousDay, businessProfile, MY_EXCEL } from '../data/scenarios.js';
+import { loadScenario, businessProfile, MY_EXCEL } from '../data/scenarios.js';
 import { computeMetrics, formatMoney } from '../core/metrics.js';
 import { suggestionRows, scenarioTasks, baseMetrics, isOpen } from '../core/scenario-tasks.js';
 import { buildCalendarItems } from '../core/calendar.js';
@@ -13,7 +13,7 @@ export const view = {
   store: null,            // storage/local-state.js store
   persistent: true,       // false when the browser does not allow saving
   storageReason: '',
-  businessId: '',
+  businessId: MY_EXCEL,   // the one business: the viewer's own Excel
   day: 'day1',
   filters: defaultFilters(),
   page: 'overview',
@@ -23,14 +23,11 @@ export const view = {
 
 export function defaultFilters() { return { preset: 'mtd', start: '', end: '', channel: '', owner: '' }; }
 
-// null while "My Excel" has no file open (pages are guarded in main.js).
-export const scenario = () => loadScenario(view.businessId, view.day);
+// null while no Excel file is open (pages are guarded in main.js).
+export const scenario = () => loadScenario();
 export const isExcel = () => view.businessId === MY_EXCEL;
-export function previousScenario() {
-  if (isExcel()) return null; // one snapshot only
-  const p = previousDay(view.day);
-  return p ? loadScenario(view.businessId, p) : null;
-}
+// One snapshot only: there is no earlier day to compare with.
+export const previousScenario = () => null;
 export const profile = () => businessProfile(view.businessId);
 export const records = () => scenario().records;
 export const reportingDate = () => scenario().reportingDate;

@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildAiPrompt, hideNames, FACTS_MARKER } from '../src/briefs/ai-prompt.js';
-import { baselineBriefInput } from '../src/briefs/brief-facts.js';
+import { baselineBriefInput } from './support/training.js';
 import { scenarioTasks } from '../src/core/scenario-tasks.js';
 import { readWorkbook, workbookScenario } from '../src/data/workbook.js';
 import { setLocale } from '../src/i18n/i18n.js';

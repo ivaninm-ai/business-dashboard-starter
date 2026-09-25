@@ -5,7 +5,7 @@
 // browser that blocks storage lose it; the app then keeps working in memory.
 //
 // Keys (all start with PREFIX so other pages on the same origin are left alone):
-//   bd-starter.v1.prefs                 { locale, business, start } (start: the site's START_WITH last applied)
+//   bd-starter.v1.prefs                 { locale }
 //   bd-starter.v1.business.<businessId> { version, day, decisions: {task_key: row}, notes: {entry_id: row} }
 //   bd-starter.v1.workbook              { version, fileName, loadedAt, sheets: {Customers: rows, …} }
 //     — the viewer's own Excel ("My Excel"): the four sheets' cell values, kept so a
@@ -107,7 +107,7 @@ export function createStateStore(storage) {
   const update = (id, fn) => { const s = business(id); fn(s); return write(businessKey(id), s); };
 
   return {
-    prefs() { const p = read(prefsKey); return p && typeof p === 'object' ? { locale: text(p.locale, 10), business: text(p.business, 80), start: text(p.start, 80) } : { locale: '', business: '', start: '' }; },
+    prefs() { const p = read(prefsKey); return p && typeof p === 'object' ? { locale: text(p.locale, 10) } : { locale: '' }; },
     setPrefs(patch) { return write(prefsKey, { ...this.prefs(), ...patch }); },
     business,
     day(id) { return business(id).day; },

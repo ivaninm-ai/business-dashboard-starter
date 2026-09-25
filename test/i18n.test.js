@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 import ZH from '../src/i18n/zh.js';
 import { tr, tl, setLocale, normaliseLocale, sentences } from '../src/i18n/i18n.js';
 import { TASK_RULES } from '../src/core/model.js';
-import { loadScenario } from '../src/data/scenarios.js';
+import { loadScenario } from './support/training.js';
 import { suggestionsFor } from '../src/core/scenario-tasks.js';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');

@@ -1,11 +1,7 @@
-// The facts an AI brief is allowed to use, as plain text. Adapted from buildPrompt()
-// in the original template's worker/ai.mjs. The starter never sends this anywhere:
-//   - the prepared example briefs in examples.js were written from this text,
-//   - "Copy for AI" (ai-prompt.js) puts it on the clipboard for the viewer to paste
-//     into an AI service they choose, and
-//   - a live AI integration (see docs/STUDENT_SOP.md, "Adding live AI later") would
-//     send it, with prompts/daily_brief.md as the instructions, from a server that
-//     holds the API key. Never call a paid AI API with a key from browser code.
+// The facts an AI analysis is allowed to use, as plain text. Adapted from buildPrompt()
+// in the original template's worker/ai.mjs. ai-prompt.js puts it under fixed
+// instructions, and gemini.js sends that to Gemini only when the viewer presses
+// "Analyse with Gemini" with their own key.
 
 import { formatMoney } from '../core/metrics.js';
 import { addDays } from '../core/dates.js';

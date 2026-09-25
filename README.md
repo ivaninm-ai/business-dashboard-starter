@@ -1,21 +1,21 @@
 # 业务仪表盘起步项目 · Business Dashboard Starter
 
-一个**不需要任何设置**的小企业仪表盘课堂演示和起步项目。打开就能看到两个虚构企业（BetterSpace）的经营概况、销售、客户、收款、库存、待办、日历和预先准备的示例分析。中文为默认语言，也可以切换成英文。
+一个**不需要任何设置**的小企业仪表盘起步项目。它本身没有任何数据：打开你的 Excel（和练习工作簿同样格式），就会看到经营概况、销售、客户、收款、库存、待办和日历，还可以用你自己的免费 Gemini 钥匙请 AI 分析。中文为默认语言，也可以切换成英文。
 
-A **setup-free** classroom demo and starter project for a small-business dashboard. It opens straight into two synthetic businesses (BetterSpace) with overview, sales, customers, payments, stock, tasks, calendar and a prepared example analysis. Chinese by default, English available.
+A **setup-free** small-business dashboard starter. It has no data of its own: open your Excel workbook (in the practice-workbook layout) to see overview, sales, customers, payments, stock, tasks and calendar, and ask Gemini for an analysis with your own free key. Chinese by default, English available.
 
-> **所有记录都是虚构的练习数据。** 这是学习用的起步项目，不是正式系统：请不要放入机密或真实的业务数据。
-> All records are synthetic training data. This is a learning starter, not a production system for confidential business data.
+> 这是学习用的起步项目，不是正式系统。你的 Excel 只在你的浏览器里读取，不会上传。
+> A learning starter, not a production system. Your Excel is read in your browser and never uploaded.
 
 ## 马上开始 · Quick start
 
 | 我想… · I want to… | 做法 · How |
 |---|---|
-| 在课堂上打开演示 · Open the classroom demo | 从 [Releases](https://github.com/ivaninm-ai/business-dashboard-starter/releases/latest) 下载 `business-dashboard-demo.html`（或 `npm run build` 后在 `dist/`），双击打开——不需要安装、登录或联网 · Download it from Releases (or build it), then double-click. See [docs/START_HERE.md](docs/START_HERE.md). |
+| 打开仪表盘 · Open the dashboard | 从 [Releases](https://github.com/ivaninm-ai/business-dashboard-starter/releases/latest) 下载 `business-dashboard-demo.html`，双击打开，再选你的 Excel（或页面上的练习工作簿）· Download it from Releases, double-click, then choose your Excel (or a practice workbook from the page). See [docs/START_HERE.md](docs/START_HERE.md). |
 | 在浏览器里阅读学生指南 · Read the student guide | 打开 [docs/student-guide.html](docs/student-guide.html) |
-| 建立自己的版本 · Get my own copy | 按本页右上方的 **Use this template → Create a new repository**，然后按 [docs/STUDENT_SOP.md](docs/STUDENT_SOP.md) 操作 · Press **Use this template**, then follow the SOP |
-| 设定店名和首页 · Set my business name and start page | 仓库 **Settings → Secrets and variables → Actions → Variables** 加 `BUSINESS_NAME`、`START_WITH`，再运行 **Publish site**——不用改文件 · Add the repository variables, then run Publish site. See [docs/STUDENT_SOP.md](docs/STUDENT_SOP.md) §8. |
-| 请 AI 分析数字 · Ask an AI about the numbers | 在 Google AI Studio 拿一把免费的 Gemini 钥匙，贴到示例分析页，按 **用 Gemini 分析** · Get a free Gemini key in Google AI Studio, paste it on the Example analysis page, press **Analyse with Gemini** |
+| 建立自己的版本 · Get my own copy | 按本页右上方的 **Use this template → Create a new repository**，然后按学生指南操作 · Press **Use this template**, then follow the student guide |
+| 设定店名 · Set my business name | 仓库 **Settings → Secrets and variables → Actions → Variables** 加 `BUSINESS_NAME`，再运行 **Publish site**——不用改文件 · Add the repository variable, then run Publish site. See [docs/STUDENT_SOP.md](docs/STUDENT_SOP.md) §8. |
+| 请 AI 分析数字 · Ask an AI about the numbers | 在 Google AI Studio 拿一把免费的 Gemini 钥匙，贴到「AI 分析」页，按 **用 Gemini 分析** · Get a free Gemini key in Google AI Studio, paste it on the AI analysis page, press **Analyse with Gemini** |
 | 请 AI 加功能 · Have an AI add a feature | 用 Jules（jules.google.com，免费）或其他编程助手，先让它读 [AGENTS.md](AGENTS.md)。见 [docs/STUDENT_SOP.md](docs/STUDENT_SOP.md) §9 · Use Jules or another coding agent; it reads AGENTS.md first |
 
 开发命令（需要 Node.js 22 或更新版本）· Development commands (Node.js 22+):
@@ -35,41 +35,39 @@ Then open http://localhost:5173. Also: `npm test` (checks figures and rules), `n
 ## 它做什么，不做什么 · What it does and does not do
 
 **会做 · Does**
-- 用内置的 B2C 和 B2B 虚构数据，按固定的报告日期（第 1 天 2026-08-30，第 2 天 2026-08-31）当场计算所有数字。
-- 接受、完成、忽略待办，修改行动日期；在日历上加备注；这些操作保存在**这个浏览器**里，B2C 和 B2B 分开保存。
-- 从第 1 天前进到第 2 天时，按稳定的待办编号保留你的决定，并标出新增和已由数据解决的建议。
-- 显示为每个场景**预先准备**的示例分析，并清楚标明它不是实时 AI。
+- 读取你的 Excel（四个工作表 Customers、Sales、Payments、Stock），在这台电脑上计算所有数字；报告日期是文件里最新的日期。
+- 接受、完成、忽略待办，修改行动日期；在日历上加备注；这些操作保存在**这个浏览器**里。
+- Excel 更新后按「重新读取 Excel」：数字跟着变，同一笔记录的待办决定按稳定的编号保留。
 - **用 Gemini 分析**（可选）：用你自己的免费 Gemini 钥匙，按现在的数字写实时分析，标明是 AI 写的，并自动核对里面的数字。钥匙只存在你的浏览器。
-- **我的 Excel**：打开你自己的 Excel（和练习工作簿格式相同），在这台电脑上读取、计算；不上传，记在这个浏览器里，可随时「忘记这个文件」。
+- 提供两个练习工作簿（虚构的 BetterSpace 数据）下载，给还没有自己数据的人试用。
 
 **不会做 · Does not**
 - 不登录、不需要服务器。除了可选的「用 Gemini 分析」，不联网；页面的安全策略只允许连到 Google 的 Gemini API 这一个地址。
-- 不读取任意格式的文件（Excel 必须和范例格式相同），不做云端备份或多设备同步，没有团队权限。
-- 示例分析不会因为你在页面上的操作而重新分析。
+- 网站本身不含任何业务数据；你的 Excel 不会上传，也不会发布到网站上。
+- 不读取任意格式的文件（Excel 必须和练习工作簿格式相同），不做云端备份或多设备同步，没有团队共享。
 
 ## 文件夹 · Folders
 
 ```
 src/            网页本身（未打包，可直接阅读）· the app, unbundled
   core/         计算、待办规则、日历（纯函数，浏览器和测试共用）· figures, task rules, calendar
-  data/         读取内置场景和「我的 Excel」（workbook.js）；*.generated.js 由 npm run data 生成
+  data/         读取你的 Excel（workbook.js）；*.generated.js 由 npm run data 生成（只有列的格式和练习工作簿）
   vendor/       打包好的 Excel 读取器（read-excel-file，MIT），由 npm run vendor 生成
   storage/      浏览器本地保存（localStorage）· browser-local state
-  briefs/       预先准备的示例分析和数字核对工具 · prepared briefs and fact check
+  briefs/       Gemini 请求（ai-prompt.js、gemini.js）和数字核对 · Gemini request and number check
   i18n/         中文/英文 · translations
   ui/           页面、组件、外框 · pages, components, shell
-data/           练习数据：每个业务的 business.json 和第 1、2 天的 CSV；templates/ 是 Excel 范例 · training data
-test/           自动测试；test/expected/ 是答案（应用从不读取）· tests and answer keys
-scripts/        pack-data（打包数据）、serve（开发服务器）、build（单一文件）
-prompts/        以后接入实时 AI 时使用的简报规则 · brief rules for a future live AI
+data/           测试材料：BetterSpace 练习数据（CSV）和 business.json（列的格式、规则）；templates/ 是练习工作簿 · test material and practice workbooks
+test/           自动测试；test/expected/ 是答案 · tests and answer keys
+scripts/        pack-data（打包格式和练习工作簿）、serve（开发服务器）、build（单一文件）
 docs/           使用说明 · documentation
 ```
 
 ## 来源 · Provenance
 
 - 计算、待办、日历、字段对应、界面翻译和视觉风格，改编自 Business Dashboard 模板 1.2.0（rc.4/rc.5）的代码；Google 登录、Sheets 存储、后台 worker 和设置向导都已移除。
-- 练习数据原样复制自 BetterSpace 虚构培训数据包（`01_B2C_Retail`、`02_B2B_Furniture` 及其 `refresh_day2`），见 [data/README.md](data/README.md)。
-- Figures, task rules, calendar, column mapping, translations and styling are adapted from the Business Dashboard template 1.2.0 (rc.4/rc.5); Google sign-in, Sheets storage, background workers and the setup wizard were removed. The training data is copied unchanged from the BetterSpace synthetic pack.
+- 练习数据原样复制自 BetterSpace 虚构培训数据包（`01_B2C_Retail`、`02_B2B_Furniture` 及其 `refresh_day2`），只用于测试和练习工作簿，见 [data/README.md](data/README.md)。
+- Figures, task rules, calendar, column mapping, translations and styling are adapted from the Business Dashboard template 1.2.0 (rc.4/rc.5); Google sign-in, Sheets storage, background workers and the setup wizard were removed. The BetterSpace training data is copied unchanged from the synthetic pack and used only by the tests and as practice workbooks.
 
 ## 授权 · Licence
 

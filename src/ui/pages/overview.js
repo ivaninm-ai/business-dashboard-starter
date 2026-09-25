@@ -1,7 +1,6 @@
 import { h, t, add } from '../dom.js';
 import { pageHead, scopeBar, filterBar, tile, trendChart, hbars, statusChip } from '../components.js';
 import { view, metrics, reportingDate, records, openTasks, label, money } from '../view-state.js';
-import { exampleBrief } from '../../briefs/examples.js';
 import { formatDate } from '../../core/dates.js';
 import { tr, tl, getLocale } from '../../i18n/i18n.js';
 
@@ -31,9 +30,9 @@ export function renderOverview() {
   const next = openTasks().sort((a, b) => (a.action_date || '9999').localeCompare(b.action_date || '9999') || a.title.localeCompare(b.title)).slice(0, 6);
   add(grid, h('div', { class: 'card' }, t('h2', tr('Next actions')), t('div', tr('Open task suggestions by action date.'), 'scope'),
     next.length ? h('ul', { class: 'list' }, ...next.map(x => h('li', {}, h('a', { href: '#tasks' }, x.title), h('div', { class: 'small muted' }, `${x.action_date ? formatDate(x.action_date) : ''}${x.owner ? ' · ' + x.owner : ''} · `, statusChip(x.status))))) : t('p', tr('No open tasks.'), 'muted')));
-  const brief = exampleBrief(view.businessId, view.day, getLocale());
-  add(grid, h('div', { class: 'card' }, h('div', { class: 'row' }, t('h2', tr('Example analysis')), h('span', { class: 'badge info' }, tr('Prepared in advance · not live AI'))),
-    brief ? h('div', {}, t('p', brief.headline), h('a', { href: '#brief' }, tl('Read the example analysis'))) : t('p', tr('No example analysis is prepared for this scenario.'), 'muted')));
+  add(grid, h('div', { class: 'card' }, t('h2', tr('AI analysis')),
+    t('p', tr('Ask Gemini what these numbers mean and what to do first, with your own free key. Its answer is checked against your data.'), 'small ink2'),
+    h('a', { href: '#brief' }, tl('Open AI analysis'))));
   add(root, grid);
   return root;
 }

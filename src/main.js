@@ -1,10 +1,10 @@
-// Business Dashboard Starter — entry point. Opens straight into a populated dashboard
-// using the bundled synthetic training data. No sign-in, no server. The only network
-// access is "Analyse with Gemini" (src/briefs/gemini.js), with the viewer's own key.
+// Business Dashboard Starter — entry point. The dashboard shows the viewer's own Excel
+// workbook (there is no built-in data); until one is opened, pages show how to open it.
+// No sign-in, no server. The only network access is "Analyse with Gemini"
+// (src/briefs/gemini.js), with the viewer's own key.
 
 import { setLocale, tr, tl } from './i18n/i18n.js';
 import { openStorage, createStateStore } from './storage/local-state.js';
-import { startBusiness } from './data/scenarios.js';
 import { view, scenario, isExcel } from './ui/view-state.js';
 import { h, t } from './ui/dom.js';
 import { registerPage, navigate, onBeforeRender } from './ui/router.js';
@@ -46,11 +46,7 @@ function boot() {
   setLocale(prefs.locale || 'zh-CN');
   // Your own Excel, if one was opened here before (kept in this browser).
   try { restoreWorkbook(); } catch (e) { console.error(e); }
-  // START_WITH (a site setting) or the visitor's own last choice.
-  const start = startBusiness(prefs);
-  view.businessId = start.businessId;
-  if (start.seen) view.store.setPrefs({ business: start.businessId, start: start.seen });
-  view.day = view.store.day(view.businessId);
+  view.day = 'day1';
 
   registerPage('overview', guarded(renderOverview));
   registerPage('sales', guarded(renderSales));

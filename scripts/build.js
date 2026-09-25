@@ -1,5 +1,5 @@
 // Builds the classroom file: ONE self-contained HTML page with the code, styles and
-// training data inside it. It opens by double-click (file://), needs no server and no
+// practice workbooks inside it (no business records: it opens the viewer's own Excel). It opens by double-click (file://), needs no server and no
 // internet. Its Content-Security-Policy allows one address only — Google's Gemini API,
 // for "Analyse with Gemini" with the viewer's own key.
 //
@@ -58,7 +58,7 @@ export async function buildHtml(config = siteConfigFromEnv()) {
   // The MIT licence asks for its notice in every copy, and this file is the copy people pass around.
   const license = readFileSync(path.join(root, 'LICENSE'), 'utf8').replace(/\r\n?/g, '\n').trim();
   if (license.includes('--')) throw new Error('build: LICENSE text cannot go inside an HTML comment');
-  html = html.replace('<!doctype html>', `<!doctype html>\n<!-- Business Dashboard Starter ${pkg.version} · single-file build of src/ (scripts/build.js) · synthetic training data only · works offline -->\n<!--\n${license}\n-->`);
+  html = html.replace('<!doctype html>', `<!doctype html>\n<!-- Business Dashboard Starter ${pkg.version} · single-file build of src/ (scripts/build.js) · no built-in data: opens your own Excel · works offline -->\n<!--\n${license}\n-->`);
   return html;
 }
 

@@ -40,7 +40,7 @@ function showProblems(fileName, messages, keptPrevious) {
 }
 
 export async function openExcel(file) {
-  const hadWorkbook = !!loadScenario(MY_EXCEL, 'day1');
+  const hadWorkbook = !!loadScenario();
   if (!/\.xlsx$/i.test(file.name)) return showProblems(file.name, [tr('Choose an .xlsx file. Older .xls files and CSV files must first be saved in Excel as "Excel Workbook (*.xlsx)".')], hadWorkbook);
   toast(tr('Reading {0} on this computer…', file.name), { ms: 8000 });
   let read;
@@ -56,7 +56,6 @@ export async function openExcel(file) {
   view.day = 'day1';
   view.filters = defaultFilters();
   view.calMonth = '';
-  view.store.setPrefs({ business: MY_EXCEL });
   const c = scenario.source.counts;
   const summary = tr('Opened {0}: {1} customers, {2} orders, {3} receipts, {4} products.', file.name, c.Customers, c.Sales, c.Payments, c.Stock);
   const kept = !view.persistent ? tr('It is not remembered: this browser does not allow saving.')
@@ -120,10 +119,10 @@ export function renderExcelStart() {
       t('li', tr('The reporting date is the latest date in the file (sales, receipts, completions and stock counts). Everything is calculated as of that day.')))));
 
   add(root, h('div', { class: 'card' },
-    t('h2', tr('Start from a template')),
-    t('p', tr('Download a training workbook, replace its rows with your own records, keep the sheet names and the first row, and save it as .xlsx.'), 'small ink2'),
+    t('h2', tr('Start from a practice workbook')),
+    t('p', tr('No file yet? Download a practice workbook (invented BetterSpace data) and open it to try the dashboard. To use your own records, replace its rows, keep the sheet names and the first row, and save it as .xlsx.'), 'small ink2'),
     h('div', { class: 'row' }, ...TEMPLATES.map(tpl => h('button', { class: 'btn', onclick: () => downloadTemplate(tpl) }, tr('Download {0}', tpl.file)))),
-    t('p', tr('The B2B template has account owners and follow-up dates; the B2C template does not. Either layout works.'), 'hint')));
+    t('p', tr('The B2B workbook has account owners and follow-up dates; the B2C workbook does not. Either layout works.'), 'hint')));
   return root;
 }
 

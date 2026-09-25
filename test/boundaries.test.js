@@ -24,13 +24,16 @@ const appSource = files(path.join(root, 'src'), ['.js', '.html', '.css']).filter
 // XML namespace names inside SVG and Excel files look like web addresses but are never requested.
 const NAMESPACES = /^http:\/\/(www\.w3\.org|schemas\.openxmlformats\.org|purl\.oclc\.org|schemas\.microsoft\.com)\//;
 
-test('the packed data module is up to date with data/', () => {
+test('the packed layout module is up to date with data/', () => {
   assert.equal(readFileSync(OUTPUT, 'utf8'), renderModule(collectDatasets()), 'run `npm run data`');
 });
 
-test('only records, metadata and business profiles are packed — never the answer keys', () => {
+test('the dashboard contains no records: only column layouts are packed, never the answer keys', () => {
   const packed = readFileSync(OUTPUT, 'utf8');
   assert.doesNotMatch(packed, /expected_metrics|august_order_value|story_sale_balance/);
+  assert.doesNotMatch(packed, /BS-001|BC-001|RS-321|Demo Shopper|Sarah|as_of_date|BetterSpace/, 'no records, metadata, people or business text');
+  assert.equal(existsSync(path.join(root, 'src/data/datasets.generated.js')), false, 'the training records are not bundled');
+  for (const f of appSource) assert.doesNotMatch(readFileSync(f, 'utf8'), /datasets\.generated|DATASETS/, `${path.relative(root, f)} must not read training records`);
   assert.equal(files(path.join(root, 'data'), ['.json']).some(f => f.includes('expected_metrics')), false, 'answer keys live in test/expected only');
   for (const f of appSource) assert.doesNotMatch(readFileSync(f, 'utf8'), /expected_metrics/, `${path.relative(root, f)} must not read the answer keys`);
 });
@@ -70,7 +73,7 @@ test('the development page allows only the Gemini API in its Content-Security-Po
   assert.doesNotMatch(html, /fonts\.googleapis|fonts\.gstatic/);
 });
 
-test('the single-file build is self-contained, works offline and is labelled as synthetic', async t => {
+test('the single-file build is self-contained, works offline and holds no business records', async t => {
   let buildHtml;
   try { ({ buildHtml } = await import('../scripts/build.js')); } catch (e) { assert.fail(`esbuild is needed for this test — run npm install first (${e.message})`); }
   const html = await buildHtml();
@@ -85,9 +88,8 @@ test('the single-file build is self-contained, works offline and is labelled as 
   assert.deepEqual(urls, [], 'no web addresses in the build other than the Gemini API (XML namespace names aside)');
   assert.doesNotMatch(html, /AIza[0-9A-Za-z_-]{20,}/, 'no API key in the build');
   assert.doesNotMatch(html, /new Worker|importScripts/, 'no Web Workers (the CSP would block them)');
-  assert.match(html, /BS-001,BC-001,2026-08-20/, 'B2B records are inside the file');
-  assert.match(html, /RS-321/, 'B2C Day 2 records are inside the file');
-  assert.match(html, /synthetic training data only/);
+  assert.doesNotMatch(html, /BS-001,BC-001,2026-08-20|RS-321|Demo Shopper/, 'no training records inside the file');
+  assert.match(html, /no built-in data/);
   assert.match(html, /MIT License\s+Copyright \(c\) 2026 Infinite New Media/, 'the licence notice travels with the file');
   assert.doesNotMatch(html, /expected_metrics|august_order_value/);
   // A note, not a failure: editing src/ without rebuilding is normal while developing.
