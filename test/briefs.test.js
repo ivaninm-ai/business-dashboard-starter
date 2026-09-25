@@ -75,7 +75,8 @@ test('the example-analysis page is honest about what it shows', () => {
   assert.match(page, /Prepared in advance · not live AI/);
   assert.match(page, /does not re-analyse tasks/);
   assert.doesNotMatch(page, /setTimeout|setInterval|requestAnimationFrame/, 'no fake loading or typing effect');
-  assert.doesNotMatch(page, /h\('button'/, 'no button at all, so nothing suggests a live AI call');
+  // The only button copies a request for an AI the viewer chooses; nothing on the page calls an AI.
+  assert.deepEqual(page.match(/h\('button'[^\n]*/g).map(l => l.match(/tl\('([^']+)'\)/)?.[1]), ['Copy for AI'], 'one button, and it only copies');
   assert.doesNotMatch(page, /Request analysis|tl\('(Generate|Regenerate|Analyse)/i);
   assert.match(PROVENANCE.prepared_by, /Claude/);
 });

@@ -15,7 +15,8 @@ A **setup-free** classroom demo and starter project for a small-business dashboa
 | 在浏览器里阅读学生指南 · Read the student guide | 打开 [docs/student-guide.html](docs/student-guide.html) |
 | 建立自己的版本 · Get my own copy | 按本页右上方的 **Use this template → Create a new repository**，然后按 [docs/STUDENT_SOP.md](docs/STUDENT_SOP.md) 操作 · Press **Use this template**, then follow the SOP |
 | 设定店名和首页 · Set my business name and start page | 仓库 **Settings → Secrets and variables → Actions → Variables** 加 `BUSINESS_NAME`、`START_WITH`，再运行 **Publish site**——不用改文件 · Add the repository variables, then run Publish site. See [docs/STUDENT_SOP.md](docs/STUDENT_SOP.md) §8. |
-| 让 AI 编程助手帮忙修改 · Ask an AI coding assistant to help | 先让它读 [AGENTS.md](AGENTS.md) |
+| 请 AI 分析数字 · Ask an AI about the numbers | 示例分析页按 **复制给 AI 分析**，贴到 Google AI Studio（免费）· Press **Copy for AI** on the Example analysis page and paste into an AI you choose |
+| 请 AI 加功能 · Have an AI add a feature | 用 Jules（jules.google.com，免费）或其他编程助手，先让它读 [AGENTS.md](AGENTS.md)。见 [docs/STUDENT_SOP.md](docs/STUDENT_SOP.md) §9 · Use Jules or another coding agent; it reads AGENTS.md first |
 
 开发命令（需要 Node.js 22 或更新版本）· Development commands (Node.js 22+):
 

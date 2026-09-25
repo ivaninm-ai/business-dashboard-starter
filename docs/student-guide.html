@@ -116,7 +116,7 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
 <div class="wrap">
   <div class="eyebrow">InfiniteSales AI · 起步项目 0.2.0 · 约 20 分钟 · 全程在浏览器里 · 不用安装任何软件</div>
   <h1>业务仪表盘 · 起步项目 SOP</h1>
-  <p class="lede">做完之后，你会有一个属于自己的仪表盘网页：代码在你自己的 GitHub 仓库里，网站由 GitHub Pages 免费发布在你自己的网址上。不需要 Google Cloud、钥匙、服务器或付费。里面是虚构的 BetterSpace 练习数据，也可以直接打开你自己的 Excel 看自己的数字，并在仓库设定里换上你的店名。你在网页上的操作只保存在你自己的浏览器里。下面每一步都是网页操作；绿色框告诉你“怎么知道这一步做对了”。</p>
+  <p class="lede">做完之后，你会有一个属于自己的仪表盘网页：代码在你自己的 GitHub 仓库里，网站由 GitHub Pages 免费发布在你自己的网址上。不需要 Google Cloud、钥匙、服务器或付费。里面是虚构的 BetterSpace 练习数据，也可以直接打开你自己的 Excel 看自己的数字，并在仓库设定里换上你的店名。最后两步用免费的 Google AI：请 Gemini 分析你的数字，请 Jules 帮你加功能。你在网页上的操作只保存在你自己的浏览器里。下面每一步都是网页操作；绿色框告诉你“怎么知道这一步做对了”。</p>
 
   <div class="layout">
     <nav class="rail" aria-label="步骤" id="rail">
@@ -127,9 +127,10 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
       <a href="#s4" data-step="4"><span class="n">4</span>发布网站</a>
       <a href="#s5" data-step="5"><span class="n">5</span>试用你的网站</a>
       <a href="#s6" data-step="6"><span class="n">6</span>打开你的 Excel</a>
-      <a href="#s7" data-step="7"><span class="n">7</span>让 AI 帮你扩展</a>
+      <a href="#s7" data-step="7"><span class="n">7</span>请 AI 分析数字</a>
+      <a href="#s8" data-step="8"><span class="n">8</span>请 AI 加功能</a>
       <a href="#rules"><span class="n">!</span>规则与限制</a>
-      <div class="progress" id="progress" aria-live="polite">已完成 0 / 8 步</div>
+      <div class="progress" id="progress" aria-live="polite">已完成 0 / 9 步</div>
     </nav>
 
     <div class="main">
@@ -152,6 +153,7 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
         <div class="step-head"><span class="num">第 0 步</span><h2 id="h0">准备账号</h2><span class="where">github.com</span></div>
         <ul>
           <li><b>一个 GitHub 账号</b>（免费）。还没有：到 <a href="https://github.com/signup" target="_blank" rel="noopener">github.com/signup</a> 注册，并到邮箱点确认信。</li>
+          <li><b>一个 Google 账号</b>（免费），第 7、8 步用。第 8 步的 Jules 要年满 18 岁。</li>
           <li><b>Chrome 或 Edge 浏览器。</b>手机也能看网站，但第 1–6 步请用电脑做。</li>
           <li><b>不需要</b>：Google Cloud、信用卡、API 钥匙、服务器，也不用安装任何软件。</li>
         </ul>
@@ -267,26 +269,57 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
       </section>
 
       <section class="step" id="s7" aria-labelledby="h7">
-        <div class="step-head"><span class="num">第 7 步</span><h2 id="h7">让 AI 编程助手帮你扩展</h2><span class="where">AI 编程助手</span></div>
-        <p>想加新功能（新指标、图表、页面），交给 AI 编程助手（例如 Claude Code）来做：把你的仓库地址给它，安装、运行和检查都让它负责，你只要看结果。</p>
+        <div class="step-head"><span class="num">第 7 步</span><h2 id="h7">请 AI 分析你的数字</h2><span class="where">你的网站 › 示例分析 → Google AI Studio</span></div>
+        <p>用免费的 Gemini 分析你的数字：你的网站会把数字和一段写好的请求一起复制，你贴到 Google AI Studio 就好。网站本身不会联网，也不需要任何钥匙。</p>
+        <p><a class="btn primary" href="https://aistudio.google.com/" target="_blank" rel="noopener">✨ 打开 Google AI Studio ↗</a></p>
         <ol>
-          <li>把你的仓库地址 <span class="chip"><code id="v-repo3">https://github.com/用户名/仓库名</code><button type="button" data-copy="v-repo3">复制</button></span> 给助手，请它<b>先读 <code>AGENTS.md</code></b>。这个文件写着不能改坏的规则：数字必须从记录算出来、报告日期固定、不联网、不放钥匙、所有文字要有中文翻译、示例分析要诚实标明。</li>
-          <li>用一句话说清楚你要什么，并要求它做完后<b>运行全部检查</b>、告诉你结果和没能验证的地方。例如：
-            <div class="example">请先读 AGENTS.md。在 B2B 概览加一个「本期服务类订单额」KPI，
-加上中文翻译和测试，运行全部检查，
-告诉我结果，以及你没能验证的地方。</div></li>
-          <li>让助手把修改推送到你的仓库，然后照第 4 步 <b>Publish site</b>，在你的网址上看看新功能（中文和英文都看一下）。</li>
+          <li>在你的网站选好业务（你的店名，或练习范例），打开左边的 <b>示例分析</b>。</li>
+          <li>找到「请 AI 分析这些数字」，按 <b>复制给 AI 分析</b>。看到「已复制」就好。</li>
+          <li>按上面的按钮打开 <b>Google AI Studio</b>，用 Google 账号登录。第一次会请你同意使用条款。</li>
+          <li>在对话框按 <b>Ctrl + V</b> 贴上，再按 <b>Run</b>（或 Ctrl + Enter）。Gemini 会用中文分四段回答：现在的情况、今天最该做的三件事、要留意的事、数据回答不了的问题。</li>
+          <li>把 AI 说的每个数字和你的仪表盘对一对。</li>
         </ol>
+        <div class="metaphor">比喻：仪表盘是帮你算账的会计，AI 是听完报告给意见的顾问。顾问只看得到你交给他的那张纸——也就是你复制的内容。</div>
+        <div class="danger">⚠️ 贴到 AI Studio，就是把这些资料交给 Google。Google 说免费服务可能用你贴的内容改进产品，并请你不要贴个人或机密资料。你自己的 Excel 默认会把客户和员工的名字换成代号；真实的业务数据，先确认你可以分享。</div>
+        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="7"><span>Gemini 回答了四段；它提到的金额（例如期间订单额）和我的仪表盘一样。</span></label></div>
+        <p class="stuck"><b>卡住了？</b>
+          <br>· 按了没有「已复制」：打开「查看要复制的全部内容」，全选后按 Ctrl + C。
+          <br>· AI 说的数字和仪表盘不一样：以仪表盘为准，回它一句「请只用我给的数字」。
+          <br>· AI Studio 叫你建 API key：不需要，直接在对话框聊天就好。</p>
+      </section>
+
+      <section class="step" id="s8" aria-labelledby="h8">
+        <div class="step-head"><span class="num">第 8 步</span><h2 id="h8">请 AI 帮你加功能</h2><span class="where">jules.google.com → 你的仓库</span></div>
+        <p>想加新指标、图表或页面？交给 Google 免费的编程 AI <b>Jules</b>：你用一句话说要什么，它在自己的电脑上改代码、跑检查，再把修改交给你批准。你不用写代码，也不用安装任何软件。免费版每天可以做 15 个任务。</p>
+        <p><a class="btn primary" href="https://jules.google.com/" target="_blank" rel="noopener">🤖 打开 Jules ↗</a></p>
+        <ol>
+          <li>按上面的按钮打开 <b>Jules</b>，按 <b>Sign in</b>，用 Google 账号登录。</li>
+          <li>第一次用：按 <b>Connect to GitHub account</b>，登录 GitHub，选 <b>Only select repositories</b>，选你的仓库 <span class="chip"><code id="v-repo3">https://github.com/用户名/仓库名</code><button type="button" data-copy="v-repo3">复制</button></span>，再确认。</li>
+          <li>在 Jules 选你的仓库，分支保持 <b>main</b>。</li>
+          <li>在对话框用一句话写你要什么，并请它<b>先读规则、做完跑检查</b>。例如：
+            <div class="example">请先读 AGENTS.md。在 B2B 概览加一个「本期服务类订单额」KPI，
+加上中文翻译和测试，运行 npm run check，
+用中文告诉我结果，以及你没能验证的地方。</div></li>
+          <li>按 <b>Give me a plan</b>。Jules 会先写计划：看得懂就按 <b>Approve plan</b>；看不懂就请它用中文解释。</li>
+          <li>等它做完（几分钟到半小时），按 <b>Publish PR</b>。它会在你的仓库开一个 <b>Pull request</b>。</li>
+          <li>回到你的仓库，点上方的 <b>Pull requests</b> → 打开它 → 等 <b>Tests</b> 变成绿色勾 → 按 <b>Merge pull request</b> → <b>Confirm merge</b>。</li>
+          <li>照第 4 步运行 <b>Publish site</b>，在你的网址上看看新功能（中文和英文都看一下）。</li>
+        </ol>
+        <div class="metaphor">比喻：Pull request 是 AI 交来的「修改申请书」。你按 Merge 才算批准；不按，你的网站什么都不会变。</div>
         <div class="two">
-          <div><h3>新增指标</h3><p>例如「本期服务类订单额」。B2B 第 1 天 8 月应为 RM 3,400（5 笔）——用这个数字检查助手做得对不对。</p></div>
+          <div><h3>新增指标</h3><p>例如「本期服务类订单额」。B2B 第 1 天 8 月应为 RM 3,400（5 笔）——用这个数字检查 AI 做得对不对。</p></div>
           <div><h3>新增图表</h3><p>例如「按产品的订单额」。用现成的横条图，颜色只用已有的颜色。</p></div>
           <div><h3>新增待办规则</h3><p>例如「感谢回头客」。每条建议的编号要稳定，第 1 天和第 2 天才对得上。</p></div>
           <div><h3>新增页面</h3><p>例如「产品」页。复制一个现有页面，再加到菜单里。</p></div>
         </div>
-        <p>给助手看的完整技术说明在仓库的 <code>docs/STUDENT_SOP.md</code>。</p>
-        <div class="danger">⚠️ 不要让助手把任何 API 钥匙写进网页代码——网站是公开的，任何人都能看到。以后想接入实时 AI，钥匙必须放在你自己管理的服务器上（见 <code>docs/STUDENT_SOP.md</code> 第 6 节）。</div>
-        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="7"><span>助手说全部检查通过；GitHub 上 <b>Tests</b> 是绿色勾；Publish site 之后，新功能出现在我的网址上。</span></label></div>
-        <p class="stuck"><b>卡住了？</b>发布出现红叉：把 Actions 里失败那一步的截图给助手，请它修好再推送；网站在修好之前仍是上一个正常版本。</p>
+        <p>Jules 会自动读仓库里的 <code>AGENTS.md</code>：里面写着不能改坏的规则——数字必须从记录算出来、报告日期固定、不联网、不放钥匙、所有文字要有中文翻译、示例分析要诚实标明。完整技术说明在 <code>docs/STUDENT_SOP.md</code>。</p>
+        <div class="danger">⚠️ Tests 是红叉的 Pull request <b>不要 Merge</b>。也不要让 AI 把任何 API 钥匙写进网页代码——网站是公开的，任何人都能看到。</div>
+        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="8"><span>Pull request 上 Tests 是绿色勾；Merge 并 Publish site 之后，新功能出现在我的网址上。</span></label></div>
+        <p class="stuck"><b>卡住了？</b>
+          <br>· Jules 里找不到你的仓库：在 GitHub 按右上角头像 → <b>Settings</b> → <b>Applications</b> → Jules 旁边的 <b>Configure</b>，把仓库加进去。
+          <br>· Pull request 的 Tests 是红叉：不要 Merge。回到 Jules 的对话，请它「修好测试，再更新 Pull request」。
+          <br>· Jules 说今天的次数用完了：免费版每天 15 个任务，明天再做。
+          <br>· Merge 之后发布出现红叉：网站仍是上一个正常版本。把 Actions 里失败那一步的截图贴给 Jules，请它修。</p>
       </section>
 
       <section class="panel" id="rules" aria-labelledby="hr">
@@ -296,7 +329,8 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
           <tbody>
             <tr><td><b>你的 Excel 只在你的浏览器里</b></td><td>它在你的电脑上读取，不会上传，也不会发布到你的网站上。按「忘记这个文件」就会从浏览器删除。</td></tr>
             <tr><td><b>本地保存不是云端备份</b></td><td>网页上的操作只存在那台电脑的那个浏览器里；没有登录、没有同步、没有共享。</td></tr>
-            <tr><td><b>示例分析不是实时分析</b></td><td>它是预先写好的，描述原始数据；你接受或修改待办，它不会重新分析。</td></tr>
+            <tr><td><b>示例分析不是实时分析</b></td><td>它是预先写好的，描述原始数据；你接受或修改待办，它不会重新分析。想要按你现在的数字分析，用第 7 步。</td></tr>
+            <tr><td><b>AI 的回答要自己核对</b></td><td>AI 会说错数字或编理由，以仪表盘为准。贴到免费 AI 服务的内容，可能被用来改进它的产品。</td></tr>
             <tr><td><b>你的版本可以自由使用</b></td><td>模板用 MIT 授权：你可以修改、自己用、商用，也可以请程序员帮你扩展，只要保留仓库里的 <code>LICENSE</code> 文件。软件按「原样」提供，不附带任何保证。</td></tr>
             <tr><td><b>只放虚构或匿名数据</b></td><td>仓库和网站都是公开的，网站文件里包含全部记录。这是学习项目，不适合机密的真实业务数据。</td></tr>
             <tr><td><b>每次修改都要重新发布</b></td><td>改了变量、Commit 或 Push 之后，都要运行 <b>Publish site</b>，网站才会更新。检查没通过就不会发布。</td></tr>
@@ -314,7 +348,7 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
 <script>
 (function () {
   var KEY = 'bd-starter-sop-v1';
-  var TOTAL = 8;
+  var TOTAL = 9;
   var state = { user: '', repo: 'my-business-dashboard', checks: {} };
   try { var saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && typeof saved === 'object') { state.user = String(saved.user || ''); state.repo = String(saved.repo || state.repo); state.checks = saved.checks && typeof saved.checks === 'object' ? saved.checks : {}; } } catch (e) {}
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }

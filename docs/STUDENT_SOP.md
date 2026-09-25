@@ -190,10 +190,20 @@ src/briefs/           examples.js 预先准备的分析；brief-input.js 事实�
 
 Both are optional. A wrong value stops the publish at `npm run check` with a message saying what to fix, and the site keeps its previous version. Values are built into the public page: never put a password or key in one.
 
-## 9. 让 AI 编程助手帮忙 · Working with an AI coding assistant
+## 9. 让 AI 帮忙 · Working with AI
 
-先让助手读 **`AGENTS.md`**（Claude Code 会通过 `CLAUDE.md` 自动读取）。里面写着哪些东西不能改坏：数字规则、固定的报告日期、数据边界、翻译、示例分析的诚实原则。可以这样说：
+### 9.1 请 AI 分析数字 · Ask an AI about the numbers (no code)
+
+示例分析页的 **复制给 AI 分析（Copy for AI）** 会复制一段请求：固定的指示（`src/briefs/ai-prompt.js`，不含任何数字）加上 `buildBriefInput()` 的事实，包括这个浏览器里的待办决定和日历备注。学生把它贴到自己选的 AI（例如免费的 Google AI Studio）。网页本身不联网、不调用 AI、没有钥匙。你自己的 Excel 默认把客户和员工名字换成代号（Google 的免费服务条款请用户不要提交个人或机密资料）。
+
+The **Copy for AI** button on the Example analysis page copies fixed instructions (no numbers of their own) plus the calculated facts, including this browser's task decisions and notes. The viewer pastes it into an AI they choose. The page never connects or calls an AI. Names are replaced by codes by default for the viewer's own Excel.
+
+### 9.2 请 AI 改代码 · Have an AI coding agent change the app
+
+学生版指南（`docs/student-guide.html` 第 8 步）用 **Jules**（jules.google.com）：Google 的编程 AI，网页操作、免费版每天 15 个任务、要年满 18 岁。它连接 GitHub 仓库，在自己的虚拟机里改代码、跑测试，用 **Publish PR** 开 pull request；学生在 GitHub 上看到 **Tests** 绿色勾再 Merge，然后运行 Publish site。其他编程助手（Claude Code、Codex 等）也可以，做法相同。
+
+不论用哪个，都先让它读 **`AGENTS.md`**（Jules 会自动读；Claude Code 通过 `CLAUDE.md` 读取）。里面写着哪些东西不能改坏：数字规则、固定的报告日期、数据边界、翻译、示例分析的诚实原则。可以这样说：
 
 > 请先读 AGENTS.md。在 B2B 概览加一个「本期服务类订单额」KPI，加上中文翻译和测试，然后运行 npm run check，告诉我结果。
 
-完成后自己在浏览器里看一遍，并确认 `npm run check` 全部通过，再分享。
+完成后自己在浏览器里看一遍，并确认 `npm run check` 全部通过（pull request 上的 **Tests** 是绿色勾），再 Merge 和发布。
