@@ -28,20 +28,6 @@ export function add(parent, ...children) {
   return parent;
 }
 
-// Copies text to the clipboard (a local action: nothing is sent anywhere). Falls back
-// to the older copy command where the clipboard API is not available. Returns true/false.
-export async function copyText(text) {
-  try { await navigator.clipboard.writeText(text); return true; } catch { /* try the fallback */ }
-  const area = h('textarea', { readonly: true, 'aria-hidden': 'true', style: 'position:fixed;top:0;left:0;opacity:0' });
-  area.value = text;
-  document.body.append(area);
-  area.select();
-  let ok = false;
-  try { ok = document.execCommand('copy'); } catch { ok = false; }
-  area.remove();
-  return ok;
-}
-
 export function toast(message, { error = false, ms = 3500 } = {}) {
   const el = $('#toast');
   el.textContent = message; el.className = 'toast' + (error ? ' error' : ''); el.hidden = false;

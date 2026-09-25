@@ -1,6 +1,7 @@
 // Builds the classroom file: ONE self-contained HTML page with the code, styles and
-// training data inside it. It opens by double-click (file://), needs no server and
-// no internet, and its Content-Security-Policy forbids every network request.
+// training data inside it. It opens by double-click (file://), needs no server and no
+// internet. Its Content-Security-Policy allows one address only — Google's Gemini API,
+// for "Analyse with Gemini" with the viewer's own key.
 //
 //   dist/business-dashboard-demo.html   the file to hand out / open in class
 //   dist/site/index.html                the same page, ready for static hosting
@@ -14,6 +15,7 @@ import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { siteConfigFromEnv, siteConfigModule, describeSiteConfig } from './site-config.js';
+import { GEMINI_HOST } from '../src/briefs/gemini.js';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const src = p => path.join(root, 'src', p);
@@ -44,7 +46,7 @@ export async function buildHtml(config = siteConfigFromEnv()) {
   // The browser hashes exactly what sits between <script> and </script>, newline included.
   const scriptBody = `\n${js}`;
   const scriptHash = createHash('sha256').update(scriptBody, 'utf8').digest('base64');
-  const csp = `default-src 'none'; script-src 'sha256-${scriptHash}'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; font-src 'none'; base-uri 'none'; form-action 'none'`;
+  const csp = `default-src 'none'; script-src 'sha256-${scriptHash}'; style-src 'unsafe-inline'; img-src data:; connect-src ${GEMINI_HOST}; font-src 'none'; base-uri 'none'; form-action 'none'`;
 
   const replaceOnce = (pattern, value, what) => {
     if (!pattern.test(html)) throw new Error(`build: could not find ${what} in src/index.html`);

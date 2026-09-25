@@ -15,7 +15,7 @@ A **setup-free** classroom demo and starter project for a small-business dashboa
 | 在浏览器里阅读学生指南 · Read the student guide | 打开 [docs/student-guide.html](docs/student-guide.html) |
 | 建立自己的版本 · Get my own copy | 按本页右上方的 **Use this template → Create a new repository**，然后按 [docs/STUDENT_SOP.md](docs/STUDENT_SOP.md) 操作 · Press **Use this template**, then follow the SOP |
 | 设定店名和首页 · Set my business name and start page | 仓库 **Settings → Secrets and variables → Actions → Variables** 加 `BUSINESS_NAME`、`START_WITH`，再运行 **Publish site**——不用改文件 · Add the repository variables, then run Publish site. See [docs/STUDENT_SOP.md](docs/STUDENT_SOP.md) §8. |
-| 请 AI 分析数字 · Ask an AI about the numbers | 示例分析页按 **复制给 AI 分析**，贴到 Google AI Studio（免费）· Press **Copy for AI** on the Example analysis page and paste into an AI you choose |
+| 请 AI 分析数字 · Ask an AI about the numbers | 在 Google AI Studio 拿一把免费的 Gemini 钥匙，贴到示例分析页，按 **用 Gemini 分析** · Get a free Gemini key in Google AI Studio, paste it on the Example analysis page, press **Analyse with Gemini** |
 | 请 AI 加功能 · Have an AI add a feature | 用 Jules（jules.google.com，免费）或其他编程助手，先让它读 [AGENTS.md](AGENTS.md)。见 [docs/STUDENT_SOP.md](docs/STUDENT_SOP.md) §9 · Use Jules or another coding agent; it reads AGENTS.md first |
 
 开发命令（需要 Node.js 22 或更新版本）· Development commands (Node.js 22+):
@@ -39,10 +39,11 @@ Then open http://localhost:5173. Also: `npm test` (checks figures and rules), `n
 - 接受、完成、忽略待办，修改行动日期；在日历上加备注；这些操作保存在**这个浏览器**里，B2C 和 B2B 分开保存。
 - 从第 1 天前进到第 2 天时，按稳定的待办编号保留你的决定，并标出新增和已由数据解决的建议。
 - 显示为每个场景**预先准备**的示例分析，并清楚标明它不是实时 AI。
+- **用 Gemini 分析**（可选）：用你自己的免费 Gemini 钥匙，按现在的数字写实时分析，标明是 AI 写的，并自动核对里面的数字。钥匙只存在你的浏览器。
 - **我的 Excel**：打开你自己的 Excel（和练习工作簿格式相同），在这台电脑上读取、计算；不上传，记在这个浏览器里，可随时「忘记这个文件」。
 
 **不会做 · Does not**
-- 不登录、不联网、不需要 API 密钥、不需要服务器；页面的安全策略禁止任何网络请求。
+- 不登录、不需要服务器。除了可选的「用 Gemini 分析」，不联网；页面的安全策略只允许连到 Google 的 Gemini API 这一个地址。
 - 不读取任意格式的文件（Excel 必须和范例格式相同），不做云端备份或多设备同步，没有团队权限。
 - 示例分析不会因为你在页面上的操作而重新分析。
 

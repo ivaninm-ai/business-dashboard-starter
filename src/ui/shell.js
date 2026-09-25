@@ -63,7 +63,7 @@ export function refreshShell() {
   }
   const open = scenario()?.ok ? openTasks().length : 0;
   $('#nav-tasks-count').textContent = open ? String(open) : '';
-  $('#nav-foot').textContent = isExcel() ? tr('Your own Excel · no sign-in · nothing leaves this browser') : tr('Synthetic training data · no sign-in · nothing leaves this browser');
+  $('#nav-foot').textContent = isExcel() ? tr('Your own Excel · no sign-in · stays in this browser unless you use Gemini') : tr('Synthetic training data · no sign-in · stays in this browser unless you use Gemini');
   renderBanner();
 }
 

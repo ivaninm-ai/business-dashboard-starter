@@ -1,6 +1,7 @@
 // "My Excel": open the viewer's own workbook, remember it in this browser, forget it.
 // The file is read with the bundled reader on this computer; the page cannot send it
-// anywhere (its Content-Security-Policy allows no network access at all).
+// anywhere (the file is read locally; the only network access is the optional
+// "Analyse with Gemini", which sends calculated figures, never the file).
 
 import { h, t, add, modal, toast } from '../dom.js';
 import { pageHead } from '../components.js';
@@ -98,7 +99,7 @@ export function renderExcelStart() {
   }
   add(root, h('div', { class: 'card excel-open' },
     t('h2', tr('See your own business in this dashboard')),
-    t('p', tr('Choose an Excel workbook laid out like the template below. It is read here, on this computer: this page has no network access, so the file is never uploaded.')),
+    t('p', tr('Choose an Excel workbook laid out like the template below. It is read here, on this computer, and the file is never uploaded.')),
     h('button', { class: 'btn primary', onclick: pickExcel }, tl('Choose an Excel file…')),
     h('ul', { class: 'small ink2' },
       t('li', tr('The dashboard remembers the file in this browser, so it is still here after a reload. It is not a backup and is not shared. Choose Forget this file to remove it.')),

@@ -75,8 +75,12 @@ test('the example-analysis page is honest about what it shows', () => {
   assert.match(page, /Prepared in advance · not live AI/);
   assert.match(page, /does not re-analyse tasks/);
   assert.doesNotMatch(page, /setTimeout|setInterval|requestAnimationFrame/, 'no fake loading or typing effect');
-  // The only button copies a request for an AI the viewer chooses; nothing on the page calls an AI.
-  assert.deepEqual(page.match(/h\('button'[^\n]*/g).map(l => l.match(/tl\('([^']+)'\)/)?.[1]), ['Copy for AI'], 'one button, and it only copies');
-  assert.doesNotMatch(page, /Request analysis|tl\('(Generate|Regenerate|Analyse)/i);
+  // The prepared example has no button. The only AI call is "Analyse with Gemini" (with the
+  // viewer's own key); its answer is labelled as live AI and its numbers are checked.
+  assert.deepEqual(page.match(/h\('button'[^\n]*/g).map(l => l.match(/tl\('([^']+)'\)/)?.[1]), ['Save key', 'Analyse with Gemini', 'Delete key']);
+  assert.doesNotMatch(page, /Request analysis|tl\('(Generate|Regenerate)/i);
+  assert.match(page, /tr\('Live AI'\)/);
+  assert.match(page, /answerProblems\(/, 'the answer is number-checked');
+  assert.doesNotMatch(page, /\bfetch\s*\(/, 'the page itself makes no requests (gemini.js does)');
   assert.match(PROVENANCE.prepared_by, /Claude/);
 });

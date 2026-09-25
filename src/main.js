@@ -1,5 +1,6 @@
 // Business Dashboard Starter — entry point. Opens straight into a populated dashboard
-// using the bundled synthetic training data. No sign-in, no server, no network.
+// using the bundled synthetic training data. No sign-in, no server. The only network
+// access is "Analyse with Gemini" (src/briefs/gemini.js), with the viewer's own key.
 
 import { setLocale, tr, tl } from './i18n/i18n.js';
 import { openStorage, createStateStore } from './storage/local-state.js';

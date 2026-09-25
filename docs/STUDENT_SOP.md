@@ -149,16 +149,19 @@ src/briefs/           examples.js 预先准备的分析；brief-input.js 事实�
    - `src/briefs/examples.js`：数据变了，原来的示例分析就不对了。为每个新场景重写（`npm test` 会逐一核对数字），或者有意识地删掉 `test/briefs.test.js` 里「每个场景都要有」的要求。
 7. 只放虚构或已匿名化的数据。`npm run build` 会把全部记录放进那个 HTML 文件里。
 
-## 6. 以后接入实时 AI · Adding live AI later
+## 6. 实时 AI（Gemini）· Live AI with Gemini
 
-现在没有任何实时 AI：示例分析是预先写好的，页面的安全策略（CSP）禁止一切网络请求。要接入实时 AI：
+示例分析页的 **用 Gemini 分析** 用学生**自己的**免费 Gemini API 钥匙（Google AI Studio → Get API key）写实时分析：
 
-1. **API 密钥只能放在服务器上**——例如 Cloudflare Workers、Netlify/Vercel Functions 或你自己的后端，存成那里的 secret。**绝对不要把密钥写进 `src/` 或打包文件**，任何打开网页的人都能看到它。
-2. 服务器端：用 `src/briefs/brief-input.js` 的 `buildBriefInput()` 产生事实清单，加上 `prompts/daily_brief.md` 作为指示，调用 AI 服务，要求返回 `headline / summary / priorities / watch_items / data_caveats` 的 JSON。
-3. 显示之前用 `src/briefs/brief-facts.js` 的 `unsupportedTokens()` 核对数字，并确认每个 `task_key` 都是真实的待办。不合格就不显示。
-4. 浏览器端：新增一个模块（例如 `src/briefs/live-brief.js`）去请求**你的**服务器；把 CSP 的 `connect-src` 从 `'none'` 改成只允许那个网址（`src/index.html` 和 `scripts/build.js` 两处），并有意识地修改 `test/boundaries.test.js`，只允许这一个模块联网。
-5. 界面上照实标明：哪个模型、什么时间、根据哪个场景生成；加载时不要假装「正在思考」。
-6. 真实企业数据交给 AI 服务就是数据外流：先确认企业的规定和隐私法（例如马来西亚 PDPA）；免费方案可能会用你的数据训练模型；每次调用都要付费，要限制次数。
+1. 钥匙由学生贴在页面上，只存在那个浏览器（`bd-starter.v1.gemini`），放在请求标头 `x-goog-api-key`，只送到 Google。它**绝不**出现在代码、仓库、仓库变量或打包文件里；`scripts/site-config.js` 会拒绝像钥匙的变量值。
+2. 请求 = `src/briefs/ai-prompt.js` 的固定指示（不含任何数字）+ `buildBriefInput()` 的事实（包括这个浏览器里的待办决定和备注）。你自己的 Excel 默认把客户和员工名字换成代号。
+3. `src/briefs/gemini.js` 是唯一会联网的模块：`https://generativelanguage.googleapis.com/v1beta/models/<model>:generateContent`，先用 `gemini-flash-latest`，忙或额度用完时改用 `gemini-flash-lite-latest`。CSP 的 `connect-src` 只允许这个网址（`src/index.html`、`scripts/build.js`），`test/boundaries.test.js` 检查只有这个模块会发请求。
+4. 回答标明「实时 AI」、模型和时间；显示前用 `answerProblems()`（`unsupportedTokens()`）核对，找不到的数字会列出来。没有假的「打字」效果。
+5. 隐私：Google 免费方案会用送出的内容改进产品，并请用户不要送出个人或机密资料。真实企业数据先确认企业规定和隐私法（例如马来西亚 PDPA）。
+
+Google 的文件建议正式产品不要在网页里用钥匙，而是经过自己的服务器。这个起步项目让每个学生只用自己的钥匙、只在自己的浏览器里；要做给别人用的正式产品，请把呼叫移到你控制的服务器（例如 Cloudflare Workers），钥匙存成那里的 secret。
+
+The **Analyse with Gemini** button uses the viewer's own free Gemini API key, kept only in their browser and sent only to Google in a request header. `src/briefs/gemini.js` is the only module that makes requests, and the CSP allows only the Gemini API. Answers are labelled as live AI and number-checked. For a product other people use, move the call to a server you control.
 
 ## 7. 以后接入真正的存储 · Adding real storage later
 
@@ -194,9 +197,9 @@ Both are optional. A wrong value stops the publish at `npm run check` with a mes
 
 ### 9.1 请 AI 分析数字 · Ask an AI about the numbers (no code)
 
-示例分析页的 **复制给 AI 分析（Copy for AI）** 会复制一段请求：固定的指示（`src/briefs/ai-prompt.js`，不含任何数字）加上 `buildBriefInput()` 的事实，包括这个浏览器里的待办决定和日历备注。学生把它贴到自己选的 AI（例如免费的 Google AI Studio）。网页本身不联网、不调用 AI、没有钥匙。你自己的 Excel 默认把客户和员工名字换成代号（Google 的免费服务条款请用户不要提交个人或机密资料）。
+用示例分析页的 **用 Gemini 分析**：见上面第 6 节。学生版指南第 7 步教学生拿钥匙、贴钥匙、按按钮。
 
-The **Copy for AI** button on the Example analysis page copies fixed instructions (no numbers of their own) plus the calculated facts, including this browser's task decisions and notes. The viewer pastes it into an AI they choose. The page never connects or calls an AI. Names are replaced by codes by default for the viewer's own Excel.
+Use **Analyse with Gemini** on the Example analysis page (section 6). Step 7 of the student guide shows how to get and paste a key.
 
 ### 9.2 请 AI 改代码 · Have an AI coding agent change the app
 

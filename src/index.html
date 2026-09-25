@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- No network access at all: data, code and styles are part of this page. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; font-src 'none'; base-uri 'none'; form-action 'none'">
+<!-- Data, code and styles are part of this page. The only address it may connect to is Google's Gemini API,
+     used only when the viewer presses "Analyse with Gemini" with their own key (src/briefs/gemini.js). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src https://generativelanguage.googleapis.com; font-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="robots" content="noindex">
 <title>BetterSpace 教学演示仪表盘 · Training demo</title>
 <meta name="theme-color" content="#5A1A2B">

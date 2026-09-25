@@ -11,7 +11,7 @@ export function renderAbout() {
   const root = h('div', {}, pageHead(tl('About this demo')));
   add(root, h('div', { class: 'card' }, t('h2', tr('What this is')),
     t('p', tr('A classroom demonstration and starter project for a small-business dashboard. Every record is invented BetterSpace training data; no real customers, payments or companies are involved.')),
-    t('p', tr('It needs no account, no sign-in, no API key and no internet connection. All figures are calculated in this page from the bundled records.'), 'small ink2')));
+    t('p', tr('It needs no account, no sign-in and no internet connection. All figures are calculated in this page from the bundled records. Only the optional "Analyse with Gemini" goes online, with your own key.'), 'small ink2')));
 
   add(root, h('div', { class: 'card' }, t('h2', tr('Try this in class')),
     h('ol', { class: 'steps' },

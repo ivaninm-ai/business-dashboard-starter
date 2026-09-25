@@ -26,8 +26,18 @@ export function businessFolders() {
     .map(d => d.name);
 }
 
+// A Google API key ("AIza…") or any long letters-and-digits token. Variables are built into
+// the public page, so a key there would be published to everyone.
+export const looksLikeSecret = v => /AIza[0-9A-Za-z_-]{20,}/.test(v) || (/^[A-Za-z0-9_.-]{30,}$/.test(v) && /\d/.test(v) && /[A-Za-z]/.test(v));
+
 export function siteConfigFromEnv(env = process.env, ids = businessFolders()) {
   const problems = [];
+  for (const name of ['BUSINESS_NAME', 'START_WITH']) {
+    if (looksLikeSecret(String(env[name] ?? '').trim())) {
+      problems.push(`${name} 看起来像 API 钥匙。钥匙绝对不能放在仓库变量里：变量会写进公开的网站。请立刻删除这个变量，到 AI Studio 删掉这把钥匙、换一把新的，只贴在你网站的「用 Gemini 分析」里。· ${name} looks like an API key. Keys must never be repository variables: variables are built into the public site. Delete the variable now, delete that key in AI Studio and make a new one, and paste it only into "Analyse with Gemini" on your site.`);
+    }
+  }
+  if (problems.length) throw new Error(problems.join('\n'));
   const businessName = String(env.BUSINESS_NAME ?? '').replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim();
   const length = [...businessName].length;
   if (length > BUSINESS_NAME_MAX) {

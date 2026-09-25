@@ -39,6 +39,12 @@ test('START_WITH accepts my-excel, b2c, b2b (any case) and explains a wrong valu
   assert.throws(() => siteConfigFromEnv({ START_WITH: 'b2x', BUSINESS_NAME: 'x'.repeat(99) }), /BUSINESS_NAME[\s\S]*START_WITH/, 'every problem is listed at once');
 });
 
+test('an API key pasted into a variable stops the build (variables are public)', () => {
+  assert.throws(() => siteConfigFromEnv({ BUSINESS_NAME: 'AIzaSyD-this-is-not-a-real-key-123456789' }), /BUSINESS_NAME 看起来像 API 钥匙.*looks like an API key/s);
+  assert.throws(() => siteConfigFromEnv({ START_WITH: 'abcDEF1234567890abcDEF1234567890xyz' }), /START_WITH looks like an API key/);
+  assert.equal(siteConfigFromEnv({ BUSINESS_NAME: 'BetterSpace Office Solutions Sdn Bhd 2' }).businessName, 'BetterSpace Office Solutions Sdn Bhd 2', 'an ordinary long name is fine');
+});
+
 test('the settings module is plain data, safe for any name', async () => {
   const name = '小明 "家具" </script> <!-- 店';
   const text = siteConfigModule({ businessName: name, startWith: B2B });

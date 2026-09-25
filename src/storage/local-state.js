@@ -10,6 +10,10 @@
 //   bd-starter.v1.workbook              { version, fileName, loadedAt, sheets: {Customers: rows, …} }
 //     — the viewer's own Excel ("My Excel"): the four sheets' cell values, kept so a
 //       reload still shows it. Stored unencrypted in this browser; "Forget" removes it.
+//   bd-starter.v1.gemini                { version, key }
+//     — the viewer's own Gemini API key for "Analyse with Gemini", typed in by them and
+//       kept only here (unencrypted, like a saved password in a notebook on this computer).
+//       Sent only to Google with their own requests. "Delete key" removes it; Reset keeps it.
 
 export const PREFIX = 'bd-starter.v1';
 export const STATE_VERSION = 1;
@@ -122,6 +126,10 @@ export function createStateStore(storage) {
     },
     // Forgetting the file also clears its task decisions and notes (they belong to its records).
     forgetWorkbook(id) { try { storage.removeItem(`${PREFIX}.workbook`); storage.removeItem(businessKey(id)); return true; } catch { return false; } },
+    // The viewer's own Gemini API key ('' when none).
+    geminiKey() { const g = read(`${PREFIX}.gemini`); return g && typeof g === 'object' && g.version === 1 && typeof g.key === 'string' ? g.key.trim().slice(0, 200) : ''; },
+    setGeminiKey(key) { return write(`${PREFIX}.gemini`, { version: 1, key: String(key).trim() }); },
+    forgetGeminiKey() { try { storage.removeItem(`${PREFIX}.gemini`); return true; } catch { return false; } },
     // Reset = back to the baseline: Day 1, no decisions, no notes. The language choice is kept.
     resetBusiness(id) { try { storage.removeItem(businessKey(id)); return true; } catch { return false; } },
     resetAll() {

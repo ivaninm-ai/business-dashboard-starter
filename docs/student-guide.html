@@ -116,7 +116,7 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
 <div class="wrap">
   <div class="eyebrow">InfiniteSales AI · 起步项目 0.2.0 · 约 20 分钟 · 全程在浏览器里 · 不用安装任何软件</div>
   <h1>业务仪表盘 · 起步项目 SOP</h1>
-  <p class="lede">做完之后，你会有一个属于自己的仪表盘网页：代码在你自己的 GitHub 仓库里，网站由 GitHub Pages 免费发布在你自己的网址上。不需要 Google Cloud、钥匙、服务器或付费。里面是虚构的 BetterSpace 练习数据，也可以直接打开你自己的 Excel 看自己的数字，并在仓库设定里换上你的店名。最后两步用免费的 Google AI：请 Gemini 分析你的数字，请 Jules 帮你加功能。你在网页上的操作只保存在你自己的浏览器里。下面每一步都是网页操作；绿色框告诉你“怎么知道这一步做对了”。</p>
+  <p class="lede">做完之后，你会有一个属于自己的仪表盘网页：代码在你自己的 GitHub 仓库里，网站由 GitHub Pages 免费发布在你自己的网址上。不需要 Google Cloud、服务器或付费（第 7 步的 Gemini 钥匙也是免费的）。里面是虚构的 BetterSpace 练习数据，也可以直接打开你自己的 Excel 看自己的数字，并在仓库设定里换上你的店名。最后两步用免费的 Google AI：用你自己的免费钥匙请 Gemini 分析你的数字，请 Jules 帮你加功能。你在网页上的操作只保存在你自己的浏览器里。下面每一步都是网页操作；绿色框告诉你“怎么知道这一步做对了”。</p>
 
   <div class="layout">
     <nav class="rail" aria-label="步骤" id="rail">
@@ -127,7 +127,7 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
       <a href="#s4" data-step="4"><span class="n">4</span>发布网站</a>
       <a href="#s5" data-step="5"><span class="n">5</span>试用你的网站</a>
       <a href="#s6" data-step="6"><span class="n">6</span>打开你的 Excel</a>
-      <a href="#s7" data-step="7"><span class="n">7</span>请 AI 分析数字</a>
+      <a href="#s7" data-step="7"><span class="n">7</span>请 Gemini 分析</a>
       <a href="#s8" data-step="8"><span class="n">8</span>请 AI 加功能</a>
       <a href="#rules"><span class="n">!</span>规则与限制</a>
       <div class="progress" id="progress" aria-live="polite">已完成 0 / 9 步</div>
@@ -153,9 +153,9 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
         <div class="step-head"><span class="num">第 0 步</span><h2 id="h0">准备账号</h2><span class="where">github.com</span></div>
         <ul>
           <li><b>一个 GitHub 账号</b>（免费）。还没有：到 <a href="https://github.com/signup" target="_blank" rel="noopener">github.com/signup</a> 注册，并到邮箱点确认信。</li>
-          <li><b>一个 Google 账号</b>（免费），第 7、8 步用。第 8 步的 Jules 要年满 18 岁。</li>
+          <li><b>一个 Google 账号</b>（免费），第 7、8 步用：第 7 步拿免费的 Gemini 钥匙，第 8 步用 Jules（要年满 18 岁）。</li>
           <li><b>Chrome 或 Edge 浏览器。</b>手机也能看网站，但第 1–6 步请用电脑做。</li>
-          <li><b>不需要</b>：Google Cloud、信用卡、API 钥匙、服务器，也不用安装任何软件。</li>
+          <li><b>不需要</b>：信用卡、服务器，也不用安装任何软件。第 7 步的钥匙是免费的，只存在你自己的浏览器。</li>
         </ul>
         <div class="metaphor">比喻：老师的模板像一份食谱原稿。你按 <b>Use this template</b> 复印一份到自己名下；之后你怎么改，都不会影响老师的原稿，也不会影响同学的那一份。</div>
         <div class="danger">⚠️ 你的仓库和网站都是<b>公开的</b>：任何人都能看到里面的代码和全部记录。只放虚构的练习数据——不要放真实客户资料、密码或任何钥匙。</div>
@@ -269,23 +269,25 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
       </section>
 
       <section class="step" id="s7" aria-labelledby="h7">
-        <div class="step-head"><span class="num">第 7 步</span><h2 id="h7">请 AI 分析你的数字</h2><span class="where">你的网站 › 示例分析 → Google AI Studio</span></div>
-        <p>用免费的 Gemini 分析你的数字：你的网站会把数字和一段写好的请求一起复制，你贴到 Google AI Studio 就好。网站本身不会联网，也不需要任何钥匙。</p>
-        <p><a class="btn primary" href="https://aistudio.google.com/" target="_blank" rel="noopener">✨ 打开 Google AI Studio ↗</a></p>
+        <div class="step-head"><span class="num">第 7 步</span><h2 id="h7">请 Gemini 分析你的数字</h2><span class="where">Google AI Studio → 你的网站 › 示例分析</span></div>
+        <p>用 Google 免费的 Gemini，按你网站上现在的数字写一份分析。你只要拿一把免费的<b>钥匙</b>（API key），贴到你的网站一次，以后按一个按钮就好。</p>
+        <p><a class="btn primary" href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">🔑 打开 Google AI Studio 的钥匙页 ↗</a></p>
         <ol>
-          <li>在你的网站选好业务（你的店名，或练习范例），打开左边的 <b>示例分析</b>。</li>
-          <li>找到「请 AI 分析这些数字」，按 <b>复制给 AI 分析</b>。看到「已复制」就好。</li>
-          <li>按上面的按钮打开 <b>Google AI Studio</b>，用 Google 账号登录。第一次会请你同意使用条款。</li>
-          <li>在对话框按 <b>Ctrl + V</b> 贴上，再按 <b>Run</b>（或 Ctrl + Enter）。Gemini 会用中文分四段回答：现在的情况、今天最该做的三件事、要留意的事、数据回答不了的问题。</li>
-          <li>把 AI 说的每个数字和你的仪表盘对一对。</li>
+          <li>按上面的按钮，用 Google 账号登录 <b>Google AI Studio</b>。第一次会请你同意使用条款。</li>
+          <li>在钥匙页找到你的 API key，按旁边的<b>复制</b>。还没有钥匙：按 <b>Create API key</b>，再复制。</li>
+          <li>打开你的网站 → 左边 <b>示例分析</b> → 「用 Gemini 分析」卡片 → 把钥匙贴进方框 → 按 <b>保存钥匙</b>。看到「钥匙已存在这个浏览器（尾号 …）」就对了。</li>
+          <li>选好要分析的业务（你的店名，或练习范例），回到 <b>示例分析</b>，按 <b>用 Gemini 分析</b>。等 10–30 秒。</li>
+          <li>答案出现在按钮下面，标着「实时 AI」。下面的<b>数字核对</b>会告诉你：答案里的数字是不是都能在你的数据里找到。</li>
         </ol>
-        <div class="metaphor">比喻：仪表盘是帮你算账的会计，AI 是听完报告给意见的顾问。顾问只看得到你交给他的那张纸——也就是你复制的内容。</div>
-        <div class="danger">⚠️ 贴到 AI Studio，就是把这些资料交给 Google。Google 说免费服务可能用你贴的内容改进产品，并请你不要贴个人或机密资料。你自己的 Excel 默认会把客户和员工的名字换成代号；真实的业务数据，先确认你可以分享。</div>
-        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="7"><span>Gemini 回答了四段；它提到的金额（例如期间订单额）和我的仪表盘一样。</span></label></div>
+        <div class="metaphor">比喻：仪表盘是帮你算账的会计，Gemini 是听完报告给意见的顾问。钥匙就像顾问的会员卡——每次请顾问，都要出示你自己的卡。</div>
+        <div class="danger">⚠️ <b>钥匙就像密码。</b>只贴在你网站的「用 Gemini 分析」里：<b>绝对不要</b>放进 GitHub（仓库变量也不行——变量会写进公开的网站），不要贴到群里，也不要截图分享。钥匙只存在你这台电脑的这个浏览器；换电脑要再贴一次，不用了就按「删除钥匙」。</div>
+        <div class="note">⚠️ 按「用 Gemini 分析」会把你的数字送到 Google。Google 的免费方案会用送出的内容改进产品，并请你不要送出个人或机密资料。你自己的 Excel 默认会把客户和员工的名字换成代号；真实的业务数据，先确认你可以分享。</div>
+        <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="7"><span>按了「用 Gemini 分析」后，答案出现并标着「实时 AI」；数字核对显示数字都在我的数据里（或列出了要我自己核对的数字）。</span></label></div>
         <p class="stuck"><b>卡住了？</b>
-          <br>· 按了没有「已复制」：打开「查看要复制的全部内容」，全选后按 Ctrl + C。
-          <br>· AI 说的数字和仪表盘不一样：以仪表盘为准，回它一句「请只用我给的数字」。
-          <br>· AI Studio 叫你建 API key：不需要，直接在对话框聊天就好。</p>
+          <br>· 「Google 不接受这把钥匙」：回 AI Studio 重新复制<b>整串</b>钥匙，在网站按「删除钥匙」，再贴一次。
+          <br>· 「免费额度暂时用完了」：等一分钟再按，或明天再用。
+          <br>· 「连不上 Google」：检查网络。用双击打开的离线文件也要电脑联网才能分析。
+          <br>· 数字核对列出了一些数字：那是 AI 自己编的或算错的，以仪表盘为准。</p>
       </section>
 
       <section class="step" id="s8" aria-labelledby="h8">
@@ -312,7 +314,7 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
           <div><h3>新增待办规则</h3><p>例如「感谢回头客」。每条建议的编号要稳定，第 1 天和第 2 天才对得上。</p></div>
           <div><h3>新增页面</h3><p>例如「产品」页。复制一个现有页面，再加到菜单里。</p></div>
         </div>
-        <p>Jules 会自动读仓库里的 <code>AGENTS.md</code>：里面写着不能改坏的规则——数字必须从记录算出来、报告日期固定、不联网、不放钥匙、所有文字要有中文翻译、示例分析要诚实标明。完整技术说明在 <code>docs/STUDENT_SOP.md</code>。</p>
+        <p>Jules 会自动读仓库里的 <code>AGENTS.md</code>：里面写着不能改坏的规则——数字必须从记录算出来、报告日期固定、只连 Gemini、代码里不放钥匙、所有文字要有中文翻译、AI 的内容要诚实标明。完整技术说明在 <code>docs/STUDENT_SOP.md</code>。</p>
         <div class="danger">⚠️ Tests 是红叉的 Pull request <b>不要 Merge</b>。也不要让 AI 把任何 API 钥匙写进网页代码——网站是公开的，任何人都能看到。</div>
         <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="8"><span>Pull request 上 Tests 是绿色勾；Merge 并 Publish site 之后，新功能出现在我的网址上。</span></label></div>
         <p class="stuck"><b>卡住了？</b>
@@ -329,8 +331,9 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
           <tbody>
             <tr><td><b>你的 Excel 只在你的浏览器里</b></td><td>它在你的电脑上读取，不会上传，也不会发布到你的网站上。按「忘记这个文件」就会从浏览器删除。</td></tr>
             <tr><td><b>本地保存不是云端备份</b></td><td>网页上的操作只存在那台电脑的那个浏览器里；没有登录、没有同步、没有共享。</td></tr>
-            <tr><td><b>示例分析不是实时分析</b></td><td>它是预先写好的，描述原始数据；你接受或修改待办，它不会重新分析。想要按你现在的数字分析，用第 7 步。</td></tr>
-            <tr><td><b>AI 的回答要自己核对</b></td><td>AI 会说错数字或编理由，以仪表盘为准。贴到免费 AI 服务的内容，可能被用来改进它的产品。</td></tr>
+            <tr><td><b>示例分析不是实时分析</b></td><td>它是预先写好的，描述原始数据；你接受或修改待办，它不会重新分析。想要按你现在的数字分析，用第 7 步的 Gemini。</td></tr>
+            <tr><td><b>AI 的回答要自己核对</b></td><td>AI 会说错数字或编理由，以仪表盘为准；数字核对会帮你找出对不上的数字。送到免费 Gemini 的内容，可能被 Google 用来改进产品。</td></tr>
+            <tr><td><b>钥匙只放在一个地方</b></td><td>Gemini 钥匙只贴在你网站的「用 Gemini 分析」里，存在你的浏览器。不要放进 GitHub、仓库变量、群聊或截图。</td></tr>
             <tr><td><b>你的版本可以自由使用</b></td><td>模板用 MIT 授权：你可以修改、自己用、商用，也可以请程序员帮你扩展，只要保留仓库里的 <code>LICENSE</code> 文件。软件按「原样」提供，不附带任何保证。</td></tr>
             <tr><td><b>只放虚构或匿名数据</b></td><td>仓库和网站都是公开的，网站文件里包含全部记录。这是学习项目，不适合机密的真实业务数据。</td></tr>
             <tr><td><b>每次修改都要重新发布</b></td><td>改了变量、Commit 或 Push 之后，都要运行 <b>Publish site</b>，网站才会更新。检查没通过就不会发布。</td></tr>
