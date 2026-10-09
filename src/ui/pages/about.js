@@ -9,7 +9,7 @@ import { APP_VERSION } from '../../version.js';
 export function renderAbout() {
   const root = h('div', {}, pageHead(tl('About this dashboard')));
   add(root, h('div', { class: 'card' }, t('h2', tr('What this is')),
-    t('p', tr('A small-business dashboard for your own Excel workbook. It has no data of its own: open a workbook laid out like the practice workbooks, and the figures, tasks and calendar are calculated from your records on this computer.')),
+    t('p', tr('A small-business dashboard for your own Excel workbook. It has no data of its own: open your workbook, and the figures, tasks and calendar are calculated from your records on this computer. A workbook in another layout is matched once with "Match your columns".')),
     t('p', tr('It needs no account, no sign-in and no internet connection. Your Excel file is never uploaded. Only the optional "Analyse with Gemini" goes online, with your own key.'), 'small ink2')));
 
   add(root, h('div', { class: 'card' }, t('h2', tr('How to use it')),

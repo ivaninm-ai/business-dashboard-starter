@@ -138,7 +138,7 @@ export function renderExcelStart() {
   }
   add(root, h('div', { class: 'card excel-open' },
     t('h2', tr('See your own business in this dashboard')),
-    t('p', tr('Choose an Excel workbook laid out like the template below. It is read here, on this computer, and the file is never uploaded.')),
+    t('p', tr('Choose your Excel workbook (.xlsx). It is read here, on this computer, and the file is never uploaded. If it is laid out differently from the practice workbook, you match its columns once on the next screen.')),
     h('button', { class: 'btn primary', onclick: pickExcel }, tl('Choose an Excel file…')),
     h('ul', { class: 'small ink2' },
       t('li', tr('The dashboard remembers the file in this browser, so it is still here after a reload. It is not a backup and is not shared. Choose Forget this file to remove it.')),
@@ -148,19 +148,19 @@ export function renderExcelStart() {
   const cols = workbookColumns();
   const names = { Customers: tr('Customers'), Sales: tr('Sales'), Payments: tr('Payments'), Stock: tr('Stock') };
   add(root, h('div', { class: 'card' },
-    t('h2', tr('The layout it needs')),
-    t('p', tr('Four sheets with these names, column names in the first row, one record per row — exactly as in the template. Required columns must be there; the others may be left out (figures that use them stay blank or zero).'), 'small ink2'),
+    t('h2', tr('What it can read')),
+    t('p', tr('Orders are required (one order or invoice per row); customers, payments and stock are optional. A workbook laid out like the practice workbook below opens straight away; other sheet and column names are matched on the next screen. Columns you do not have leave the figures that use them blank or zero.'), 'small ink2'),
     h('div', { class: 'table-wrap' }, h('table', {},
-      h('thead', {}, h('tr', {}, t('th', tr('Sheet')), t('th', tr('Required columns')), t('th', tr('Other columns')))),
+      h('thead', {}, h('tr', {}, t('th', tr('Sheet in the practice workbook')), t('th', tr('Required columns')), t('th', tr('Other columns')))),
       h('tbody', {}, ...cols.map(c => h('tr', {}, h('td', {}, h('b', {}, c.sheet), h('div', { class: 'small muted' }, names[c.sheet])), t('td', c.required.join(', '), 'mono'), t('td', c.optional.join(', '), 'mono small')))))),
     h('ul', { class: 'small ink2' },
-      t('li', tr('status: Confirmed, In Progress, Completed or Cancelled. customer_type: Customer or Prospect. offering_type: Product or Service.')),
-      t('li', tr('Dates as Excel dates or written 2026-08-30. Amounts as plain numbers in RM (for example 300 or 299.90).')),
+      t('li', tr('status says whether an order is done, not whether it is paid: Confirmed, In Progress, Completed or Cancelled. Your own words (for example 已付 or Void) are matched to these. customer_type: Customer or Prospect. offering_type: Product or Service.')),
+      t('li', tr('Dates as Excel dates, or written 2026-08-30 or 30/08/2026. Amounts as numbers, or written like RM 12.50.')),
       t('li', tr('The reporting date is the latest date in the file (sales, receipts, completions and stock counts). Everything is calculated as of that day.')))));
 
   add(root, h('div', { class: 'card' },
     t('h2', tr('Start from a practice workbook')),
-    t('p', tr('No file yet? Download a practice workbook (invented BetterSpace data) and open it to try the dashboard. To use your own records, replace its rows, keep the sheet names and the first row, and save it as .xlsx.'), 'small ink2'),
+    t('p', tr('No file yet? Download a practice workbook (invented BetterSpace data) and open it to try the dashboard.'), 'small ink2'),
     h('div', { class: 'row' }, ...TEMPLATES.map(tpl => h('button', { class: 'btn', onclick: () => downloadTemplate(tpl) }, tr('Download {0}', tpl.file)))),
     t('p', tr('The B2B workbook has account owners and follow-up dates; the B2C workbook does not. Either layout works.'), 'hint')));
   return root;

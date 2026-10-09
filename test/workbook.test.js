@@ -159,3 +159,19 @@ test('classroom demo: adding the BS-001 payment row to the B2B workbook updates 
   const keys = s => suggestionsFor(s).map(t => t.task_key);
   assert.ok(keys(s1).includes('payment_follow_up:BS-001') && !keys(s2).includes('payment_follow_up:BS-001'));
 });
+
+test('in the practice layout, dates written 30/08/2026 and amounts written RM 12.50 open directly', async () => {
+  const { sheets } = await readWorkbook(bytes('BetterSpace_B2B.xlsx'));
+  const plain = workbookScenario({ fileName: 'b.xlsx', loadedAt: '2026-09-24T06:00:00.000Z', sheets });
+  const typed = structuredClone(sheets);
+  const head = typed.Sales[0];
+  const [d, a] = ['sale_date', 'total_amount'].map(c => head.indexOf(c));
+  for (const row of typed.Sales.slice(1)) {
+    const iso = String(cellValue(row[d]));
+    row[d] = `${iso.slice(8, 10)}/${iso.slice(5, 7)}/${iso.slice(0, 4)}`;
+    row[a] = `RM ${Number(row[a]).toFixed(2)}`;
+  }
+  const s = workbookScenario({ fileName: 'b.xlsx', loadedAt: '2026-09-24T06:00:00.000Z', sheets: typed });
+  assert.equal(s.ok, true, JSON.stringify(s.issues.filter(i => i.level === 'error').slice(0, 3)));
+  assert.deepEqual(s.records.sales.map(r => [r.date, r.amount]), plain.records.sales.map(r => [r.date, r.amount]));
+});
