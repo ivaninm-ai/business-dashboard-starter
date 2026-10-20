@@ -66,9 +66,9 @@ docs/           使用说明 · documentation
 
 ## 来源 · Provenance
 
-- 计算、待办、日历、字段对应、界面翻译和视觉风格，改编自 Business Dashboard 模板 1.2.0（rc.4/rc.5）的代码；Google 登录、Sheets 存储、后台 worker 和设置向导都已移除。
+- 计算、待办、日历、字段对应和界面翻译，改编自 Business Dashboard 模板 1.2.0（rc.4/rc.5）的代码；Google 登录、Sheets 存储、后台 worker 和设置向导都已移除。视觉风格后来重新设计过，保留了品牌的酒红色。
 - 练习数据原样复制自 BetterSpace 虚构培训数据包（`01_B2C_Retail`、`02_B2B_Furniture` 及其 `refresh_day2`），只用于测试和练习工作簿，见 [data/README.md](data/README.md)。
-- Figures, task rules, calendar, column mapping, translations and styling are adapted from the Business Dashboard template 1.2.0 (rc.4/rc.5); Google sign-in, Sheets storage, background workers and the setup wizard were removed. The BetterSpace training data is copied unchanged from the synthetic pack and used only by the tests and as practice workbooks.
+- Figures, task rules, calendar, column mapping and translations are adapted from the Business Dashboard template 1.2.0 (rc.4/rc.5); Google sign-in, Sheets storage, background workers and the setup wizard were removed. The look has since been redesigned, keeping the brand's wine colour. The BetterSpace training data is copied unchanged from the synthetic pack and used only by the tests and as practice workbooks.
 
 ## 授权 · Licence
 

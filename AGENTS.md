@@ -25,7 +25,7 @@ To try the app, open a practice workbook from `data/templates/` on the "Open you
 - `src/ui/pages/excel.js` — open / re-read / forget the workbook, practice-workbook downloads, the start page, the matching page (labels looked up by name are in `match-text.js`).
 - `src/site-config.js` — site settings with classroom defaults. The build and `npm run dev` replace it with the GitHub repository variable `BUSINESS_NAME`, checked by `scripts/site-config.js`; `publish-site.yml` passes it in.
 - `src/storage/local-state.js` — browser-local state (localStorage, memory fallback).
-- `src/ui/` — `view-state.js` (filters + derived figures), `shell.js`, `router.js`, `components.js`, `drawers.js`, `pages/*.js`.
+- `src/ui/` — `view-state.js` (filters + derived figures), `shell.js`, `router.js`, `components.js`, `drawers.js`, `icons.js` (inline SVG line icons), `pages/*.js`.
 - `src/briefs/` — `brief-input.js` (facts text), `brief-facts.js` (number checker), `ai-prompt.js` (the Gemini request: fixed instructions with no numbers + the facts, name hiding, and `answerProblems()` for the answer), `gemini.js` (the only network access: "Analyse with Gemini" with the viewer's own key).
 - `src/i18n/` — `tr()` plain text, `tl()` menu/button text as `中文（English）`; Chinese in `zh.js`.
 - `data/` — test material: the synthetic BetterSpace training data (CSV, two businesses × two days) and `business.json` (layouts and rules); `data/templates/` holds the practice workbooks. `test/expected/` — answer keys. `test/support/training.js` loads the training data for the tests; the app never does.
@@ -43,7 +43,7 @@ To try the app, open a practice workbook from `data/templates/` on the "Open you
 8. **State stays per browser.** Keys start with `bd-starter.v1.`; "Clear decisions and notes" removes decisions and notes and keeps the file, the language and the key. If you change the stored shape, bump `STATE_VERSION` and keep reads defensive (stored data is untrusted).
 9. **Every visible string is translated.** Wrap with `tr()`/`tl()` and add the Chinese to `src/i18n/zh.js`; `test/i18n.test.js` fails otherwise. Chinese is the default.
 10. **Render text safely.** Use the `h()`/`t()` helpers (textContent). Never use `innerHTML` with data.
-11. **Keep the look.** Colours come from the CSS variables in `src/style.css` (cream/wine/gold, validated for contrast). Gold is decoration only, never text. Check 375 px and 1366 px widths.
+11. **Keep the look.** Colours come from the CSS variables in `src/style.css` (white rounded cards on a warm-grey canvas, wine for emphasis, rose for selection, near-black pill buttons; checked for contrast). Gold is decoration only, never text. The calendar's type colours are the `--pay-*`, `--fol-*`, `--pro-*`, `--task-*` and `--note-*` variables, and a past deadline shows "!" as well as its red outline (never colour alone). Icons come from `src/ui/icons.js` (inline SVG; nothing is downloaded). Check 375 px and 1366 px widths.
 12. **Keep the labels honest.** The data is labelled as the viewer's own file, read locally; the practice workbooks as invented BetterSpace data. This is a learning starter, not a system for confidential business data.
 13. **Settings are variables, not file edits.** Students set the business name with the repository variable `BUSINESS_NAME`; do not tell them to edit `src/site-config.js` or `business.json` for that. Values are built into the public page, so they must never hold secrets. Add any new setting the same way (checked in `scripts/site-config.js`, with a clear bilingual error).
 

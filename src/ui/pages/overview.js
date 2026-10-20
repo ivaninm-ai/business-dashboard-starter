@@ -8,7 +8,7 @@ export function renderOverview() {
   const m = metrics();
   const rd = reportingDate();
   const root = h('div', {}, pageHead(tl('Overview')), scopeBar(), filterBar());
-  const tiles = h('div', { class: 'tiles' });
+  const tiles = h('div', { class: 'tiles overview-tiles' });
   const cmp = m.comparison;
   const deltaText = cmp.growth === null
     ? tr('vs {0}–{1}: unavailable (no prior sales)', formatDate(cmp.start), formatDate(cmp.end))

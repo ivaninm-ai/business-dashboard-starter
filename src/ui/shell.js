@@ -4,6 +4,8 @@
 import { $, h, t, add, modal, toast } from './dom.js';
 import { view, scenario, openTasks, labelTl, businessName, defaultFilters, absent } from './view-state.js';
 import { navigate, rerender } from './router.js';
+import { bilingual } from './components.js';
+import { icon } from './icons.js';
 import { pickExcel, forgetExcel, restoreWorkbook } from './pages/excel.js';
 import { formatDate } from '../core/dates.js';
 import { setLocale, getLocale, tr, tl } from '../i18n/i18n.js';
@@ -27,8 +29,8 @@ const PAGE_SHEET = { customers: 'Customers', payments: 'Payments', stock: 'Stock
 
 export function initShell() {
   const nav = $('#nav');
-  for (const [id] of NAV) add(nav, h('a', { href: `#${id}`, 'data-page': id }, h('span', { class: 'nav-label' }), id === 'tasks' ? h('span', { class: 'count', id: 'nav-tasks-count' }) : null));
-  add(nav, h('div', { class: 'sidenav-foot small muted', id: 'nav-foot' }));
+  for (const [id] of NAV) add(nav, h('a', { href: `#${id}`, 'data-page': id }, icon(id), h('span', { class: 'nav-label' }), id === 'tasks' ? h('span', { class: 'count', id: 'nav-tasks-count' }) : null));
+  add(nav, h('div', { class: 'sidenav-foot small muted' }, icon('lock'), h('span', { id: 'nav-foot' })));
   // Small screens: the menu slides over the page; a backdrop click, a link or Escape closes it.
   const backdrop = h('div', { class: 'nav-backdrop', hidden: true });
   document.body.append(backdrop);
@@ -58,7 +60,7 @@ export function refreshShell() {
   renderScenarioBar();
   for (const a of $('#nav').querySelectorAll('a[data-page]')) {
     const entry = NAV.find(([id]) => id === a.dataset.page);
-    a.querySelector('.nav-label').textContent = entry[1]();
+    const lbl = a.querySelector('.nav-label'); lbl.textContent = ''; add(lbl, ...bilingual(entry[1]()));
     a.classList.toggle('active', a.dataset.page === view.page);
     a.hidden = !!PAGE_SHEET[a.dataset.page] && absent(PAGE_SHEET[a.dataset.page]);
     if (a.dataset.page === view.page) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
@@ -80,12 +82,12 @@ function renderScenarioBar() {
   const bar = $('#scenario-bar'); bar.textContent = '';
   const s = scenario();
   if (!s) { add(bar, h('button', { class: 'btn primary small', onclick: pickExcel }, tl('Choose an Excel file…'))); return; }
-  add(bar, h('span', { class: 'scn-file', title: tr('Read {0}', new Date(s.source.loadedAt).toLocaleString()) }, h('span', { 'aria-hidden': 'true' }, '📄 '), s.source.fileName),
+  add(bar, h('span', { class: 'scn-file', title: tr('Read {0}', new Date(s.source.loadedAt).toLocaleString()) }, icon('file'), t('span', s.source.fileName)),
     h('button', { class: 'btn small', onclick: pickExcel }, tl('Read the Excel again…')),
     h('button', { class: 'btn ghost small', onclick: forgetExcel }, tl('Forget this file')),
     s.source.matched ? h('button', { class: 'btn ghost small', onclick: () => pickExcel({ rematch: true }) }, tl('Change the matching…')) : null,
-    s.reportingDate ? h('span', { class: 'scn-note' }, tr('Reporting date {0} (latest date in the file)', formatDate(s.reportingDate))) : null,
-    h('button', { class: 'btn ghost small scn-reset', onclick: openResetDialog }, tl('Clear decisions and notes…')));
+    h('button', { class: 'btn ghost small scn-reset', onclick: openResetDialog }, tl('Clear decisions and notes…')),
+    s.reportingDate ? h('span', { class: 'scn-note' }, tr('Reporting date {0} (latest date in the file)', formatDate(s.reportingDate))) : null);
 }
 
 function renderBanner() {
@@ -112,7 +114,7 @@ export function openResetDialog() {
   modal(tr('Clear decisions and notes'), body, { actions: [
     { label: tl('Clear decisions and notes'), danger: true, onclick: () => {
       if (!view.store.resetBusiness(view.businessId)) { toast(tr('Could not clear the saved state in this browser.'), { error: true }); return; }
-      view.filters = defaultFilters(); view.calMonth = ''; view.taskView = 'open';
+      view.filters = defaultFilters(); view.calMonth = ''; view.calDay = ''; view.taskView = 'open';
       toast(tr('Your task decisions and notes have been cleared.'));
       navigate('overview');
     } },

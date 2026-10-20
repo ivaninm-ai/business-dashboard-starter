@@ -18,6 +18,8 @@ export const view = {
   filters: defaultFilters(),
   page: 'overview',
   calMonth: '',
+  calDay: '',             // the day shown in the calendar's side panel
+  calView: 'month',       // month / week / list
   taskView: 'open',
 };
 

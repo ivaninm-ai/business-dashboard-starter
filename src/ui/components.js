@@ -8,8 +8,14 @@ import { sourceCoverage } from '../core/mapping.js';
 import { dayNumber } from '../data/scenarios.js';
 import { tr, tl } from '../i18n/i18n.js';
 
+// A tl() label "中文（English）" as Chinese plus a quieter English part; the text is unchanged.
+export function bilingual(text) {
+  const m = /^(.+?)(（.+）)$/.exec(text);
+  return m ? [m[1], t('span', m[2], 'en')] : [text];
+}
+
 export function pageHead(title, ...extra) {
-  return h('div', { class: 'page-head' }, t('h1', title), ...extra);
+  return h('div', { class: 'page-head' }, h('h1', {}, ...bilingual(title)), ...extra);
 }
 
 // What the figures on this page are "as of" — always visible so nobody mistakes the
