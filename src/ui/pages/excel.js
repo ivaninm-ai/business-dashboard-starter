@@ -10,13 +10,14 @@ import { view, defaultFilters } from '../view-state.js';
 import { navigate, rerender } from '../router.js';
 import { readWorkbook, workbookScenario, workbookColumns, MY_EXCEL } from '../../data/workbook.js';
 import { ROLE_TEXT, ABSENT_TEXT, FIELD_TEXT, OPTION_TEXT, VALUE_TEXT } from './match-text.js';
-import { ROLES, OPTIONAL_ROLES, roleFields, guessMatching, refreshValues, chooseSheet, chooseColumn, chooseValue, openQuestions, applyMatching, workbookSignature } from '../../data/matching.js';
+import { ROLES, OPTIONAL_ROLES, roleFields, guessMatching, closestMatching, refreshValues, chooseSheet, chooseColumn, chooseValue, openQuestions, applyMatching, workbookSignature } from '../../data/matching.js';
 import { setWorkbookScenario, loadScenario } from '../../data/scenarios.js';
 import { TEMPLATES } from '../../data/templates.generated.js';
 import { tr, tl, sentences } from '../../i18n/i18n.js';
 
 let lastProblem = null; // { fileName, messages } from the latest attempt that could not be used (this visit only)
-// A workbook waiting to be matched: { fileName, loadedAt, all, matching, signature, hadWorkbook, problems, remembered }.
+// A workbook waiting to be matched: { fileName, loadedAt, all, matching, signature, hadWorkbook, problems, remembered, changed }.
+// changed: the earlier choices that are gone when the layout changed a little (else null).
 let pending = null;
 export const pendingMatch = () => pending;
 
@@ -63,12 +64,14 @@ export async function openExcel(file, { rematch = false } = {}) {
     if (scenario.ok) return useWorkbook({ fileName: file.name, loadedAt, sheets: read.sheets }, scenario);
     if (!scenario.issues.some(i => ['missing_header', 'unknown_status', 'unknown_value'].includes(i.code))) return showProblems(file.name, errorsOf(scenario), hadWorkbook);
   }
-  // Another layout: "Match your columns", reusing the matching remembered for the same sheets and columns.
+  // Another layout: "Match your columns", reusing the matching remembered for the same sheets and columns,
+  // or, when the sheets or columns changed a little, the closest earlier matching (shown for checking).
   const signature = workbookSignature(read.all);
   const saved = view.store.matching(signature);
   const remembered = !!saved;
-  const matching = remembered ? refreshValues(read.all, saved) : guessMatching(read.all);
-  pending = { fileName: file.name, loadedAt, all: read.all, matching, signature, hadWorkbook, problems: [], remembered };
+  const similar = remembered ? null : closestMatching(read.all, view.store.matchings());
+  const matching = remembered ? refreshValues(read.all, saved) : similar ? similar.matching : guessMatching(read.all);
+  pending = { fileName: file.name, loadedAt, all: read.all, matching, signature, hadWorkbook, problems: [], remembered, changed: similar ? similar.lost : null };
   if (remembered && !rematch && !openQuestions(read.all, matching).length && finishMatching()) return;
   lastProblem = null;
   navigate('overview');
@@ -258,7 +261,8 @@ export function renderMatchPage() {
   const root = h('div', {}, pageHead(tl('Match your columns')));
   add(root, h('div', { class: 'banner info' },
     t('p', tr('{0} is laid out differently from the practice workbook. Tell the dashboard which sheet and which column holds what. The guesses are already filled in: check them.', p.fileName)),
-    t('p', p.remembered ? tr('Your earlier matching for this layout is filled in.') : tr('You do this once: the next time you read a file with the same sheets and columns, this matching is used again.'), 'small')));
+    t('p', p.remembered ? tr('Your earlier matching for this layout is filled in.') : p.changed ? tr('The sheets or columns changed since you last matched this file. Your earlier choices are filled in, so only what changed needs checking.') : tr('You do this once: the next time you read a file with the same sheets and columns, this matching is used again.'), 'small'),
+    p.changed?.length ? h('div', { class: 'small' }, t('b', tr('No longer in the file:')), h('ul', {}, ...p.changed.map(x => t('li', x.sheet ? tr('{0}: the sheet "{1}"', tr(ROLE_TEXT[x.role][0]), x.sheet) : tr('{0}: the column "{1}" — check the column chosen below', fieldLabel(x.role, x.canonical), x.header))))) : null));
   if (p.problems.length) {
     add(root, h('div', { class: 'banner critical' }, t('p', tr('With this matching the file still has problems:')),
       h('ul', { class: 'small' }, ...p.problems.slice(0, 12).map(x => t('li', x))),

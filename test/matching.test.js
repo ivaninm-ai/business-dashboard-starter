@@ -8,7 +8,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readWorkbook, workbookScenario } from '../src/data/workbook.js';
-import { guessMatching, applyMatching, openQuestions, refreshValues, chooseSheet, chooseColumn, chooseValue, workbookSignature } from '../src/data/matching.js';
+import { guessMatching, closestMatching, applyMatching, openQuestions, refreshValues, chooseSheet, chooseColumn, chooseValue, workbookSignature } from '../src/data/matching.js';
 import { computeMetrics } from '../src/core/metrics.js';
 import { suggestionsFor } from '../src/core/scenario-tasks.js';
 import { buildBriefInput } from '../src/briefs/brief-input.js';
@@ -88,6 +88,33 @@ test('a remembered matching fits the same layout again; new status words are ask
   const again = refreshValues(updated, saved);
   assert.equal(again.values['Sales.status']['制作中'], 'Confirmed', 'earlier answer kept');
   assert.deepEqual(openQuestions(updated, again).filter(q => q.kind === 'value').map(q => q.value), ['待付款']);
+});
+
+test('a layout that changed a little starts from the closest earlier matching, not fresh guesses', async () => {
+  const { all } = await load('test/fixtures/KopiKita_Cafe_2026.xlsx');
+  const onSales = (sheets, f) => sheets.map(s => (s.name === '销售单' ? f(s) : s));
+  const rename = (sheets, from, to) => onSales(sheets, s => ({ ...s, rows: [s.rows[0].map(h => (h === from ? to : h)), ...s.rows.slice(1)] }));
+  // The owner's own name for the amount, which the dashboard cannot guess, chosen by hand once.
+  const first = rename(all, '金额', 'Jumlah RM');
+  assert.equal(guessMatching(first).columns.Sales.amount, undefined, 'not guessed');
+  const saved = chooseValue(chooseColumn(first, guessMatching(first), 'Sales', 'amount', 'Jumlah RM'), 'Sales.status', '制作中', 'Confirmed');
+  assert.deepEqual(openQuestions(first, saved), []);
+  // Later: a notes column and a new sheet are added, and 渠道 is renamed 平台.
+  const later = onSales(rename(first, '渠道', '平台'), s => ({ ...s, rows: s.rows.map((r, i) => [...r, i ? '' : 'Catatan']) })).concat([{ name: '备注', rows: [['日期', '内容']] }]);
+  assert.notEqual(workbookSignature(later), workbookSignature(first), 'a new layout');
+  assert.equal(guessMatching(later).columns.Sales.amount, undefined, 'fresh guesses would ask for the amount again');
+  const c = closestMatching(later, [guessMatching(all), saved]);
+  assert.deepEqual(c.matching.roles, saved.roles);
+  assert.equal(c.matching.columns.Sales.amount, 'Jumlah RM', 'the closest earlier matching wins and its choice is kept');
+  assert.equal(c.matching.values['Sales.status']['制作中'], 'Confirmed', 'earlier meaning kept');
+  assert.deepEqual(c.lost, [{ role: 'Sales', canonical: 'channel', header: '渠道' }], 'what is gone is listed');
+  assert.deepEqual(openQuestions(later, c.matching), []);
+  assert.equal(metricsOf(open(later, c.matching)).all_time_order_value, metricsOf(open(first, saved)).all_time_order_value);
+  assert.equal(closestMatching(later.map(s => (s.name === '销售单' ? { ...s, name: 'Invoices' } : s)), [saved]), null, 'no earlier matching has this orders sheet');
+  const store = createStateStore(memoryStorage());
+  store.setMatching('old', guessMatching(all));
+  store.setMatching('new', saved);
+  assert.deepEqual(store.matchings().map(m => m.columns.Sales.amount), ['Jumlah RM', '金额'], 'most recent first');
 });
 
 test('changing the sheet re-guesses its columns; a required column left out is asked', async () => {

@@ -582,4 +582,9 @@ export default {
   'Past deadlines this month': '本月已过期限',
   '{0} payment(s) · {1} follow-up(s) · {2} promised': '{0} 个付款 · {1} 个跟进 · {2} 个承诺',
   'Show the list': '查看列表',
+  // matching: a layout that changed a little since it was matched
+  'The sheets or columns changed since you last matched this file. Your earlier choices are filled in, so only what changed needs checking.': '这个文件的工作表或列和你上次对应时有些不同。你之前的选择已经填上了，只要检查改变了的地方。',
+  'No longer in the file:': '文件里已经没有：',
+  '{0}: the sheet "{1}"': '{0}：工作表「{1}」',
+  '{0}: the column "{1}" — check the column chosen below': '{0}：列「{1}」——请检查下面选的列',
 };

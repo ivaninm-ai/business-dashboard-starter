@@ -157,6 +157,8 @@ export function createStateStore(storage) {
     },
     // How the viewer matched a workbook with this layout signature (null when none is kept).
     matching(signature) { return cleanMatchings(read(`${PREFIX}.matching`)).find(m => m.signature === signature)?.matching || null; },
+    // Every kept matching, most recent first (for a layout that changed a little: matching.js closestMatching).
+    matchings() { return cleanMatchings(read(`${PREFIX}.matching`)).map(m => m.matching); },
     setMatching(signature, matching) {
       const others = cleanMatchings(read(`${PREFIX}.matching`)).filter(m => m.signature !== signature);
       return write(`${PREFIX}.matching`, { version: 1, list: [{ signature, matching }, ...others].slice(0, MATCHINGS_KEPT) });

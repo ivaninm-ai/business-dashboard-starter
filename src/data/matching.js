@@ -184,6 +184,51 @@ export function guessMatching(sheets) {
   return refreshValues(sheets, matching);
 }
 
+// A workbook whose layout changed a little since it was matched (a column added or renamed,
+// a sheet added) starts from the closest remembered matching instead of fresh guesses: every
+// earlier choice whose sheet and column are still there is kept, the rest is guessed as usual,
+// and earlier meanings of status words are carried over. remembered: matchings, most recent
+// first. Returns { matching, lost } — lost lists the earlier choices that are gone
+// ([{ role, sheet }] or [{ role, canonical, header }]) — or null when no remembered matching
+// uses an orders sheet this workbook still has.
+export function closestMatching(sheets, remembered) {
+  let best = null;
+  for (const saved of remembered) {
+    const r = adaptMatching(sheets, saved);
+    if (r && (!best || r.kept > best.kept)) best = r;
+  }
+  return best && { matching: best.matching, lost: best.lost };
+}
+
+function adaptMatching(sheets, saved) {
+  const has = name => !!name && !!sheetByName(sheets, name);
+  if (!has(saved?.roles?.Sales)) return null;
+  const guess = guessMatching(sheets);
+  const keptSheets = new Set(ROLES.map(r => saved.roles[r]).filter(has));
+  const roles = {}, columns = {}, lost = [];
+  let kept = 0;
+  for (const role of ROLES) {
+    const name = saved.roles[role];
+    if (has(name)) {
+      roles[role] = name; kept++;
+      const headers = headersOf(sheetByName(sheets, name));
+      const keep = {};
+      for (const [canonical, header] of Object.entries(saved.columns?.[role] || {})) {
+        if (headers.includes(header)) { keep[canonical] = header; kept++; } else lost.push({ role, canonical, header });
+      }
+      const used = new Set(Object.values(keep));
+      const fresh = Object.entries(guessColumns(role, headers)).filter(([c, h]) => !(c in keep) && !used.has(h));
+      columns[role] = { ...keep, ...Object.fromEntries(fresh) };
+    } else {
+      if (name) lost.push({ role, sheet: name });
+      roles[role] = guess.roles[role] && !keptSheets.has(guess.roles[role]) ? guess.roles[role] : null;
+      columns[role] = roles[role] ? guess.columns[role] : {};
+    }
+  }
+  const matching = { version: MATCHING_VERSION, roles, columns, values: saved.values || {}, dateOrder: saved.dateOrder === 'mdy' ? 'mdy' : 'dmy' };
+  return { matching: refreshValues(sheets, matching), lost, kept };
+}
+
 // Changing a role's sheet re-guesses that sheet's columns.
 export function chooseSheet(sheets, matching, role, sheetName) {
   const roles = { ...matching.roles, [role]: sheetName || null };
