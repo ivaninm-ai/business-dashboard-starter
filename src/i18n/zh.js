@@ -360,7 +360,7 @@ export default {
   "Each suggestion keeps the same identifier (rule and record), so your decisions survive reading an updated workbook.": "每条建议都有固定的编号（规则 + 记录），所以重新读取更新后的 Excel，你的决定仍会保留。",
   "Clear decisions and notes…": "清除待办决定和备注…",
   "This is a learning starter, not a production system. Do not open confidential business data on a shared computer.": "这是学习用的起步项目，不是正式系统。不要在共用电脑上打开机密的业务数据。",
-  "It reads Excel workbooks in the practice-workbook layout. Other layouts need changes to the project (see docs/STUDENT_SOP.md).": "它读取和练习工作簿格式相同的 Excel。其他格式需要修改项目（见 docs/STUDENT_SOP.md）。",
+  'A workbook in another layout is matched once with "Match your columns"; only the orders sheet is required.': '格式不同的 Excel，用「对应你的列」对应一次就好；只有订单工作表是必须的。',
   "Saving is per browser. There is no sign-in, no sharing and no cloud backup: to show your numbers to someone else, they open the same workbook on their own computer.": "保存只在各自的浏览器里。没有登录、没有共享、没有云端备份：想让别人看你的数字，就请他在自己的电脑上打开同一个 Excel。",
   "AI analysis is written by Gemini. It can be wrong; the number check shows figures that are not in your data.": "AI 分析由 Gemini 写，可能出错；数字核对会列出你数据里找不到的数字。",
   "AI analysis": "AI 分析",

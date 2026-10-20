@@ -32,7 +32,7 @@ export function renderAbout() {
   add(root, h('div', { class: 'card' }, t('h2', tr('Limits')),
     h('ul', { class: 'small ink2' },
       t('li', tr('This is a learning starter, not a production system. Do not open confidential business data on a shared computer.')),
-      t('li', tr('It reads Excel workbooks in the practice-workbook layout. Other layouts need changes to the project (see docs/STUDENT_SOP.md).')),
+      t('li', tr('A workbook in another layout is matched once with "Match your columns"; only the orders sheet is required.')),
       t('li', tr('Saving is per browser. There is no sign-in, no sharing and no cloud backup: to show your numbers to someone else, they open the same workbook on their own computer.')),
       t('li', tr('AI analysis is written by Gemini. It can be wrong; the number check shows figures that are not in your data.'))),
     t('p', tr('Version {0}', APP_VERSION), 'hint')));

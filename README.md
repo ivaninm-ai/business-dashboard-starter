@@ -1,8 +1,8 @@
 # 业务仪表盘起步项目 · Business Dashboard Starter
 
-一个**不需要任何设置**的小企业仪表盘起步项目。它本身没有任何数据：打开你的 Excel（和练习工作簿同样格式），就会看到经营概况、销售、客户、收款、库存、待办和日历，还可以用你自己的免费 Gemini 钥匙请 AI 分析。中文为默认语言，也可以切换成英文。
+一个**不需要任何设置**的小企业仪表盘起步项目。它本身没有任何数据：打开你的 Excel（格式和练习工作簿不同的，先用「对应你的列」对应一次），就会看到经营概况、销售、客户、收款、库存、待办和日历，还可以用你自己的免费 Gemini 钥匙请 AI 分析。中文为默认语言，也可以切换成英文。
 
-A **setup-free** small-business dashboard starter. It has no data of its own: open your Excel workbook (in the practice-workbook layout) to see overview, sales, customers, payments, stock, tasks and calendar, and ask Gemini for an analysis with your own free key. Chinese by default, English available.
+A **setup-free** small-business dashboard starter. It has no data of its own: open your Excel workbook (another layout is matched once with "Match your columns") to see overview, sales, customers, payments, stock, tasks and calendar, and ask Gemini for an analysis with your own free key. Chinese by default, English available.
 
 > 这是学习用的起步项目，不是正式系统。你的 Excel 只在你的浏览器里读取，不会上传。
 > A learning starter, not a production system. Your Excel is read in your browser and never uploaded.
