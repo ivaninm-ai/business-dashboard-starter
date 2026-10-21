@@ -16,7 +16,7 @@ A **setup-free** small-business dashboard starter. It has no data of its own: op
 | 建立自己的版本 · Get my own copy | 按本页右上方的 **Use this template → Create a new repository**，然后按学生指南操作 · Press **Use this template**, then follow the student guide |
 | 设定店名 · Set my business name | 仓库 **Settings → Secrets and variables → Actions → Variables** 加 `BUSINESS_NAME`，再运行 **Publish site**——不用改文件 · Add the repository variable, then run Publish site. See [docs/STUDENT_SOP.md](docs/STUDENT_SOP.md) §8. |
 | 请 AI 分析数字 · Ask an AI about the numbers | 在 Google AI Studio 拿一把免费的 Gemini 钥匙，贴到「AI 分析」页，按 **用 Gemini 分析** · Get a free Gemini key in Google AI Studio, paste it on the AI analysis page, press **Analyse with Gemini** |
-| 请 AI 加功能 · Have an AI add a feature | 用 Claude Code（claude.ai/code，需要付费的 Claude 订阅）或其他编程助手，先让它读 [AGENTS.md](AGENTS.md)。见 [docs/STUDENT_SOP.md](docs/STUDENT_SOP.md) §9 · Use Claude Code on the web (paid Claude plan) or another coding agent; it reads AGENTS.md first |
+| 请 AI 加功能 · Have an AI add a feature | 用 Claude Code（claude.ai/code，需要付费的 Claude 订阅）；它会自动读取项目规则。见 [docs/STUDENT_SOP.md](docs/STUDENT_SOP.md) §9 · Use Claude Code on the web (paid Claude plan); it reads the project rules by itself |
 
 开发命令（需要 Node.js 22 或更新版本）· Development commands (Node.js 22+):
 

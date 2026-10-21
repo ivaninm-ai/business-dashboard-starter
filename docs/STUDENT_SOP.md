@@ -200,10 +200,10 @@ Use **Analyse with Gemini** on the AI analysis page (section 6). Step 6 of the s
 
 ### 9.2 请 AI 改代码 · Have an AI coding agent change the app
 
-学生版指南（`docs/student-guide.html` 第 7 步）用 **Claude Code 网页版**（claude.ai/code）：在浏览器里操作，需要付费的 Claude 订阅（Pro、Max 或 Team），用量和 Claude 聊天共用，要年满 18 岁。它通过 Claude 的 GitHub App 连接仓库（只选自己的仓库），在云端环境里改代码、跑测试；模式选 **Plan** 会先给计划、等批准再动手；做完按 **Create PR** 开 pull request；学生在 GitHub 上看到 **Tests** 绿色勾再 Merge，然后运行 Publish site。其他编程助手（例如 Google 的 Jules、Codex）也可以，做法相同。
+学生版指南（`docs/student-guide.html` 第 7 步）用 **Claude Code 网页版**（claude.ai/code）：在浏览器里操作，需要付费的 Claude 订阅（Pro、Max 或 Team），用量和 Claude 聊天共用，要年满 18 岁。它通过 Claude 的 GitHub App 连接仓库（只选自己的仓库），在云端环境里改代码、跑测试；模式选 **Plan** 会先给计划、等批准再动手；做完按 **Create PR** 开 pull request；学生在 GitHub 上看到 **Tests** 绿色勾再 Merge，然后运行 Publish site。
 
-不论用哪个，都先让它读 **`AGENTS.md`**（Claude Code 通过 `CLAUDE.md` 自动读取）。里面写着哪些东西不能改坏：数字规则、报告日期、不内置数据、只连 Gemini、翻译、AI 的诚实标示。可以这样说：
+Claude Code 每次开始都会自动读取项目规则（`CLAUDE.md`，它指向 `AGENTS.md`）。里面写着哪些东西不能改坏：数字规则、报告日期、不内置数据、只连 Gemini、翻译、AI 的诚实标示。可以这样说：
 
-> 先运行 npm ci。请先读 AGENTS.md。在概览加一个「本期服务类订单额」KPI，加上中文翻译和测试，然后运行 npm run check，告诉我结果。
+> 先运行 npm ci。在概览加一个「本期服务类订单额」KPI，加上中文翻译和测试，然后运行 npm run check，告诉我结果。
 
 完成后自己在浏览器里看一遍，并确认 `npm run check` 全部通过（pull request 上的 **Tests** 是绿色勾），再 Merge 和发布。
