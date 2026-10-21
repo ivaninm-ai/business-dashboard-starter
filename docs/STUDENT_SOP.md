@@ -194,13 +194,13 @@ Optional. A wrong value stops the publish at `npm run check` with a message sayi
 
 ### 9.1 请 AI 分析数字 · Ask an AI about the numbers (no code)
 
-用「AI 分析」页的 **用 Gemini 分析**：见上面第 6 节。学生版指南第 7 步教学生拿钥匙、贴钥匙、按按钮。
+用「AI 分析」页的 **用 Gemini 分析**：见上面第 6 节。学生版指南第 6 步教学生拿钥匙、贴钥匙、按按钮。
 
-Use **Analyse with Gemini** on the AI analysis page (section 6). Step 7 of the student guide shows how to get and paste a key.
+Use **Analyse with Gemini** on the AI analysis page (section 6). Step 6 of the student guide shows how to get and paste a key.
 
 ### 9.2 请 AI 改代码 · Have an AI coding agent change the app
 
-学生版指南（`docs/student-guide.html` 第 8 步）用 **Claude Code 网页版**（claude.ai/code）：在浏览器里操作，需要付费的 Claude 订阅（Pro、Max 或 Team），用量和 Claude 聊天共用，要年满 18 岁。它通过 Claude 的 GitHub App 连接仓库（只选自己的仓库），在云端环境里改代码、跑测试；模式选 **Plan** 会先给计划、等批准再动手；做完按 **Create PR** 开 pull request；学生在 GitHub 上看到 **Tests** 绿色勾再 Merge，然后运行 Publish site。其他编程助手（例如 Google 的 Jules、Codex）也可以，做法相同。
+学生版指南（`docs/student-guide.html` 第 7 步）用 **Claude Code 网页版**（claude.ai/code）：在浏览器里操作，需要付费的 Claude 订阅（Pro、Max 或 Team），用量和 Claude 聊天共用，要年满 18 岁。它通过 Claude 的 GitHub App 连接仓库（只选自己的仓库），在云端环境里改代码、跑测试；模式选 **Plan** 会先给计划、等批准再动手；做完按 **Create PR** 开 pull request；学生在 GitHub 上看到 **Tests** 绿色勾再 Merge，然后运行 Publish site。其他编程助手（例如 Google 的 Jules、Codex）也可以，做法相同。
 
 不论用哪个，都先让它读 **`AGENTS.md`**（Claude Code 通过 `CLAUDE.md` 自动读取）。里面写着哪些东西不能改坏：数字规则、报告日期、不内置数据、只连 Gemini、翻译、AI 的诚实标示。可以这样说：
 
