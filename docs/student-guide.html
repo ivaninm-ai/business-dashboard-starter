@@ -145,10 +145,10 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
 <div class="wrap">
   <div class="eyebrow">InfiniteSales AI · 起步项目 0.6.0 · 约 20 分钟 · 全程在浏览器里 · 不用安装任何软件</div>
   <h1>业务仪表盘 · 起步项目 SOP</h1>
-  <p class="lede">做完之后，你会有一个自己的仪表盘网站：打开你的 Excel，就能看到经营数字、待办和日历，还能请 AI 分析数字、帮你加功能。全部免费。</p>
+  <p class="lede">做完之后，你会有一个自己的仪表盘网站：打开你的 Excel，就能看到经营数字、待办和日历，还能请 AI 分析数字、帮你加功能。第 0–7 步全部免费；第 8 步加功能要付费的 Claude 订阅。</p>
   <div class="legend">
     <span><span class="legend-check">检查</span>绿色框：确认这一步做对了</span>
-    <span><span class="legend-go">彩色按钮 ↗</span>在新分页打开 GitHub 或 Google</span>
+    <span><span class="legend-go">彩色按钮 ↗</span>在新分页打开 GitHub、Google 或 Claude</span>
   </div>
 
   <div class="layout">
@@ -186,9 +186,10 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
         <div class="step-head"><span class="num">第 0 步</span><h2 id="h0">准备账号</h2><span class="where">github.com</span></div>
         <ul>
           <li><b>一个 GitHub 账号</b>（免费）。还没有：按下面的按钮注册，并到邮箱点确认信。</li>
-          <li><b>一个 Google 账号</b>（免费），第 7、8 步用：第 7 步拿免费的 Gemini 钥匙，第 8 步用 Jules（要年满 18 岁）。</li>
+          <li><b>一个 Google 账号</b>（免费），第 7 步用：拿免费的 Gemini 钥匙。</li>
+          <li><b>一个付费的 Claude 订阅</b>（Pro、Max 或 Team），第 8 步用 Claude Code 加功能。要年满 18 岁。</li>
           <li><b>Chrome 或 Edge 浏览器。</b>手机也能看网站，但第 1–6 步请用电脑做。</li>
-          <li><b>不需要</b>：信用卡、服务器，也不用安装任何软件。第 7 步的钥匙是免费的，只存在你自己的浏览器。</li>
+          <li><b>不需要</b>：服务器，也不用安装任何软件。第 0–7 步全部免费；第 7 步的钥匙也是免费的，只存在你自己的浏览器。</li>
         </ul>
         <p class="go-row"><a class="go" href="https://github.com/signup" target="_blank" rel="noopener"><span class="go-icon" aria-hidden="true">📝</span><span>注册 GitHub 账号（已有就跳过）</span><span class="go-tag">前往 GitHub ↗</span></a></p>
         <div class="metaphor">比喻：老师的模板像一份食谱原稿。你按 <b>Use this template</b> 复印一份到自己名下；之后你怎么改，都不会影响老师的原稿，也不会影响同学的那一份。</div>
@@ -328,19 +329,19 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
       </section>
 
       <section class="step" id="s8" aria-labelledby="h8">
-        <div class="step-head"><span class="num">第 8 步</span><h2 id="h8">请 AI 帮你加功能</h2><span class="where">jules.google.com → 你的仓库</span></div>
-        <p>想加新指标、图表或页面？交给 Google 免费的编程 AI <b>Jules</b>：你用一句话说要什么，它在自己的电脑上改代码、跑检查，再把修改交给你批准。你不用写代码，也不用安装任何软件。免费版每天可以做 15 个任务。</p>
-        <p class="go-row"><a class="go" href="https://jules.google.com/" target="_blank" rel="noopener"><span class="go-icon" aria-hidden="true">🤖</span><span>打开 Jules</span><span class="go-tag">前往 Google ↗</span></a></p>
+        <div class="step-head"><span class="num">第 8 步</span><h2 id="h8">请 AI 帮你加功能</h2><span class="where">claude.ai/code → 你的仓库</span></div>
+        <p>想加新指标、图表或页面？交给 <b>Claude Code</b>：你用一句话说要什么，它在 Claude 的云端电脑上改代码、跑检查，再把修改交给你批准。你不用写代码，也不用安装任何软件。需要付费的 Claude 订阅（Pro、Max 或 Team），用量和你平常用 Claude 聊天算在一起。</p>
+        <p class="go-row"><a class="go" href="https://claude.ai/code" target="_blank" rel="noopener"><span class="go-icon" aria-hidden="true">🤖</span><span>打开 Claude Code</span><span class="go-tag">前往 Claude ↗</span></a></p>
         <ol>
-          <li>按上面的按钮打开 <b>Jules</b>，按 <b>Sign in</b>，用 Google 账号登录。</li>
-          <li>第一次用：按 <b>Connect to GitHub account</b>，登录 GitHub，选 <b>Only select repositories</b>，选你的仓库 <span class="chip"><code id="v-repo3">https://github.com/用户名/仓库名</code><button type="button" data-copy="v-repo3">复制</button></span>，再确认。</li>
-          <li>在 Jules 选你的仓库，分支保持 <b>main</b>。</li>
-          <li>在对话框用一句话写你要什么，并请它<b>先读规则、做完跑检查</b>。例如：
-            <div class="example">请先读 AGENTS.md。在概览加一个「本期服务类订单额」KPI，
-加上中文翻译和测试，运行 npm run check，
-用中文告诉我结果，以及你没能验证的地方。</div></li>
-          <li>按 <b>Give me a plan</b>。Jules 会先写计划：看得懂就按 <b>Approve plan</b>；看不懂就请它用中文解释。</li>
-          <li>等它做完（几分钟到半小时），按 <b>Publish PR</b>。它会在你的仓库开一个 <b>Pull request</b>。</li>
+          <li>按上面的按钮，用你的 Claude 账号登录。</li>
+          <li>第一次用：照画面提示连接 GitHub。安装 Claude 的 GitHub App 时选 <b>Only select repositories</b>，只选你的仓库 <span class="chip"><code id="v-repo3">https://github.com/用户名/仓库名</code><button type="button" data-copy="v-repo3">复制</button></span>。云端环境（environment）用默认的就好。</li>
+          <li>在输入框下面选你的仓库，分支选 <b>main</b>。输入框旁边的模式选 <b>Plan</b>：它会先写计划，等你批准才动手。</li>
+          <li>在输入框用一句话写你要什么，并请它<b>先安装、先读规则、做完跑检查</b>。例如：
+            <div class="example">先运行 npm ci。请先读 AGENTS.md。
+在概览加一个「本期服务类订单额」KPI，加上中文翻译和测试，
+运行 npm run check，用中文告诉我结果，以及你没能验证的地方。</div></li>
+          <li>Claude 会先写计划：看得懂就批准；看不懂就请它用中文解释。</li>
+          <li>等它做完（几分钟到半小时），在修改画面上方按 <b>Create PR</b>。它会在你的仓库开一个 <b>Pull request</b>。</li>
           <li>回到你的仓库，点上方的 <b>Pull requests</b> → 打开它 → 等 <b>Tests</b> 变成绿色勾 → 按 <b>Merge pull request</b> → <b>Confirm merge</b>。</li>
           <li>照第 4 步运行 <b>Publish site</b>，在你的网址上看看新功能（中文和英文都看一下）。</li>
         </ol>
@@ -351,14 +352,15 @@ footer { margin-top: 28px; font-size: 13px; color: var(--muted); }
           <div><h3>新增待办规则</h3><p>例如「感谢回头客」。每条建议的编号要稳定，重新读取 Excel 后决定才对得上。</p></div>
           <div><h3>新增页面</h3><p>例如「产品」页。复制一个现有页面，再加到菜单里。</p></div>
         </div>
-        <p>Jules 会自动读仓库里的 <code>AGENTS.md</code>：里面写着不能改坏的规则——数字必须从记录算出来、网站不内置数据、只连 Gemini、代码里不放钥匙、所有文字要有中文翻译、AI 的内容要诚实标明。完整技术说明在 <code>docs/STUDENT_SOP.md</code>。</p>
-        <div class="danger">⚠️ Tests 是红叉的 Pull request <b>不要 Merge</b>。也不要让 AI 把任何 API 钥匙写进网页代码——网站是公开的，任何人都能看到。</div>
+        <p>Claude Code 会自动读仓库里的 <code>CLAUDE.md</code>，它指向 <code>AGENTS.md</code>：里面写着不能改坏的规则——数字必须从记录算出来、网站不内置数据、只连 Gemini、代码里不放钥匙、所有文字要有中文翻译、AI 的内容要诚实标明。完整技术说明在 <code>docs/STUDENT_SOP.md</code>。</p>
+        <div class="danger">⚠️ Tests 是红叉的 Pull request <b>不要 Merge</b>。也不要让 AI 把任何 API 钥匙写进网页代码——网站是公开的，任何人都能看到。Claude Code 的对话保持 <b>Private</b>，不要设成 Public。</div>
         <div class="checkpoint"><span class="mark">检查</span><label><input type="checkbox" data-check="8"><span>Pull request 上 Tests 是绿色勾；Merge 并 Publish site 之后，新功能出现在我的网址上。</span></label></div>
         <p class="stuck"><b>卡住了？</b>
-          <br>· Jules 里找不到你的仓库：在 GitHub 按右上角头像 → <b>Settings</b> → <b>Applications</b> → Jules 旁边的 <b>Configure</b>，把仓库加进去。
-          <br>· Pull request 的 Tests 是红叉：不要 Merge。回到 Jules 的对话，请它「修好测试，再更新 Pull request」。
-          <br>· Jules 说今天的次数用完了：免费版每天 15 个任务，明天再做。
-          <br>· Merge 之后发布出现红叉：网站仍是上一个正常版本。把 Actions 里失败那一步的截图贴给 Jules，请它修。</p>
+          <br>· 画面说你的方案不能用 Claude Code：免费方案不包含 Claude Code，要 Pro、Max 或 Team。
+          <br>· 找不到你的仓库：在 GitHub 按右上角头像 → <b>Settings</b> → <b>Applications</b> → Claude 旁边的 <b>Configure</b>，把仓库加进去。
+          <br>· Pull request 的 Tests 是红叉：不要 Merge。回到同一个 Claude Code 对话，请它「修好测试，再更新 Pull request」。
+          <br>· 用量到了上限：等额度恢复再继续。Claude Code 和你平常用 Claude 聊天共用同一个额度。
+          <br>· Merge 之后发布出现红叉：网站仍是上一个正常版本。把 Actions 里失败那一步的截图贴给 Claude Code，请它修。</p>
       </section>
 
       <section class="panel" id="rules" aria-labelledby="hr">
