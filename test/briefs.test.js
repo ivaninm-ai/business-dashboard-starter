@@ -29,7 +29,8 @@ test('the AI analysis page is honest about what it shows', () => {
   assert.doesNotMatch(page, /setTimeout|setInterval|requestAnimationFrame/, 'no fake loading or typing effect');
   // The only AI call is "Analyse with Gemini" (with the viewer's own key); its answer is
   // labelled as live AI and its numbers are checked. Nothing is sent before the button.
-  assert.deepEqual(page.match(/h\('button'[^\n]*/g).map(l => l.match(/tl\('([^']+)'\)/)?.[1]), ['Save key', 'Analyse with Gemini', 'Delete key']);
+  // "Remove AI suggestions" takes the AI's picks out of Tasks and the Calendar.
+  assert.deepEqual(page.match(/h\('button'[^\n]*/g).map(l => l.match(/tl\('([^']+)'\)/)?.[1]), ['Save key', 'Analyse with Gemini', 'Delete key', 'Remove AI suggestions']);
   assert.doesNotMatch(page, /Request analysis|tl\('(Generate|Regenerate)/i);
   assert.match(page, /tr\('Live AI'\)/);
   assert.match(page, /answerProblems\(/, 'the answer is number-checked');

@@ -110,7 +110,7 @@ function useWorkbook(stored, scenario) {
 
 export function forgetExcel() {
   modal(tr('Forget this file?'), h('div', {},
-    t('p', tr('The dashboard stops showing your Excel and removes its copy from this browser, together with the task decisions and calendar notes you made for it. Your Excel file itself is not changed.'))),
+    t('p', tr('The dashboard stops showing your Excel and removes its copy from this browser, together with the task decisions, calendar notes and AI analysis you made for it. Your Excel file itself is not changed.'))),
   { actions: [{ label: tl('Forget this file'), danger: true, onclick: () => {
     view.store.forgetWorkbook(MY_EXCEL);
     setWorkbookScenario(null);

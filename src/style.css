@@ -242,6 +242,9 @@ tr.clickable:hover { background: var(--surface-2); }
 .status.stale { color: var(--warning-text); background: color-mix(in srgb, var(--warning) 25%, transparent); }
 .status.new { color: var(--series-3); border-color: var(--series-3); }
 .status.carried { color: var(--ink-2); background: var(--surface-2); }
+.status.ai { color: #fff; background: var(--brand); border-color: transparent; }
+.ai-pick { margin-top: 8px; padding: 8px 12px; border-left: 3px solid var(--brand); background: var(--brand-soft); color: var(--brand-ink); border-radius: 0 10px 10px 0; font-size: 14px; }
+.ai-pick b { font-weight: 650; }
 .task .meta .status + .status { margin-left: 4px; }
 
 /* calendar */
@@ -286,6 +289,11 @@ tr.clickable:hover { background: var(--surface-2); }
 .cal-item.t-entry { box-shadow: inset 0 0 0 1px var(--warm-grey); }
 .cal-item.t-entry .dot { background: transparent; border: 1.5px dashed var(--warm-grey); }
 .cal-item.overdue { box-shadow: inset 0 0 0 1.5px var(--overdue); }
+/* AI analysis picks: "AI" tag (wine, 12:1 white on it); a top pick not yet accepted is dashed */
+.ai-tag { flex: none; display: inline-block; font-size: 9.5px; font-weight: 800; letter-spacing: 0.02em; line-height: 13px; padding: 0 4px; border-radius: 4px; background: var(--brand); color: #fff; margin-top: 1px; }
+.cal-item.suggested, .agenda-item.suggested { background: var(--surface); box-shadow: none; outline: 1.5px dashed var(--task-dot); outline-offset: -1.5px; }
+.legend .ai-key::before { display: none; }
+.legend .suggested-key::before { background: transparent; border: 1.5px dashed var(--task-dot); width: 7px; height: 7px; border-radius: 3px; }
 .cal-more { font: inherit; font-size: 11.5px; color: var(--ink-2); background: transparent; border: 0; padding: 0 6px; text-align: left; cursor: pointer; }
 .cal-more:hover { color: var(--brand); text-decoration: underline; }
 .cal-week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
@@ -315,6 +323,8 @@ tr.clickable:hover { background: var(--surface-2); }
 .ai-text b { font-size: 13.5px; font-weight: 650; line-height: 1.35; word-break: break-word; }
 .ai-text > span { font-size: 12px; color: var(--muted); }
 .od-word { color: var(--overdue); font-weight: 650; }
+.ai-text > .ai-why { color: var(--brand-ink); margin-top: 3px; word-break: break-word; }
+.ai-why .ai-tag { margin-right: 6px; vertical-align: 1px; }
 .agenda-item .chev { color: var(--muted); width: 16px; height: 16px; }
 .ag-over { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; width: 100%; font: inherit; font-size: 13px; text-align: left; border: 0; border-radius: 16px; padding: 12px 14px; background: #FBE9E7; color: #8A2A20; cursor: pointer; }
 .ag-over:hover { background: #F8DEDA; }
@@ -363,6 +373,10 @@ tr.clickable:hover { background: var(--surface-2); }
 .ai-live .key-input { flex: 1; min-width: 12em; font: inherit; padding: 7px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--ink); }
 .ai-answer { margin-top: 14px; border-top: 1px solid var(--border); padding-top: 12px; }
 .ai-answer .answer-text { white-space: pre-wrap; word-break: break-word; line-height: 1.65; margin: 8px 0 12px; }
+.ai-section h4 { font-size: 14px; font-weight: 650; margin: 16px 0 6px; }
+.ai-section p, .ai-section li { line-height: 1.65; word-break: break-word; }
+.ai-section ol, .ai-section ul { margin: 0 0 4px; padding-left: 22px; }
+.ai-section li { margin-bottom: 8px; }
 pre.facts { background: var(--surface-2); padding: 12px; border-radius: 12px; overflow: auto; font-size: 12px; max-height: 360px; white-space: pre-wrap; word-break: break-word; }
 details summary { cursor: pointer; color: var(--brand); font-size: 14px; margin: 6px 0; }
 .brief h2 { font-size: 19px; }

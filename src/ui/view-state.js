@@ -6,6 +6,7 @@ import { loadScenario, businessProfile, MY_EXCEL } from '../data/scenarios.js';
 import { computeMetrics, formatMoney } from '../core/metrics.js';
 import { suggestionRows, scenarioTasks, baseMetrics, isOpen } from '../core/scenario-tasks.js';
 import { buildCalendarItems } from '../core/calendar.js';
+import { dataBasis } from '../briefs/ai-prompt.js';
 import { isIsoDate, addDays, monthStart } from '../core/dates.js';
 import { getLocale } from '../i18n/i18n.js';
 
@@ -71,8 +72,29 @@ export { isOpen };
 
 export const notes = () => view.store.notes(view.businessId);
 
-export function calendarItems() {
-  return buildCalendarItems({ records: records(), metrics: baseMetrics(scenario()), tasks: allTasks(), entries: notes(), reportingDate: reportingDate(), money });
+// The latest saved Gemini analysis (any), and the same only while the open workbook has the
+// records it was made from (its picks are shown in Tasks and the Calendar only then).
+export const savedAiPlan = () => view.store.aiPlan(view.businessId);
+const basisCache = new WeakMap();
+// The fingerprint of the records now open ('' when no workbook is open).
+export function currentBasis() {
+  const s = scenario();
+  if (!s) return '';
+  if (!basisCache.has(s)) basisCache.set(s, dataBasis(s));
+  return basisCache.get(s);
+}
+export const isCurrentPlan = plan => !!plan && !!currentBasis() && plan.basis === currentBasis();
+export function aiPlan() { const p = savedAiPlan(); return isCurrentPlan(p) ? p : null; }
+// The current plan's picks: top (task_key → { rank, why, how }) and watch (calendar id → why).
+export function aiMarks() {
+  const p = aiPlan();
+  if (!p) return null;
+  return { top: new Map(p.top.map((x, i) => [x.task_key, { rank: i + 1, why: x.why, how: x.how }])), watch: new Map(p.watch.map(w => [w.item_id, w.why])) };
+}
+
+// withAi: also the AI's picks (the Calendar page). The request to Gemini uses the plain items.
+export function calendarItems({ withAi = false } = {}) {
+  return buildCalendarItems({ records: records(), metrics: baseMetrics(scenario()), tasks: allTasks(), entries: notes(), reportingDate: reportingDate(), money, ai: withAi ? aiMarks() : null });
 }
 
 export function money(cents) { const b = profile().business; return formatMoney(cents, b.currency_symbol || b.currency); }

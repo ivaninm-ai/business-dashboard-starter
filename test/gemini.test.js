@@ -4,7 +4,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { geminiRequest, answerText, askGemini, problemKind, looksLikeKey, GEMINI_HOST, GEMINI_MODELS } from '../src/briefs/gemini.js';
-import { answerProblems } from '../src/briefs/ai-prompt.js';
+import { answerProblems, AI_PLAN_SCHEMA } from '../src/briefs/ai-prompt.js';
 import { baselineBriefInput } from './support/training.js';
 import { createStateStore, memoryStorage, PREFIX } from '../src/storage/local-state.js';
 import { setLocale } from '../src/i18n/i18n.js';
@@ -30,6 +30,28 @@ test('answers are read without thinking parts or Markdown marks', async () => {
   assert.deepEqual(r, { ok: true, text: 'Order value RM 25,650.', model: 'gemini-test' });
   assert.equal(calls.length, 1);
   assert.equal(calls[0].key, KEY);
+});
+
+test('with a schema, Gemini is asked for the fixed JSON shape and the answer is kept as written', async () => {
+  const body = JSON.parse(geminiRequest(GEMINI_MODELS[0], KEY, 'hello', AI_PLAN_SCHEMA).init.body);
+  assert.equal(body.generationConfig.responseMimeType, 'application/json');
+  assert.deepEqual(body.generationConfig.responseSchema, AI_PLAN_SCHEMA);
+  assert.equal(JSON.parse(geminiRequest(GEMINI_MODELS[0], KEY, 'hello').init.body).generationConfig.responseSchema, undefined);
+  const json = '{"situation": "**RM 25,650**"}';
+  assert.equal((await askGemini({ prompt: 'p', key: KEY, schema: AI_PLAN_SCHEMA, fetchImpl: async () => answer(json) })).text, json, 'not stripped');
+  // A model that refuses the schema itself is asked once more without it…
+  const bodies = [];
+  const retried = await askGemini({ prompt: 'p', key: KEY, schema: AI_PLAN_SCHEMA, fetchImpl: async (url, init) => {
+    bodies.push(JSON.parse(init.body));
+    return bodies.length === 1 ? reply(400, { error: { status: 'INVALID_ARGUMENT', message: 'Invalid JSON payload received. Unknown name "responseSchema"' } }) : answer('plain text');
+  } });
+  assert.equal(retried.ok, true);
+  assert.deepEqual(bodies.map(b => !!b.generationConfig.responseSchema), [true, false]);
+  // …but a bad key is not.
+  let calls = 0;
+  const bad = await askGemini({ prompt: 'p', key: KEY, schema: AI_PLAN_SCHEMA, fetchImpl: async () => { calls++; return reply(400, { error: { status: 'INVALID_ARGUMENT', message: 'API key not valid.' } }); } });
+  assert.equal(bad.kind, 'key');
+  assert.equal(calls, 1);
 });
 
 test('problems are explained, and only model or quota problems try the next model', async () => {

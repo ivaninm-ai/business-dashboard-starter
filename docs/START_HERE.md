@@ -74,13 +74,13 @@ The matching page pre-fills its guesses; the viewer checks them once, and the sa
 
 ## 7. 请 Gemini 分析（可选）· Ask Gemini (optional)
 
-打开 **AI 分析**，贴上你自己的免费 Gemini 钥匙（aistudio.google.com/apikey），按 **用 Gemini 分析**。答案标着「实时 AI」，下面的数字核对会列出答案里在数据中找不到的数字。只有这个按钮会联网；按之前什么都不会送出。客户和员工名字默认换成代号。
+打开 **AI 分析**，贴上你自己的免费 Gemini 钥匙（aistudio.google.com/apikey），按 **用 Gemini 分析**。答案标着「实时 AI」，下面的数字核对会列出答案里在数据中找不到的数字。AI 选的三件事会排到 **待办** 最上面（标着「AI 建议」），日历上用虚线显示，按 **接受** 才算正式待办。只有这个按钮会联网；按之前什么都不会送出。客户和员工名字默认换成代号。
 
-Open **AI analysis**, paste your own free Gemini key, press **Analyse with Gemini**. Only this button goes online.
+Open **AI analysis**, paste your own free Gemini key, press **Analyse with Gemini**. Its top three tasks appear at the top of **Tasks** ("AI pick") and dashed on the calendar until you accept them. Only this button goes online.
 
 ## 保存说明 · About saving
 
-- Excel、待办决定、备注、语言和 Gemini 钥匙只保存在**这台电脑的这个浏览器**里。这**不是备份**，不会同步，也不会给别人看到。
+- Excel、待办决定、备注、AI 分析、语言和 Gemini 钥匙只保存在**这台电脑的这个浏览器**里。这**不是备份**，不会同步，也不会给别人看到。
 - 换浏览器、换电脑、清除浏览器数据，都会从头开始。
 - 在 Chrome 和 Edge 中，同一台电脑上所有从磁盘打开的仪表盘文件**共用同一份保存状态**。两个学生共用一台电脑时，请先按「忘记这个文件」。
 - 想让别人看同样的数字：请他在自己的电脑上打开同一个 Excel。

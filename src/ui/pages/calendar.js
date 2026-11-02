@@ -24,7 +24,7 @@ export function renderCalendar() {
   view.calView ||= 'month';
   const month = view.calMonth;
   if (!view.calDay || view.calDay.slice(0, 7) !== month.slice(0, 7)) view.calDay = rd.slice(0, 7) === month.slice(0, 7) ? rd : month;
-  const items = calendarItems().map(item => ({ ...item, onclick: () => openItem(item) }));
+  const items = calendarItems({ withAi: true }).map(item => ({ ...item, onclick: () => openItem(item) }));
   const byDate = new Map();
   for (const it of items) { if (!byDate.has(it.date)) byDate.set(it.date, []); byDate.get(it.date).push(it); }
   const go = m => { view.calMonth = m; view.calDay = ''; rerender(); };
@@ -49,22 +49,30 @@ export function renderCalendar() {
     h('div', { class: 'cal-views', role: 'group', 'aria-label': tr('Calendar views') },
       ...[['month', tl('Month')], ['week', tl('Week')], ['list', tl('List')]].map(([v, l]) => h('button', { type: 'button', class: view.calView === v ? 'active' : '', 'aria-pressed': String(view.calView === v), onclick: () => setView(v) }, l))));
 
+  const hasAi = items.some(i => i.ai_why !== undefined);
   const legend = h('div', { class: 'legend' },
     ...['payment', 'followup', 'completion', 'task', 'entry'].map(type => h('span', { class: `t-${type}` }, TYPE_LABEL[type]())),
-    h('span', { class: 'overdue' }, tr('Red outline = past deadline')));
+    h('span', { class: 'overdue' }, tr('Red outline = past deadline')),
+    hasAi ? h('span', { class: 'ai-key' }, aiTag(), tr('picked by the AI analysis')) : null,
+    items.some(i => i.suggested) ? h('span', { class: 'suggested-key' }, tr('Dashed = AI suggestion, not accepted yet')) : null);
 
   const body = view.calView === 'week' ? weekView(byDate, rd, pick) : view.calView === 'list' ? listView(items, month, rd, pick) : monthView(byDate, month, rd, pick);
   add(root, h('div', { class: 'cal-layout' },
     h('div', { class: 'card cal-card' }, head, legend, body),
     agenda(items, byDate, month, rd, sum, setView)));
-  add(root, t('p', tr('Dates are calendar days; the records contain no appointment times, so none are shown. Only accepted tasks appear here. Nothing is sent to an external calendar.'), 'hint'));
+  add(root, t('p', tr('Dates are calendar days; the records contain no appointment times, so none are shown. Accepted tasks appear here; the top picks of the AI analysis are shown dashed until you accept them. Nothing is sent to an external calendar.'), 'hint'));
   return root;
 }
 
+// "AI" on an item the latest Gemini analysis picked (its reason is in the day panel).
+const aiTag = () => h('span', { class: 'ai-tag', title: tr('Picked by the latest AI analysis') }, 'AI');
+
 function chip(it, { full = false } = {}) {
   const od = isOverdue(it);
-  return h('button', { type: 'button', class: `cal-item t-${it.type}${od ? ' overdue' : ''}${full ? ' full' : ''}`, title: od ? `${it.title} · ${tr('Past deadline')}` : it.title, onclick: e => { e.stopPropagation(); it.onclick(); } },
+  const title = [it.title, od ? tr('Past deadline') : '', it.ai_why ? tr('AI: {0}', it.ai_why) : ''].filter(Boolean).join(' · ');
+  return h('button', { type: 'button', class: `cal-item t-${it.type}${od ? ' overdue' : ''}${it.suggested ? ' suggested' : ''}${full ? ' full' : ''}`, title, onclick: e => { e.stopPropagation(); it.onclick(); } },
     od ? h('span', { class: 'mark', 'aria-label': tr('Past deadline') }, '!') : h('span', { class: 'dot', 'aria-hidden': 'true' }),
+    it.ai_why !== undefined ? aiTag() : null,
     t('span', it.short || it.title, 'txt'));
 }
 
@@ -116,9 +124,11 @@ function listView(items, month, rd, pick) {
 
 function agendaItem(it, meta) {
   const od = isOverdue(it);
-  return h('button', { type: 'button', class: `agenda-item t-${it.type}${od ? ' overdue' : ''}`, onclick: it.onclick },
+  const source = it.suggested ? tr('AI suggestion · accept it in Tasks') : TYPE_SOURCE[it.type]();
+  return h('button', { type: 'button', class: `agenda-item t-${it.type}${od ? ' overdue' : ''}${it.suggested ? ' suggested' : ''}`, onclick: it.onclick },
     h('span', { class: 'ai-icon' }, icon(it.type)),
-    h('span', { class: 'ai-text' }, t('b', it.title), h('span', {}, meta || TYPE_SOURCE[it.type](), od ? h('span', { class: 'od-word' }, ' · ', tr('Past deadline')) : null)),
+    h('span', { class: 'ai-text' }, t('b', it.title), h('span', {}, meta || source, od ? h('span', { class: 'od-word' }, ' · ', tr('Past deadline')) : null),
+      it.ai_why !== undefined ? h('span', { class: 'ai-why' }, aiTag(), it.ai_rank ? tr('Pick {0}', it.ai_rank) : tr('Watch this'), it.ai_why ? ` · ${it.ai_why}` : '') : null),
     icon('right', 'chev'));
 }
 
@@ -130,7 +140,7 @@ function agenda(items, byDate, month, rd, sum, setView) {
     t('div', list.length ? tr('{0} item(s) · click one to open its record', list.length) : tr('Nothing on this day.'), 'small muted ag-sub'));
   for (const it of list) add(box, agendaItem(it));
   const next = items.filter(i => i.date > day && i.date.slice(0, 7) === month.slice(0, 7)).slice(0, 3);
-  if (next.length) add(box, t('div', tr('Coming next'), 'ag-section'), ...next.map(it => agendaItem(it, `${dayLabel(it.date)} · ${TYPE_LABEL[it.type]()}`)));
+  if (next.length) add(box, t('div', tr('Coming next'), 'ag-section'), ...next.map(it => agendaItem(it, `${dayLabel(it.date)} · ${it.suggested ? tr('AI suggestion') : TYPE_LABEL[it.type]()}`)));
   if (sum.overdue) add(box, t('div', tr('Past deadlines this month'), 'ag-section'),
     h('button', { type: 'button', class: 'ag-over', onclick: () => setView('list') },
       h('span', {}, h('b', {}, String(sum.overdue)), ' · ', tr('{0} payment(s) · {1} follow-up(s) · {2} promised', sum.overdueByType.payment, sum.overdueByType.followup, sum.overdueByType.completion)),

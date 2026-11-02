@@ -51,7 +51,7 @@ export function buildBriefInput({ scenario, metrics, tasks, calendar = [], langu
     for (const t of resolved) lines.push(`- ${t.task_key} | recorded deadline ${t.recorded_deadline || '-'} | ${t.title}: ${t.reason}`);
   }
   const upcoming = calendar.filter(e => e.date >= scenario.reportingDate && e.date <= addDays(scenario.reportingDate, 14));
-  lines.push(`Calendar today and next 14 days (${upcoming.length} entries; showing up to 40). Date-only entries, no assumed times:`);
-  for (const e of upcoming.slice(0, 40)) lines.push(`- ${e.date} | ${e.kind} | ${e.title} | ${e.note || ''}`);
+  lines.push(`Calendar today and next 14 days (${upcoming.length} entries; showing up to 40). Date-only entries, no assumed times. Refer to them only by these ids:`);
+  for (const e of upcoming.slice(0, 40)) lines.push(`- ${e.id} | ${e.date} | ${e.kind} | ${e.title} | ${e.note || ''}`);
   return lines.join('\n');
 }

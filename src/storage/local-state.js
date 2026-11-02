@@ -20,6 +20,10 @@
 //     — the viewer's own Gemini API key for "Analyse with Gemini", typed in by them and
 //       kept only here (unencrypted, like a saved password in a notebook on this computer).
 //       Sent only to Google with their own requests. "Delete key" removes it; Reset keeps it.
+//   bd-starter.v1.ai.<businessId>       { version, at, model, where, basis, situation, top, watch, unanswered, problems, dropped }
+//     — the latest Gemini analysis in its fixed shape (briefs/ai-prompt.js readAiPlan), so its
+//       picks show in Tasks and the Calendar after a reload. `basis` is the fingerprint of the
+//       records it was made from. Reset, "Forget this file" and "Remove AI suggestions" remove it.
 
 export const PREFIX = 'bd-starter.v1';
 export const STATE_VERSION = 1;
@@ -120,8 +124,19 @@ function cleanMatching(m) {
   return { signature: m.signature.slice(0, 20), matching: { version: 1, roles, columns, values, dateOrder: x.dateOrder === 'mdy' ? 'mdy' : 'dmy' } };
 }
 
+// A stored AI analysis, field by field; null if unusable.
+const strings = (v, max, keep) => (Array.isArray(v) ? v.map(s => text(s, max)).filter(Boolean).slice(0, keep) : []);
+function cleanAiPlan(p) {
+  if (!p || typeof p !== 'object' || p.version !== 1 || typeof p.basis !== 'string' || !p.basis) return null;
+  const top = (Array.isArray(p.top) ? p.top : []).map(x => ({ task_key: text(x?.task_key, 200), why: text(x?.why, 1000), how: text(x?.how, 1000) })).filter(x => x.task_key).slice(0, 3);
+  const watch = (Array.isArray(p.watch) ? p.watch : []).map(x => ({ item_id: text(x?.item_id, 200), why: text(x?.why, 1000) })).filter(x => x.item_id).slice(0, 12);
+  const dropped = Number.isInteger(p.dropped) && p.dropped > 0 ? Math.min(p.dropped, 99) : 0;
+  return { version: 1, at: text(p.at, 40), model: text(p.model, 80), where: text(p.where, 200), basis: p.basis.slice(0, 40), situation: text(p.situation, 2000), top, watch, unanswered: strings(p.unanswered, 500, 10), problems: strings(p.problems, 200, 20), dropped };
+}
+
 export function createStateStore(storage) {
   const businessKey = id => `${PREFIX}.business.${id}`;
+  const aiKey = id => `${PREFIX}.ai.${id}`;
   const prefsKey = `${PREFIX}.prefs`;
   const read = key => { try { return JSON.parse(storage.getItem(key) || 'null'); } catch { return null; } };
   const write = (key, value) => { try { storage.setItem(key, JSON.stringify(value)); return true; } catch { return false; } };
@@ -163,18 +178,22 @@ export function createStateStore(storage) {
       const others = cleanMatchings(read(`${PREFIX}.matching`)).filter(m => m.signature !== signature);
       return write(`${PREFIX}.matching`, { version: 1, list: [{ signature, matching }, ...others].slice(0, MATCHINGS_KEPT) });
     },
-    // Forgetting the file also clears its task decisions, notes and matching.
-    forgetWorkbook(id) { try { storage.removeItem(`${PREFIX}.workbook`); storage.removeItem(businessKey(id)); storage.removeItem(`${PREFIX}.matching`); return true; } catch { return false; } },
+    // Forgetting the file also clears its task decisions, notes, AI analysis and matching.
+    forgetWorkbook(id) { try { storage.removeItem(`${PREFIX}.workbook`); storage.removeItem(businessKey(id)); storage.removeItem(aiKey(id)); storage.removeItem(`${PREFIX}.matching`); return true; } catch { return false; } },
+    // The latest Gemini analysis in its fixed shape (null when none is kept).
+    aiPlan(id) { return cleanAiPlan(read(aiKey(id))); },
+    saveAiPlan(id, plan) { const c = cleanAiPlan({ ...plan, version: 1 }); return c ? write(aiKey(id), c) : false; },
+    forgetAiPlan(id) { try { storage.removeItem(aiKey(id)); return true; } catch { return false; } },
     // The viewer's own Gemini API key ('' when none).
     geminiKey() { const g = read(`${PREFIX}.gemini`); return g && typeof g === 'object' && g.version === 1 && typeof g.key === 'string' ? g.key.trim().slice(0, 200) : ''; },
     setGeminiKey(key) { return write(`${PREFIX}.gemini`, { version: 1, key: String(key).trim() }); },
     forgetGeminiKey() { try { storage.removeItem(`${PREFIX}.gemini`); return true; } catch { return false; } },
-    // Reset = back to the baseline: Day 1, no decisions, no notes. The language choice is kept.
-    resetBusiness(id) { try { storage.removeItem(businessKey(id)); return true; } catch { return false; } },
+    // Reset = back to the baseline: Day 1, no decisions, no notes, no AI analysis. The language choice is kept.
+    resetBusiness(id) { try { storage.removeItem(businessKey(id)); storage.removeItem(aiKey(id)); return true; } catch { return false; } },
     resetAll() {
       try {
         const keys = [];
-        for (let i = 0; i < storage.length; i++) { const k = storage.key(i); if (k && k.startsWith(`${PREFIX}.business.`)) keys.push(k); }
+        for (let i = 0; i < storage.length; i++) { const k = storage.key(i); if (k && (k.startsWith(`${PREFIX}.business.`) || k.startsWith(`${PREFIX}.ai.`))) keys.push(k); }
         for (const k of keys) storage.removeItem(k);
         return true;
       } catch { return false; }

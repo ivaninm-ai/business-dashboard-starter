@@ -70,7 +70,7 @@ src/core/scenario-tasks.js  建议 + 你存下的决定
 src/core/calendar.js      日历项目
             ▼                                   ▲
 src/ui/view-state.js  筛选和算出的数字  ◄──  src/storage/local-state.js
-            ▼                                   （Excel、待办决定、备注、语言、Gemini 钥匙，存在 localStorage）
+            ▼                                   （Excel、待办决定、备注、AI 分析、语言、Gemini 钥匙，存在 localStorage）
 src/ui/pages/*.js     每一页；文字都经过 tr()/tl()（src/i18n/）
 src/briefs/           brief-input.js 事实清单；ai-prompt.js 给 Gemini 的请求；gemini.js 联网；brief-facts.js 数字核对
 ```
@@ -155,11 +155,12 @@ src/briefs/           brief-input.js 事实清单；ai-prompt.js 给 Gemini 的�
 2. 请求 = `src/briefs/ai-prompt.js` 的固定指示（不含任何数字）+ `buildBriefInput()` 的事实（包括这个浏览器里的待办决定和备注）。客户和员工名字默认换成代号。
 3. `src/briefs/gemini.js` 是唯一会联网的模块：`https://generativelanguage.googleapis.com/v1beta/models/<model>:generateContent`，先用 `gemini-flash-latest`，忙或额度用完时改用 `gemini-flash-lite-latest`。CSP 的 `connect-src` 只允许这个网址（`src/index.html`、`scripts/build.js`），`test/boundaries.test.js` 检查只有这个模块会发请求。
 4. 回答标明「实时 AI」、模型和时间；显示前用 `answerProblems()`（`unsupportedTokens()`）核对，找不到的数字会列出来。没有假的「打字」效果。
+5. 回答照固定格式（`AI_PLAN_SCHEMA`，在 `generationConfig.responseSchema`）：现在的情况、最该先做的三件事（待办编号）、两周内要留意的日历项目（日历编号）、数据回答不了的问题。`readAiPlan()` 只留下数据里真的有的编号；结果存在 `bd-starter.v1.ai.<businessId>`，待办最上面标「AI 建议」，日历上标「AI」（还没接受的用虚线）。AI 不会替学生接受或改任何待办；Excel 的记录变了，旧的标记就不显示（`dataBasis()`）。
 5. 隐私：Google 免费方案会用送出的内容改进产品，并请用户不要送出个人或机密资料。真实企业数据先确认企业规定和隐私法（例如马来西亚 PDPA）。
 
 Google 的文件建议正式产品不要在网页里用钥匙，而是经过自己的服务器。这个起步项目让每个学生只用自己的钥匙、只在自己的浏览器里；要做给别人用的正式产品，请把呼叫移到你控制的服务器（例如 Cloudflare Workers），钥匙存成那里的 secret。
 
-The **Analyse with Gemini** button uses the viewer's own free Gemini API key, kept only in their browser and sent only to Google in a request header. `src/briefs/gemini.js` is the only module that makes requests, and the CSP allows only the Gemini API. Answers are labelled as live AI and number-checked. For a product other people use, move the call to a server you control.
+The **Analyse with Gemini** button uses the viewer's own free Gemini API key, kept only in their browser and sent only to Google in a request header. `src/briefs/gemini.js` is the only module that makes requests, and the CSP allows only the Gemini API. Answers are labelled as live AI and number-checked. They come in a fixed shape, so the three tasks to do first are marked at the top of Tasks and the dates to watch are marked on the calendar (only keys and ids that are in the data; nothing is accepted for the viewer). For a product other people use, move the call to a server you control.
 
 ## 7. 以后接入真正的存储 · Adding real storage later
 
@@ -200,10 +201,10 @@ Use **Analyse with Gemini** on the AI analysis page (section 6). Step 6 of the s
 
 ### 9.2 请 AI 改代码 · Have an AI coding agent change the app
 
-学生版指南（`docs/student-guide.html` 第 7 步）用 **Claude Code 网页版**（claude.ai/code）：在浏览器里操作，需要付费的 Claude 订阅（Pro、Max 或 Team），用量和 Claude 聊天共用，要年满 18 岁。它通过 Claude 的 GitHub App 连接仓库（只选自己的仓库），在云端环境里改代码、跑测试；模式选 **Plan** 会先给计划、等批准再动手；做完按 **Create PR** 开 pull request；学生在 GitHub 上看到 **Tests** 绿色勾再 Merge，然后运行 Publish site。
+学生版指南（`docs/student-guide.html` 第 7 步）用学生电脑上已经装好的 **Claude Code**（Claude 桌面版的 Code）。第一次：请它检查并安装 Git 和 Node.js（22 版以上），把自己的仓库 `git clone` 下来，运行 `npm ci` 和 `npm run check`。之后每次用一句话提出修改；Claude 改好后运行 `npm run check`，再用 `npm run dev` 在 http://localhost:5173 打开给学生看。学生满意后请它 commit 并 push 到 main（第一次 push 会跳出 GitHub 登录窗口），然后运行 Publish site。push 到 main 会自动跑 **Tests**；Publish site 发布前也会跑 `npm run check`，所以检查没过的修改不会上线。
 
 Claude Code 每次开始都会自动读取项目规则（`CLAUDE.md`，它指向 `AGENTS.md`）。里面写着哪些东西不能改坏：数字规则、报告日期、不内置数据、只连 Gemini、翻译、AI 的诚实标示。可以这样说：
 
-> 先运行 npm ci。在概览加一个「本期服务类订单额」KPI，加上中文翻译和测试，然后运行 npm run check，告诉我结果。
+> 在概览加一个「本期服务类订单额」KPI，加上中文翻译和测试。改完运行 npm run check，再用 npm run dev 打开给我看。
 
-完成后自己在浏览器里看一遍，并确认 `npm run check` 全部通过（pull request 上的 **Tests** 是绿色勾），再 Merge 和发布。
+完成后自己在浏览器里看一遍，确认 `npm run check` 全部通过，再请它 push，然后运行 Publish site。

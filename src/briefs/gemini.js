@@ -19,23 +19,25 @@ export function looksLikeKey(value) {
   return /^[A-Za-z0-9_.\-]{20,200}$/.test(String(value ?? '').trim());
 }
 
-export function geminiRequest(model, key, prompt) {
+// With a schema, Gemini answers in that fixed JSON shape (ai-prompt.js AI_PLAN_SCHEMA).
+export function geminiRequest(model, key, prompt, schema = null) {
+  const generationConfig = { temperature: 0.2, ...(schema ? { responseMimeType: 'application/json', responseSchema: schema } : {}) };
   return {
     url: `${GEMINI_HOST}/v1beta/models/${model}:generateContent`,
     init: {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-      body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: prompt }] }], generationConfig: { temperature: 0.2 } }),
+      body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: prompt }] }], generationConfig }),
     },
   };
 }
 
-// The answer text, without any "thinking" parts, and with Markdown emphasis and heading
-// marks removed (the page shows plain text).
-export function answerText(json) {
+// The answer text, without any "thinking" parts, and (unless raw, as for a JSON answer)
+// with Markdown emphasis and heading marks removed (the page shows plain text).
+export function answerText(json, { raw = false } = {}) {
   const parts = json?.candidates?.[0]?.content?.parts || [];
-  return parts.filter(p => typeof p.text === 'string' && !p.thought).map(p => p.text).join('')
-    .replace(/\*\*/g, '').replace(/^#{1,6}\s*/gm, '').trim();
+  const text = parts.filter(p => typeof p.text === 'string' && !p.thought).map(p => p.text).join('');
+  return raw ? text.trim() : text.replace(/\*\*/g, '').replace(/^#{1,6}\s*/gm, '').trim();
 }
 
 // What went wrong, as one of: key, region, quota, busy, model, other.
@@ -52,28 +54,38 @@ export function problemKind(status, json) {
 
 // Returns { ok: true, text, model } or { ok: false, kind, status?, detail }.
 // kind: key, region, quota, busy, model, blocked, network, timeout, other.
-export async function askGemini({ prompt, key, fetchImpl = (...a) => globalThis.fetch(...a), models = GEMINI_MODELS, timeoutMs = TIMEOUT_MS }) {
+// With a schema the text is the raw JSON answer. If a model refuses the schema itself
+// (a 400 that is not about the key or the region), the same model is asked once without it.
+export async function askGemini({ prompt, key, schema = null, fetchImpl = (...a) => globalThis.fetch(...a), models = GEMINI_MODELS, timeoutMs = TIMEOUT_MS }) {
   let last = { ok: false, kind: 'other', detail: 'no model tried' };
   for (const model of models) {
-    const { url, init } = geminiRequest(model, key, prompt);
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
-    let res, json;
-    try {
-      res = await fetchImpl(url, { ...init, signal: controller.signal });
-      json = await res.json().catch(() => null);
-    } catch (e) {
-      return { ok: false, kind: e?.name === 'AbortError' ? 'timeout' : 'network', detail: String(e?.message || e) };
-    } finally {
-      clearTimeout(timer);
-    }
-    if (res.ok) {
-      const text = answerText(json);
-      if (text) return { ok: true, text, model: json?.modelVersion || model };
-      return { ok: false, kind: 'blocked', detail: json?.promptFeedback?.blockReason || json?.candidates?.[0]?.finishReason || 'empty answer' };
-    }
-    last = { ok: false, kind: problemKind(res.status, json), status: res.status, detail: json?.error?.message || '' };
-    if (!['model', 'quota', 'busy'].includes(last.kind)) return last; // the next model would fail the same way
+    const reply = await askModel({ model, prompt, key, schema, fetchImpl, timeoutMs });
+    if (reply.ok || reply.kind === 'network' || reply.kind === 'timeout') return reply;
+    last = schema && reply.status === 400 && reply.kind === 'other'
+      ? await askModel({ model, prompt, key, schema: null, fetchImpl, timeoutMs })
+      : reply;
+    if (last.ok || !['model', 'quota', 'busy'].includes(last.kind)) return last; // the next model would fail the same way
   }
   return last;
+}
+
+async function askModel({ model, prompt, key, schema, fetchImpl, timeoutMs }) {
+  const { url, init } = geminiRequest(model, key, prompt, schema);
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  let res, json;
+  try {
+    res = await fetchImpl(url, { ...init, signal: controller.signal });
+    json = await res.json().catch(() => null);
+  } catch (e) {
+    return { ok: false, kind: e?.name === 'AbortError' ? 'timeout' : 'network', detail: String(e?.message || e) };
+  } finally {
+    clearTimeout(timer);
+  }
+  if (res.ok) {
+    const text = answerText(json, { raw: !!schema });
+    if (text) return { ok: true, text, model: json?.modelVersion || model };
+    return { ok: false, kind: 'blocked', detail: json?.promptFeedback?.blockReason || json?.candidates?.[0]?.finishReason || 'empty answer' };
+  }
+  return { ok: false, kind: problemKind(res.status, json), status: res.status, detail: json?.error?.message || '' };
 }

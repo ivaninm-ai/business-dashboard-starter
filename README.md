@@ -16,7 +16,7 @@ A **setup-free** small-business dashboard starter. It has no data of its own: op
 | 建立自己的版本 · Get my own copy | 按本页右上方的 **Use this template → Create a new repository**，然后按学生指南操作 · Press **Use this template**, then follow the student guide |
 | 设定店名 · Set my business name | 仓库 **Settings → Secrets and variables → Actions → Variables** 加 `BUSINESS_NAME`，再运行 **Publish site**——不用改文件 · Add the repository variable, then run Publish site. See [docs/STUDENT_SOP.md](docs/STUDENT_SOP.md) §8. |
 | 请 AI 分析数字 · Ask an AI about the numbers | 在 Google AI Studio 拿一把免费的 Gemini 钥匙，贴到「AI 分析」页，按 **用 Gemini 分析** · Get a free Gemini key in Google AI Studio, paste it on the AI analysis page, press **Analyse with Gemini** |
-| 请 AI 加功能 · Have an AI add a feature | 用 Claude Code（claude.ai/code，需要付费的 Claude 订阅）；它会自动读取项目规则。见 [docs/STUDENT_SOP.md](docs/STUDENT_SOP.md) §9 · Use Claude Code on the web (paid Claude plan); it reads the project rules by itself |
+| 请 AI 加功能 · Have an AI add a feature | 用电脑上的 Claude Code：它会下载你的项目、改好、检查、打开给你看，再上传回 GitHub。见 [docs/STUDENT_SOP.md](docs/STUDENT_SOP.md) §9 · Use Claude Code on your own computer: it downloads the project, makes and checks the change, shows it to you, then pushes it back |
 
 开发命令（需要 Node.js 22 或更新版本）· Development commands (Node.js 22+):
 
@@ -39,7 +39,7 @@ Then open http://localhost:5173. Also: `npm test` (checks figures and rules), `n
 - **对应你的列**：Excel 格式和练习工作簿不一样（工作表名、列名、状态写法不同，或没有库存等工作表）时，页面会先猜好哪个工作表、哪一列是什么，你检查后打开；同样格式的文件以后自动套用。
 - 接受、完成、忽略待办，修改行动日期；在日历上加备注；这些操作保存在**这个浏览器**里。
 - Excel 更新后按「重新读取 Excel」：数字跟着变，同一笔记录的待办决定按稳定的编号保留。
-- **用 Gemini 分析**（可选）：用你自己的免费 Gemini 钥匙，按现在的数字写实时分析，标明是 AI 写的，并自动核对里面的数字。钥匙只存在你的浏览器。
+- **用 Gemini 分析**（可选）：用你自己的免费 Gemini 钥匙，按现在的数字写实时分析，标明是 AI 写的，并自动核对里面的数字。它说最该先做的三件事会排到待办最上面，要留意的日期在日历上标「AI」；接受与否由你决定。钥匙只存在你的浏览器。
 - 提供两个练习工作簿（虚构的 BetterSpace 数据）下载，给还没有自己数据的人试用。
 
 **不会做 · Does not**

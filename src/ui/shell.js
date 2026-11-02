@@ -105,11 +105,11 @@ function renderBanner() {
   }
 }
 
-// Clears the task decisions and calendar notes for your file in this browser. The file,
+// Clears the task decisions, calendar notes and AI analysis for your file in this browser. The file,
 // the language and the Gemini key are kept.
 export function openResetDialog() {
   const body = h('div', {},
-    t('p', tr('This clears your task decisions and calendar notes in this browser, so every suggestion is open again. Your Excel file, the language and your Gemini key are kept.')),
+    t('p', tr('This clears your task decisions, calendar notes and AI suggestions in this browser, so every suggestion is open again. Your Excel file, the language and your Gemini key are kept.')),
     t('p', tr('This only affects this browser.'), 'small muted'));
   modal(tr('Clear decisions and notes'), body, { actions: [
     { label: tl('Clear decisions and notes'), danger: true, onclick: () => {

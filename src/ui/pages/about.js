@@ -22,7 +22,7 @@ export function renderAbout() {
     h('button', { class: 'btn', onclick: pickExcel }, tl('Choose an Excel file…'))));
 
   const saving = view.persistent
-    ? tr('Your Excel, task decisions, notes, language and Gemini key are saved in this browser on this device. They are not a backup, not shared with anyone and not synchronised to other devices. Clearing browser data, a private window, or a different browser or computer starts from the beginning.')
+    ? tr('Your Excel, task decisions, notes, AI analysis, language and Gemini key are saved in this browser on this device. They are not a backup, not shared with anyone and not synchronised to other devices. Clearing browser data, a private window, or a different browser or computer starts from the beginning.')
     : tr('This browser does not allow the page to save anything ({0}). The dashboard still works, but your changes are lost when you close or reload the page.', view.storageReason || tr('blocked'));
   add(root, h('div', { class: 'card' }, t('h2', tr('Saving')),
     h('p', {}, h('span', { class: `badge ${view.persistent ? 'good' : 'warning'}` }, view.persistent ? tr('Saving in this browser') : tr('Not saving')), ' ', saving),
